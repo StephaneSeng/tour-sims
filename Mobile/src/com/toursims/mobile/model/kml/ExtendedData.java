@@ -1,7 +1,5 @@
 package com.toursims.mobile.model.kml;
 import java.util.List;
-
-import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 
 public class ExtendedData {

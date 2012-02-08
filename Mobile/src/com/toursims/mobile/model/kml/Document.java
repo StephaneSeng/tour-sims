@@ -23,6 +23,17 @@ public class Document {
 	// L'attribut data permet de signaler que l'élément contient une section ( <!--[CDATA[ )
 	@Element(data=true,required=false)
 	private String Snippet;
+	
+	@Element(required=false)
+	private ExtendedData ExtendedData;
+	
+	public ExtendedData getExtendedData() {
+		return ExtendedData;
+	}
+	
+	public void setExtendedData(ExtendedData extendedData) {
+		ExtendedData = extendedData;
+	}
 
 	public String getName() {
 		return name;

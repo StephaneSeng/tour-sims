@@ -1,4 +1,5 @@
 package com.toursims.mobile.model.kml;
+
 import org.simpleframework.xml.Attribute;
 
 public class hotSpot {
@@ -27,4 +28,20 @@ public class hotSpot {
 		this.yunits = yunits;
 	}
 
+	public double getX() {
+		return x;
+	}
+	
+	public double getY() {
+		return y;
+	}
+	
+	public String getXunits() {
+		return xunits;
+	}
+	
+	public String getYunits() {
+		return yunits;
+	}
+	
 }
