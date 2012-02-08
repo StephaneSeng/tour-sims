@@ -1,7 +1,11 @@
 package com.toursims.mobile.model.places;
 
 import java.net.URI;
+import java.util.List;
 
+/**
+ * Object representing a place according to the Google Places API
+ */
 public class Place {
 
 	private double latitude;
@@ -18,12 +22,12 @@ public class Place {
 	
 	private String reference;
 	
-	private String types[];
+	private List<String> types;
 	
 	private String vicinity;
 
 	public Place(double latitude, double longitude, URI icon, String id,
-			String name, float rating, String reference, String[] types,
+			String name, float rating, String reference, List<String> types,
 			String vicinity) {
 		super();
 		this.latitude = latitude;
@@ -93,11 +97,11 @@ public class Place {
 		this.reference = reference;
 	}
 
-	public String[] getTypes() {
+	public List<String> getTypes() {
 		return types;
 	}
 
-	public void setTypes(String[] types) {
+	public void setTypes(List<String> types) {
 		this.types = types;
 	}
 
