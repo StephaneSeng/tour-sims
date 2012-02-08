@@ -1,6 +1,6 @@
 package com.toursims.mobile.controller;
 
-import com.tourisms.mobile.model.Course;
+import com.toursims.mobile.model.Course;
 import com.toursims.mobile.model.kml.*;
 
 import java.io.InputStream;
@@ -12,7 +12,7 @@ import org.simpleframework.xml.core.Persister;
 
 public class KmlParser {
 	
-    private static volatile KmlParser instance = null;
+	private static volatile KmlParser instance = null;
 	
 	public KmlParser getKmlParser() {
 		if(instance == null) {
