@@ -1,5 +1,6 @@
 package com.toursims.mobile.controller;
 
+import com.tourisms.mobile.model.Course;
 import com.toursims.mobile.model.kml.*;
 
 import java.io.InputStream;
@@ -25,7 +26,7 @@ public class KmlParser {
 	}
 	
 
-	public Kml parse(String address){
+	public Course parse(String address){
 
 		Kml kml1 = new Kml(); 		  
 	   	HttpURLConnection urlConnection= null;
@@ -69,7 +70,16 @@ public class KmlParser {
 			} catch (Exception e) {
 		   		e.printStackTrace();
 			} 
-		 return kml1;
-
+		
+		Course course = new Course();
+		
+		course.setCity(kml1.getDocument().getExtendedData().getData().get(0).getValue());
+		course.setCoverPictureURL(kml1.getDocument().getExtendedData().getData().get(1).getValue());
+		course.setText(kml1.getDocument().getExtendedData().getData().get(2).getValue());
+		course.setRating(Double.valueOf(kml1.getDocument().getExtendedData().getData().get(3).getValue()));
+		course.setLength(Double.valueOf(kml1.getDocument().getExtendedData().getData().get(4).getValue()));
+		
+		
+		return course;
 		}
 }
