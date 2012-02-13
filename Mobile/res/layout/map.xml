@@ -11,4 +11,11 @@
         android:text="Map"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
+ <com.google.android.maps.MapView
+                 android:id="@+id/map"
+                 android:layout_width="fill_parent"
+                 android:layout_height="fill_parent"
+                 android:apiKey="0UtEsm2mlQi-XisrXwfM4YprkP-cKS6zYZ8URyg"
+                 />
+       
 </LinearLayout>
