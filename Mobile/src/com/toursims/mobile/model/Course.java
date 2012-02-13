@@ -1,12 +1,12 @@
 package com.toursims.mobile.model;
 
 import java.util.List;
-import java.util.Set;
 
 import com.toursims.mobile.model.kml.Placemark;
 
 public class Course {
 	
+	private Integer id;
 	private String city; 
 	private String coverPictureURL;
 	private String desc;
@@ -17,6 +17,14 @@ public class Course {
 	
 			
 	private List<Placemark> placemarks;
+	
+	public Integer getId() {
+		return id;
+	}
+	
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	
 	public String getName() {
 		return name;
