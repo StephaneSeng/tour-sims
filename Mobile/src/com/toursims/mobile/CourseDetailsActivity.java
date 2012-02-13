@@ -14,7 +14,7 @@ public class CourseDetailsActivity extends TabActivity{
         Intent intent;  // Reusable Intent for each tab
 
         // Create an Intent to launch an Activity for the tab (to be reused)
-        intent = new Intent().setClass(this, MapActivity.class);
+        intent = new Intent().setClass(this, CourseStepActivity.class);
 
         // Initialize a TabSpec for each tab and add it to the TabHost
         spec = tabHost.newTabSpec("map").setIndicator("Map")
