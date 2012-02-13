@@ -9,6 +9,10 @@
         android:layout_height="wrap_content"
         android:text="@string/hello" />
 
+
+
+
+
      <Button
         android:id="@+id/btnCourseGame"
         android:layout_width="104dp"
@@ -34,8 +38,3 @@
         android:text="Social" />
 
 </LinearLayout>
-
-
-
-
-
