@@ -27,6 +27,7 @@
         <activity android:name=".CourseDetailsActivity"> </activity>
         <activity android:name=".MapActivity"> </activity>
         <activity android:name=".CourseStepActivity"> </activity>
+        <service android:name=".LocalizationService"></service>
         </application>
 
 </manifest>

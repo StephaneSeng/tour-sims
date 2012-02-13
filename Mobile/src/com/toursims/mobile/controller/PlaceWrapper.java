@@ -40,7 +40,7 @@ public class PlaceWrapper {
 	/**
 	 * Android debugging tag
 	 */
-	private static final String TAG = PlaceWrapper.class.toString();
+	private static final String TAG = PlaceWrapper.class.getName();
 	
 	/**
 	 * Google Maps API key
@@ -209,7 +209,7 @@ public class PlaceWrapper {
 			places.add(new Place(Double.parseDouble(jsonLatitude), Double.parseDouble(jsonLongitude), new URI(jsonIcon), jsonId, jsonName, Float.parseFloat(jsonRating), jsonReference, jsonTypesList, jsonVicinity));
 		}
 		
-		Log.d(TAG, "Nombre de Places : " + places.size());
+		Log.d(TAG, "Number of places found : " + places.size());
 		
 		return places;
 	}
