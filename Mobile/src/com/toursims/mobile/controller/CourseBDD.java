@@ -97,6 +97,13 @@ public class CourseBDD {
 		c.close();
 		return course;
 	}
+	
+	public Course getCourseWithURL(String url){
+		Cursor c = bdd.query(SQLiteHelper.TABLE_COURSE, allColumnsCourse, SQLiteHelper.COL_COURSE_URL + " LIKE \"" + url +"\"", null, null, null, null);
+		Course course = cursorToCourse(c);
+		c.close();
+		return course;
+	}
 	 
 	private Course cursorToCourse(Cursor c){
 		if (c.getCount() == 0)
@@ -139,7 +146,11 @@ public class CourseBDD {
 		return placemarks;
 	}
 
-	
+	public void truncate() {
+		bdd.execSQL("TRUNCATE TABLE " + SQLiteHelper.TABLE_PLACEMARK + ";");
+		bdd.execSQL("TRUNCATE TABLE " + SQLiteHelper.TABLE_COURSE + ";");
+
+	}
 	
 	
 }

@@ -73,5 +73,6 @@ public class SQLiteHelper extends SQLiteOpenHelper{
 		db.execSQL("DROP TABLE " + TABLE_PLACEMARK + ";");
 		onCreate(db);
 	}
+	
  
 }
