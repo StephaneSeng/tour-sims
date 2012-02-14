@@ -2,28 +2,22 @@
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
-    <View
-        android:layout_height="2dip"
-        android:background="#FF909090" />
 
-    <TableLayout
-        android:id="@+id/tableLayout1"
+    <TableRow
+        android:id="@+id/tableRow1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
 
-        <TableRow
-            android:id="@+id/tableRow1"
+        <TextView
+            android:id="@+id/textView1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:text="Parcours 1"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Parcours 1"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </TableRow>
-
-    </TableLayout>
+    </TableRow>
+    <View
+        android:layout_height="2dip"
+        android:background="#FF909090" />
     
 </TableLayout>

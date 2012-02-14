@@ -15,9 +15,10 @@ import com.toursims.mobile.model.kml.Point;
 import com.toursims.mobile.ui.utils.CustomItemizedOverlay;
 
 import android.graphics.drawable.Drawable;
+import android.app.Activity;
 import android.os.Bundle;
 
-public class CourseStepActivity extends MapActivity{
+public class CourseStepActivity extends Activity{
     /** Called when the activity is first created. */
     private MapController mapController;
     List<Overlay> mapOverlays;
