@@ -50,7 +50,6 @@ public class CourseStepActivity extends Activity{
         mapOverlays.add(itemizedOverlay);
 	}
     
-    @Override
     protected boolean isRouteDisplayed() {
         return false;
     }

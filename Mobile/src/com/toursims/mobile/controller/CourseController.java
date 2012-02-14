@@ -19,7 +19,7 @@ public class CourseController {
 	}
 	
 	public List<Course> getCourses() {
-		KmlParser kml = KmlParser.getInstance();
+		KmlParser kml = KmlParser.getKmlParser();
 		List<Course> c = new ArrayList<Course>();
 		courses.add(kml.parse("http://www.x00b.com/tour.kml"));
 		return courses;

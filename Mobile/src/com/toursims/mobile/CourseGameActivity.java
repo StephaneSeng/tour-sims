@@ -55,7 +55,7 @@ public void onCreate(Bundle savedInstanceState) {
         CourseBDD datasource = new CourseBDD(this);
 		datasource.open();	
 		
-		KmlParser k = KmlParser.getInstance();
+		KmlParser k = KmlParser.getKmlParser();
 		Course c1 = k.parse("http://www.x00b.com/tour.kml");
 		c1.setId(1);
 		c1.setUrl("http://www.x00b.com/tour.kml");
