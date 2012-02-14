@@ -75,7 +75,7 @@ public class KmlParser {
 		course.setDesc(kml1.getDocument().getExtendedData().getData().get(2).getValue());
 		course.setRating(Double.valueOf(kml1.getDocument().getExtendedData().getData().get(3).getValue()));
 		course.setLength(Double.valueOf(kml1.getDocument().getExtendedData().getData().get(4).getValue()));
-		
+		course.setPlacemarks(kml1.getDocument().getPlacemarks());
 		
 		return course;
 		}

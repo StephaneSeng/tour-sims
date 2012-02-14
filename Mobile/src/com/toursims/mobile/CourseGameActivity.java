@@ -38,17 +38,60 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-public class CourseGameActivity extends ListActivity {
+public class CourseGameActivity extends Activity {
 
 	
 public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.coursegame);
+    
+    // Action on default table row
+    final TableRow tbrow = (TableRow) findViewById(R.id.tableRow1);
+    final TableLayout tblay = (TableLayout) findViewById(R.id.tableLayout1);
+        
+    CourseBDD datasource = new CourseBDD(this);
+	datasource.open();
+	
+	Course c1 = KmlParser.getInstance().parse("http://www.x00b.com/tour.kml");
+	c1.setId(1);
+	c1.setUrl("http://www.x00b.com/tour.kml");
+
+	datasource.insertCourse(c1);
+	List<Course> lC2;
+	lC2 = datasource.getAllCourses();    
+    
+   for (Course course : lC2) {
+		TableRow row = new TableRow(this);
+    	TextView t = new TextView(this);
+    	t.setText(course.getCity()+course.getId());
+    	CheckBox c = new CheckBox(this);
+    	row.addView(t);
+    	row.addView(c);
+    	tblay.addView(row,new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));  
+    }
+   
+         
+    tbrow.setOnClickListener(new OnClickListener() {                      
+        public void onClick(View arg0) {       	
+          // Create an Intent to launch an Activity for Course details
+        	Intent courseDetails = new Intent(getApplicationContext(),CourseStepActivity.class);
+        	
+            startActivity(courseDetails);           	
+        }
+    });
+   
+    datasource.close();
+
+   
+}
+	/*
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.coursegamelist);
+        setContentView(R.layout.coursegame);
       
         // Get list of course by parent Activity (hard-coded, get rid of this later)
         Intent intent = getIntent();
         final String[] COURSES = intent.getStringArrayExtra("courses");
-        final ArrayList<HashMap<String, ?>> data = new ArrayList<HashMap<String, ?>>();
+      //  final ArrayList<HashMap<String, ?>> data = new ArrayList<HashMap<String, ?>>();
                
       //  ArrayList<RowModel> list=new ArrayList<RowModel>();
         
@@ -173,4 +216,4 @@ public void onCreate(Bundle savedInstanceState) {
 		    
 	}*/
 }
-}
+
