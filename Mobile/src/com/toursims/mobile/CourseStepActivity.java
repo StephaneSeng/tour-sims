@@ -10,6 +10,9 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
+import com.toursims.mobile.controller.CourseBDD;
+import com.toursims.mobile.controller.KmlParser;
+import com.toursims.mobile.model.Course;
 import com.toursims.mobile.model.kml.Placemark;
 import com.toursims.mobile.model.kml.Point;
 import com.toursims.mobile.ui.utils.CustomItemizedOverlay;
@@ -43,10 +46,15 @@ public class CourseStepActivity extends MapActivity{
         drawable = this.getResources().getDrawable(R.drawable.androidmarker);
         itemizedOverlay = new CustomItemizedOverlay(drawable);
         
-        GeoPoint point = new GeoPoint(45759723,4842223);
-        OverlayItem overlayItem = new OverlayItem(point, "", "");
+        for(Placemark placemark: getPlaceMarks()){
+        	String[] lL = placemark.getPoint().getCoordinates().split(",");
+        	int l = Integer.parseInt(lL[0]) * 10^6;
+        	int L = Integer.parseInt(lL[1]) * 10^6;
+        	GeoPoint point = new GeoPoint(l,L);
+        	OverlayItem overlayItem = new OverlayItem(point, "", "");
         
-        itemizedOverlay.addOverlay(overlayItem);
+        	itemizedOverlay.addOverlay(overlayItem);
+        }
         mapOverlays.add(itemizedOverlay);
 	}
     
@@ -56,14 +64,17 @@ public class CourseStepActivity extends MapActivity{
     }
     
     protected List<Placemark> getPlaceMarks() {
-    	List<Placemark> l = new ArrayList<Placemark>();
-    	for (int i = 0; i< 10; i++) {
-    		Placemark p = new Placemark();
-    		p.setPoint(new Point());
-    		l.add(p);
-    	}
-    	
-    	return l;
+//    	List<Placemark> l = new ArrayList<Placemark>();
+//    	for (int i = 0; i< 10; i++) {
+//    		Placemark p = new Placemark();
+//    		p.setPoint(new Point());
+//    		l.add(p);
+        CourseBDD datasource = new CourseBDD(this);
+		datasource.open();	
+		
+    	KmlParser k = KmlParser.getInstance();
+		Course c1 = k.parse("http://www.x00b.com/tour.kml");
+		
+		return c1.getPlacemarks();
     }
-
 }
