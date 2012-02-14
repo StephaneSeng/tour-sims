@@ -85,10 +85,11 @@ public class CourseBDD {
 	}
 	
 	public void insertPlacemarks(Course course){
-		for(Placemark p : course.getPlacemarks()){
-			insertPlacemark(p, course);
-		} 
+		for(Placemark placemark : course.getPlacemarks()){
+			insertPlacemark(placemark, course);
+		}
 	}
+	
 	
 	public Course getCourseWithId(Integer id){
 		Cursor c = bdd.query(SQLiteHelper.TABLE_COURSE, allColumnsCourse, SQLiteHelper.COL_ID + " LIKE \"" + id +"\"", null, null, null, null);
