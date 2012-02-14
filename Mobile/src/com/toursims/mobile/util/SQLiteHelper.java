@@ -71,9 +71,7 @@ public class SQLiteHelper extends SQLiteOpenHelper{
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		db.execSQL("DROP TABLE " + TABLE_COURSE + ";");
 		db.execSQL("DROP TABLE " + TABLE_PLACEMARK + ";");
-
 		onCreate(db);
 	}
-	
  
 }
