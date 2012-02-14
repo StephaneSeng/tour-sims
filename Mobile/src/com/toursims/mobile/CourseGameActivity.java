@@ -50,7 +50,7 @@ public void onCreate(Bundle savedInstanceState) {
         final String[] COURSES = intent.getStringArrayExtra("courses");
         final ArrayList<HashMap<String, ?>> data = new ArrayList<HashMap<String, ?>>();
                
-        ArrayList<RowModel> list=new ArrayList<RowModel>();
+      //  ArrayList<RowModel> list=new ArrayList<RowModel>();
         
         CourseBDD datasource = new CourseBDD(this);
 		datasource.open();	
@@ -60,10 +60,22 @@ public void onCreate(Bundle savedInstanceState) {
 		c1.setId(1);
 		c1.setUrl("http://www.x00b.com/tour.kml");
 		
+		TextView t = (TextView)findViewById(R.id.textView1);
+		t.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+	    
+	                  // When clicked, show Course details
+	              	  Intent courseDetails = new Intent(getApplicationContext(),CourseDetailsActivity.class);
+	              	  startActivity(courseDetails);
+
+			}
+		});
 		//datasource.insertCourse(c1);
 		//datasource.insertPlacemarks(c1);
 		
-		for (Course course : datasource.getAllCourses()) {
+		/*for (Course course : datasource.getAllCourses()) {
 			list.add(new RowModel(course));
 	    }
                    
@@ -159,6 +171,6 @@ public void onCreate(Bundle savedInstanceState) {
 			this.rating = course.getRating();
 		}
 		    
-	}
-   
+	}*/
+}
 }
