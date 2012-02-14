@@ -7,7 +7,13 @@ import android.view.View;
 import android.widget.Button;
 
 public class HomeActivity extends Activity {
-    /** Called when the activity is first created. */
+    
+	/**
+	 * Android debugging tag
+	 */
+	private static final String TAG = HomeActivity.class.getName(); 
+	
+	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -15,13 +21,12 @@ public class HomeActivity extends Activity {
         
         Button btnCourseGame = (Button) findViewById(R.id.btnCourseGame);
         
-        //Listening to button Course
+        //Listening to button event
         btnCourseGame.setOnClickListener(new View.OnClickListener() {
  
             public void onClick(View arg0) {
                 //Starting a new Intent
                 Intent courseGameList = new Intent(getApplicationContext(), CourseGameActivity.class);
-                courseGameList.putExtra("courses", COURSES);
                 startActivity(courseGameList);
             }
         });

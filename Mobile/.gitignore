@@ -1,4 +1,15 @@
+# See : https://github.com/github/gitignore/blob/master/Android.gitignore
+
+# Built application files
+*.apk
+*.ap_
+
+# Java class files
+*.class
+
+# Generated files
 /bin
-.classpath
-.project
-AndroidManifest.xml
+/gen
+
+# Local configuration files
+local.properties
