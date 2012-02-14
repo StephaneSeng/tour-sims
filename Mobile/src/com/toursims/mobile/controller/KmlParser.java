@@ -12,12 +12,9 @@ import org.simpleframework.xml.core.Persister;
 
 public class KmlParser {
 	
-	private static volatile KmlParser instance = null;
+	private static KmlParser instance = new KmlParser();
 	
 	public static KmlParser getInstance() {
-		if(instance == null) {
-			new KmlParser();
-		}
 		return KmlParser.instance;
 	}
 	
