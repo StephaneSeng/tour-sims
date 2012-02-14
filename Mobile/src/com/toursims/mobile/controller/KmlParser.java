@@ -14,7 +14,7 @@ public class KmlParser {
 	
 	private static volatile KmlParser instance = null;
 	
-	public KmlParser getInstance() {
+	public static KmlParser getInstance() {
 		if(instance == null) {
 			new KmlParser();
 		}
