@@ -147,8 +147,8 @@ public class CourseBDD {
 	}
 
 	public void truncate() {
-		bdd.execSQL("TRUNCATE TABLE " + SQLiteHelper.TABLE_PLACEMARK + ";");
-		bdd.execSQL("TRUNCATE TABLE " + SQLiteHelper.TABLE_COURSE + ";");
+		bdd.execSQL("DELETE FROM " + SQLiteHelper.TABLE_PLACEMARK + ";");
+		bdd.execSQL("DELETE FROM " + SQLiteHelper.TABLE_COURSE + ";");
 
 	}
 	
