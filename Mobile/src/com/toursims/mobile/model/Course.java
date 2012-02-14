@@ -8,11 +8,39 @@ public class Course {
 	
 	private String city; 
 	private String coverPictureURL;
-	private String text;
+	private String desc;
 	private Double length;
 	private Double rating; 
+	private String url;
+	private String name; 
 	
+			
 	private List<Placemark> placemarks;
+	
+	public Integer getId() {
+		return id;
+	}
+	
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	
+	public String getUrl() {
+		return url;
+	}
+	
+	public void setUrl(String url) {
+		this.url = url;
+	}
 	
 	public String getCity() {
 		return city;
@@ -30,12 +58,12 @@ public class Course {
 		this.coverPictureURL = coverPictureURL;
 	}
 	
-	public void setText(String text) {
-		this.text = text;
+	public void setDesc(String text) {
+		this.desc = text;
 	}
 	
-	public String getText() {
-		return text;
+	public String getDesc() {
+		return desc;
 	}
 	
 	public void setLength(Double length) {
