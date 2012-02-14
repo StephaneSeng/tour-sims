@@ -9,6 +9,14 @@ public class CourseDetailsActivity extends TabActivity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.coursedetails);
+        
+        //Get course name send by parent Activity
+        Intent i = getIntent();
+        String courseName = i.getStringExtra("coursename");
+ 
+        //Set title of current screen to course name
+        setTitle(courseName);
+               
         TabHost tabHost = getTabHost();  // The activity TabHost
         TabHost.TabSpec spec;  // Resusable TabSpec for each tab
         Intent intent;  // Reusable Intent for each tab

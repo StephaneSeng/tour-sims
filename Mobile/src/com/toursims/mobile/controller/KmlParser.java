@@ -75,7 +75,7 @@ public class KmlParser {
 		
 		course.setCity(kml1.getDocument().getExtendedData().getData().get(0).getValue());
 		course.setCoverPictureURL(kml1.getDocument().getExtendedData().getData().get(1).getValue());
-		course.setDesc(kml1.getDocument().getExtendedData().getData().get(2).getValue());
+		course.setText(kml1.getDocument().getExtendedData().getData().get(2).getValue());
 		course.setRating(Double.valueOf(kml1.getDocument().getExtendedData().getData().get(3).getValue()));
 		course.setLength(Double.valueOf(kml1.getDocument().getExtendedData().getData().get(4).getValue()));
 		

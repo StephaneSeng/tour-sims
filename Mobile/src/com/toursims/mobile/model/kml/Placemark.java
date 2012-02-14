@@ -8,16 +8,6 @@ import org.simpleframework.xml.Root;
 @Root
 public class Placemark {
 
-	private Integer id;
-	
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
-	public Integer getId() {
-		return id;
-	}
-	
 	@Element(required=false)
 	private String name;
 
@@ -94,10 +84,6 @@ public class Placemark {
 
 	public void setPoint(Point point) {
 		this.Point = point;
-	}
-	
-	public void setPoint(String coordinates){
-		this.Point = new Point(coordinates);
 	}
 
 	public LookAt getLookAt() {

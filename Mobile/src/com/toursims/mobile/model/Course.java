@@ -6,7 +6,6 @@ import com.toursims.mobile.model.kml.Placemark;
 
 public class Course {
 	
-	private Integer id;
 	private String city; 
 	private String coverPictureURL;
 	private String desc;

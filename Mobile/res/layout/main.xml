@@ -19,22 +19,20 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="40dp"
-        android:text="Route/Game" />
-
-
+        android:text="Course/Game" />
+
      <Button
-        android:id="@+id/button2"
-        android:layout_width="104dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="POI" />
-
-
+         android:id="@+id/btnPOI"
+         android:layout_width="104dp"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center"
+         android:text="POI" />
+
      <Button
-        android:id="@+id/button1"
-        android:layout_width="104dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Social" />
+         android:id="@+id/btnSocial"
+         android:layout_width="104dp"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center"
+         android:text="Social" />
 
 </LinearLayout>
