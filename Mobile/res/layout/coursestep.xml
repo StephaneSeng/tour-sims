@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/map"
     android:clickable="true"
-    android:apiKey="0UtEsm2mlQi-XisrXwfM4YprkP-cKS6zYZ8URyg"
+    android:apiKey="0g1OZhPQNgETFc8h10meaSM0cxnWUgbDAxGnrDg"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
 />
