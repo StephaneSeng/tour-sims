@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class HomeActivity extends Activity {
     
@@ -57,6 +58,18 @@ public class HomeActivity extends Activity {
 			}
 		});
         
+        
+        Button btnGoogleLogin = (Button) findViewById(R.id.btnGoogleLogin);
+        // Listening to button POI
+        btnGoogleLogin.setOnClickListener(new View.OnClickListener() {
+			
+			public void onClick(View v) {
+				//Starting new Intent
+				Intent GoogleLogin = new Intent(getApplicationContext(), LoginActivity.class);
+				startActivityForResult(GoogleLogin, 0);
+			}
+		});
+        
         // Start the localization service
         ComponentName localizationComponentName = new ComponentName(LocalizationService.class.getPackage().getName(), LocalizationService.class.getName());
         ComponentName localizationComponentService = startService(new Intent().setComponent(localizationComponentName));
@@ -65,7 +78,26 @@ public class HomeActivity extends Activity {
         }
     }
     
-    static final String[] COURSES = new String[] {
+    @Override
+	protected void onResume() {
+		super.onResume();
+		
+		// User connection management
+		TourSims tourSims = (TourSims)getApplicationContext();
+		TextView nameTextView = (TextView)findViewById(R.id.nameTextView);
+		Button btnGoogleLogin = (Button)findViewById(R.id.btnGoogleLogin);
+		
+		if (tourSims.getUserName().isEmpty()) {
+			// The user is not yet connected 
+			nameTextView.setText("Welcome, please login with your Google Account...");
+			btnGoogleLogin.setVisibility(Button.VISIBLE);
+		} else {
+			nameTextView.setText("Welcome " + tourSims.getUserName() + " !");
+			btnGoogleLogin.setVisibility(Button.INVISIBLE);
+		}
+	}
+
+	static final String[] COURSES = new String[] {
     	"LaDoua", "INSA", "Lyon1", "IUT-Feyssine"
     };
 }

@@ -7,7 +7,8 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/hello" />
+        android:text="@string/hello"
+        android:id="@+id/nameTextView" />
 
      <Button
         android:id="@+id/btnCourseGame"
@@ -30,5 +31,12 @@
          android:layout_height="wrap_content"
          android:layout_gravity="center"
          android:text="Social" />
+     
+     <Button
+         android:id="@+id/btnGoogleLogin"
+         android:layout_width="104dp"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center"
+         android:text="Google Login" />
 
 </LinearLayout>

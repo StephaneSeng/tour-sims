@@ -95,6 +95,12 @@ public class LoginActivity extends Activity {
 				        	System.out.println("Name: " + profile.getDisplayName());
 				        	System.out.println("Image URL: " + profile.getImage().getUrl());
 				        	System.out.println("Profile URL: " + profile.getUrl());
+				        	
+				        	// Update the user name in the application
+				        	TourSims tourSims = (TourSims)getApplicationContext();
+				        	tourSims.setUserName(profile.getDisplayName());
+				        	
+				        	finishActivity(0);
 						}
 					} catch (Exception e) {
 						Log.e(TAG, e.getMessage());
