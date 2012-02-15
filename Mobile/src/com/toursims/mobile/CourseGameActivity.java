@@ -47,7 +47,7 @@ public void onCreate(Bundle savedInstanceState) {
     datasource.close();
     lv.setAdapter(adapter);   
     lv.setOnItemClickListener(new OnItemClickListener() {
-        
+       
         public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
     // When clicked, show Course details
           Intent courseDetails = new Intent(getApplicationContext(),CourseStepActivity.class);

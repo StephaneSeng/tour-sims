@@ -11,6 +11,8 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.toursims.mobile.controller.CourseBDD;
+import com.toursims.mobile.controller.KmlParser;
+import com.toursims.mobile.model.Course;
 import com.toursims.mobile.model.kml.Placemark;
 import com.toursims.mobile.model.kml.Point;
 import com.toursims.mobile.ui.utils.CustomItemizedOverlay;
@@ -44,10 +46,15 @@ public class CourseStepActivity extends MapActivity{
         drawable = this.getResources().getDrawable(R.drawable.androidmarker);
         itemizedOverlay = new CustomItemizedOverlay(drawable);
         
-        GeoPoint point = new GeoPoint(45759723,4842223);
-        OverlayItem overlayItem = new OverlayItem(point, "", "");
+        for(Placemark placemark: getPlaceMarks()){
+        	String[] lL = placemark.getPoint().getCoordinates().split(",");
+        	int l = new Double(Double.parseDouble(lL[0])* 1000000).intValue();
+        	int L = new Double(Double.parseDouble(lL[1])* 1000000).intValue();
+        	GeoPoint point = new GeoPoint(l,L);
+        	OverlayItem overlayItem = new OverlayItem(point, "", "");
         
-        itemizedOverlay.addOverlay(overlayItem);
+        	itemizedOverlay.addOverlay(overlayItem);
+        }
         mapOverlays.add(itemizedOverlay);
 	}
     
@@ -69,5 +76,4 @@ public class CourseStepActivity extends MapActivity{
     	
     	return l;
     }
-
 }
