@@ -48,7 +48,9 @@ public class HomeActivity extends Activity {
 			
 			public void onClick(View v) {
 				//Starting new Intent
-				Intent Social = new Intent(getApplicationContext(),SocialActivity.class);
+				//Intent Social = new Intent(getApplicationContext(),SocialActivity.class);
+				Intent Social = new Intent(getApplicationContext(),CityActivity.class);
+				
 				startActivity(Social);
 			}
 		});

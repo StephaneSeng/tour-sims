@@ -49,6 +49,7 @@ public void onCreate(Bundle savedInstanceState) {
           courseDetails.putExtra("COURSE_ID", courses.get(position).getId());
           startActivity(courseDetails);
         }
+    
 });
 }
 }

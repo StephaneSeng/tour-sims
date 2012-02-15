@@ -10,6 +10,11 @@ public class City {
 		return id;
 	}
 	
+	public City(String name, String coverPictureURL){
+		this.name = name;
+		this.coverPictureURL = coverPictureURL;
+	}
+	
 	public void setId(Integer id) {
 		this.id = id;
 	}

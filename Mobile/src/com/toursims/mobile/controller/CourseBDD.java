@@ -3,6 +3,7 @@ package com.toursims.mobile.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.toursims.mobile.model.City;
 import com.toursims.mobile.model.Course;
 import com.toursims.mobile.model.kml.Placemark;
 import com.toursims.mobile.util.SQLiteHelper;
@@ -146,6 +147,20 @@ public class CourseBDD {
 		cursor.close();
 		return placemarks;
 	}
+
+	public List<Course> getCoursesWithCity(String city){
+		List<Course> courses = new ArrayList<Course>();
+		Cursor cursor = bdd.query(SQLiteHelper.TABLE_COURSE, allColumnsCourse , SQLiteHelper.COL_COURSE_CITYID + " = "+city, null, null, null, null);
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			Course c = cursorToCourse(cursor);
+			courses.add(c);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return courses;
+	}
+	
 	
 	public List<Placemark> getAllPlacemarksWithCourseId(int it){
 		Course c = new Course();
