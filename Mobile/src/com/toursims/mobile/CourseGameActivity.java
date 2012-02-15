@@ -25,11 +25,12 @@ public void onCreate(Bundle savedInstanceState) {
     
     // Action on default table row
     ListView lv = (ListView) findViewById(R.id.lvListe);
-    TextView t = (TextView) findViewById(R.id.title);
+    TextView title = (TextView) findViewById(R.id.title);
+    TextView noCourse = (TextView) findViewById(R.id.noCourse);
     
     Bundle bundle = getIntent().getExtras();
     String city = bundle.getString("CITY");
-    t.setText(city);
+    title.setText(city);
     
     CourseBDD datasource = new CourseBDD(this);
 	datasource.open();
@@ -41,22 +42,32 @@ public void onCreate(Bundle savedInstanceState) {
 	c1 = datasource.getCourseWithURL("http://www.x00b.com/tour.kml");
 	datasource.insertPlacemarks(c1);
 	
-	courses = datasource.getAllCourses();
+	Course c2 = KmlParser.getInstance().parse("http://www.x00b.com/tour2.kml");
+	c2.setUrl("http://www.x00b.com/tour2.kml");
+	datasource.insertCourse(c2);
+	c2 = datasource.getCourseWithURL("http://www.x00b.com/tour2.kml");
+	datasource.insertPlacemarks(c2);
+	
+	courses = datasource.getCoursesWithCity(city);
 				
-    CourseAdapter adapter = new CourseAdapter(this, courses);
-    
-    datasource.close();
-    lv.setAdapter(adapter);   
-    lv.setOnItemClickListener(new OnItemClickListener() {
-       
-        public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
-    // When clicked, show Course details
-          Intent courseDetails = new Intent(getApplicationContext(),CourseStepActivity.class);
-          courseDetails.putExtra("COURSE_ID", courses.get(position).getId());
-          startActivity(courseDetails);
-        }
-    
-});
+	if(courses.size()>0) {
+	    CourseAdapter adapter = new CourseAdapter(this, courses);
+	    
+	    datasource.close();
+	    lv.setAdapter(adapter);   
+	    lv.setOnItemClickListener(new OnItemClickListener() {
+	       
+	        public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+	    // When clicked, show Course details
+	          Intent courseDetails = new Intent(getApplicationContext(),CourseStepActivity.class);
+	          courseDetails.putExtra("COURSE_ID", courses.get(position).getId());
+	          startActivity(courseDetails);
+	        
+	    }
+		});
+	} else {
+		noCourse.setText("No courses yet");
+	}
 }
 }
 		

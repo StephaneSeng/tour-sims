@@ -151,8 +151,9 @@ public class CourseBDD {
 	}
 
 	public List<Course> getCoursesWithCity(String city){
+		
 		List<Course> courses = new ArrayList<Course>();
-		Cursor cursor = bdd.query(SQLiteHelper.TABLE_COURSE, allColumnsCourse , SQLiteHelper.COL_COURSE_CITYID + " = "+city, null, null, null, null);
+		Cursor cursor = bdd.query(SQLiteHelper.TABLE_COURSE, allColumnsCourse , SQLiteHelper.COL_COURSE_CITYID + " LIKE \""+city+"\"", null, null, null, null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			Course c = cursorToCourse(cursor);
@@ -160,6 +161,7 @@ public class CourseBDD {
 			cursor.moveToNext();
 		}
 		cursor.close();
+		
 		return courses;
 	}
 	

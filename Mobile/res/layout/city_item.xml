@@ -3,7 +3,8 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:orientation="horizontal"
-        android:layout_height="60dip"> 
+        android:layout_height="60dip"
+        android:layout_gravity="center_horizontal"> 
              
        <ImageView 
             	android:layout_width="55dip"
@@ -11,14 +12,14 @@
                 android:id="@+id/cityImage"
                 android:clickable="false"
                  />
-            	
-           
+            	          
  		<TextView android:layout_width="190dip"
-               	android:paddingTop="2dip"
+               	android:gravity="center_vertical"
+               	android:paddingLeft="5dip"
                 android:layout_height="wrap_content"
                 android:id="@+id/cityName"
-                android:textSize="15dip"
-                                />
+                android:textSize="20dip"
+                />
                         
 </LinearLayout>             
     	
