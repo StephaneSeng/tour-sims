@@ -108,6 +108,15 @@ public class CourseBDD {
 		return course;
 	}
 	 
+	public Integer getCourseIdWithURL(String url){
+		Cursor c = bdd.query(SQLiteHelper.TABLE_COURSE, allColumnsCourse, SQLiteHelper.COL_COURSE_URL + " LIKE \"" + url +"\"", null, null, null, null);
+		c.moveToFirst();
+		Course course = cursorToCourse(c);
+		c.close();
+		return course.getId();
+	}
+	
+	
 	private Course cursorToCourse(Cursor c){
 		if (c.getCount() == 0)
 			return null;
@@ -165,13 +174,7 @@ public class CourseBDD {
 		return courses;
 	}
 	
-	
-	public List<Placemark> getAllPlacemarksWithCourseId(int it){
-		Course c = new Course();
-		c.setId(it);
-		
-		return getAllPlacemarks(c);
-	}
+
 
 	public void truncate() {
 		bdd.execSQL("DELETE FROM " + SQLiteHelper.TABLE_PLACEMARK + ";");
