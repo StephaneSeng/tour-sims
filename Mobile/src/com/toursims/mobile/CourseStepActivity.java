@@ -43,7 +43,7 @@ public class CourseStepActivity extends MapActivity{
 
         mapOverlays = mapView.getOverlays();
         drawable = this.getResources().getDrawable(R.drawable.maps_icon);
-        itemizedOverlay = new CustomItemizedOverlay(drawable);
+        itemizedOverlay = new CustomItemizedOverlay(drawable, this);
         
         for(Placemark placemark: getPlaceMarks()){
         	String[] lL = placemark.getPoint().getCoordinates().split(",");
