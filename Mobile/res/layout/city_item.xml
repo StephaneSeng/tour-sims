@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:layout_height="60dip"> 
+             
+       <ImageView 
+            	android:layout_width="55dip"
+                android:layout_height="60dip"
+                android:id="@+id/cityImage"
+                android:clickable="false"
+                 />
+            	
+           
+ 		<TextView android:layout_width="190dip"
+               	android:paddingTop="2dip"
+                android:layout_height="wrap_content"
+                android:id="@+id/cityName"
+                android:textSize="15dip"
+                                />
+                        
+</LinearLayout>             
+    	
+
+
+    
