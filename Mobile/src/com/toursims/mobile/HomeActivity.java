@@ -26,7 +26,7 @@ public class HomeActivity extends Activity {
  
             public void onClick(View arg0) {
                 //Starting a new Intent
-                Intent courseGameList = new Intent(getApplicationContext(), CourseGameActivity.class);
+                Intent courseGameList = new Intent(getApplicationContext(), CityActivity.class);
                 startActivity(courseGameList);
             }
         });
@@ -48,8 +48,8 @@ public class HomeActivity extends Activity {
 			
 			public void onClick(View v) {
 				//Starting new Intent
-				//Intent Social = new Intent(getApplicationContext(),SocialActivity.class);
-				Intent Social = new Intent(getApplicationContext(),CityActivity.class);
+				Intent Social = new Intent(getApplicationContext(),SocialActivity.class);
+				//Intent Social = new Intent(getApplicationContext(),CityActivity.class);
 				
 				startActivity(Social);
 			}

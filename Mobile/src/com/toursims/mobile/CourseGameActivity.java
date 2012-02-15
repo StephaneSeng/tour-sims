@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 import android.widget.ListView;
@@ -24,7 +25,13 @@ public void onCreate(Bundle savedInstanceState) {
     
     // Action on default table row
     ListView lv = (ListView) findViewById(R.id.lvListe);
-       
+    TextView t = (TextView) findViewById(R.id.title);
+    
+    Bundle bundle = getIntent().getExtras();
+    String city = bundle.getString("CITY");
+    t.setText(city);
+
+    
     CourseBDD datasource = new CourseBDD(this);
 	datasource.open();
 	datasource.truncate();
