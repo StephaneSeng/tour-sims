@@ -43,12 +43,12 @@ public class CourseGameActivity extends ListActivity {
 	
 public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.coursegamelist);
+        setContentView(R.layout.coursegame);
       
         // Get list of course by parent Activity (hard-coded, get rid of this later)
         Intent intent = getIntent();
         final String[] COURSES = intent.getStringArrayExtra("courses");
-        final ArrayList<HashMap<String, ?>> data = new ArrayList<HashMap<String, ?>>();
+      //  final ArrayList<HashMap<String, ?>> data = new ArrayList<HashMap<String, ?>>();
                
       //  ArrayList<RowModel> list=new ArrayList<RowModel>();
         
