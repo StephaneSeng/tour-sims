@@ -30,7 +30,6 @@ public void onCreate(Bundle savedInstanceState) {
     Bundle bundle = getIntent().getExtras();
     String city = bundle.getString("CITY");
     t.setText(city);
-
     
     CourseBDD datasource = new CourseBDD(this);
 	datasource.open();
@@ -41,6 +40,8 @@ public void onCreate(Bundle savedInstanceState) {
 	datasource.insertCourse(c1);
 	c1 = datasource.getCourseWithURL("http://www.x00b.com/tour.kml");
 	datasource.insertPlacemarks(c1);
+	
+	courses = datasource.getAllCourses();
 				
     CourseAdapter adapter = new CourseAdapter(this, courses);
     
