@@ -1,5 +1,6 @@
 package com.toursims.mobile.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.toursims.mobile.model.kml.Placemark;
@@ -16,7 +17,7 @@ public class Course {
 	private String name; 
 	
 			
-	private List<Placemark> placemarks;
+	private List<Placemark> placemarks = new ArrayList<Placemark>();
 	
 	public Integer getId() {
 		return id;

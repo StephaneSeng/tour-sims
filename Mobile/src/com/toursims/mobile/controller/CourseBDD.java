@@ -85,13 +85,21 @@ public class CourseBDD {
 	}
 	
 	public void insertPlacemarks(Course course){
-		for(Placemark p : course.getPlacemarks()){
-			insertPlacemark(p, course);
-		} 
+		for(Placemark placemark : course.getPlacemarks()){
+			insertPlacemark(placemark, course);
+		}
 	}
+	
 	
 	public Course getCourseWithId(Integer id){
 		Cursor c = bdd.query(SQLiteHelper.TABLE_COURSE, allColumnsCourse, SQLiteHelper.COL_ID + " LIKE \"" + id +"\"", null, null, null, null);
+		Course course = cursorToCourse(c);
+		c.close();
+		return course;
+	}
+	
+	public Course getCourseWithURL(String url){
+		Cursor c = bdd.query(SQLiteHelper.TABLE_COURSE, allColumnsCourse, SQLiteHelper.COL_COURSE_URL + " LIKE \"" + url +"\"", null, null, null, null);
 		Course course = cursorToCourse(c);
 		c.close();
 		return course;
@@ -102,6 +110,7 @@ public class CourseBDD {
 			return null;
 		Course course = new Course();
 		course.setId(c.getInt(SQLiteHelper.NUM_COL_ID));
+		course.setDesc(c.getString(SQLiteHelper.NUM_COL_COURSE_DESC));
 		course.setCity(c.getString(SQLiteHelper.NUM_COL_COURSE_CITYID));
 		course.setLength(c.getDouble(SQLiteHelper.NUM_COL_COURSE_TIME));
 		course.setCoverPictureURL(c.getString(SQLiteHelper.NUM_COL_COURSE_PICTURE));
@@ -137,8 +146,19 @@ public class CourseBDD {
 		cursor.close();
 		return placemarks;
 	}
-
 	
+	public List<Placemark> getAllPlacemarksWithCourseId(int it){
+		Course c = new Course();
+		c.setId(it);
+		
+		return getAllPlacemarks(c);
+	}
+
+	public void truncate() {
+		bdd.execSQL("DELETE FROM " + SQLiteHelper.TABLE_PLACEMARK + ";");
+		bdd.execSQL("DELETE FROM " + SQLiteHelper.TABLE_COURSE + ";");
+
+	}
 	
 	
 }

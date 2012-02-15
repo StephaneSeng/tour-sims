@@ -70,12 +70,13 @@ public class KmlParser {
 		
 		Course course = new Course();
 		
+		course.setName(kml1.getDocument().getName());
 		course.setCity(kml1.getDocument().getExtendedData().getData().get(0).getValue());
 		course.setCoverPictureURL(kml1.getDocument().getExtendedData().getData().get(1).getValue());
 		course.setDesc(kml1.getDocument().getExtendedData().getData().get(2).getValue());
 		course.setRating(Double.valueOf(kml1.getDocument().getExtendedData().getData().get(3).getValue()));
 		course.setLength(Double.valueOf(kml1.getDocument().getExtendedData().getData().get(4).getValue()));
-		
+		course.setPlacemarks(kml1.getDocument().getPlacemarks());
 		
 		return course;
 		}

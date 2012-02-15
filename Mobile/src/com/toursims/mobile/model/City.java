@@ -1,5 +1,4 @@
 package com.toursims.mobile.model;
-import java.util.List;
 
 public class City {
 
@@ -21,6 +20,14 @@ public class City {
 	
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getCoverPictureURL() {
+		return coverPictureURL;
+	}
+
+	public void setCoverPictureURL(String coverPictureURL) {
+		this.coverPictureURL = coverPictureURL;
 	}
 	
 
