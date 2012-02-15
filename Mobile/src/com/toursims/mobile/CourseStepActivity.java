@@ -42,7 +42,7 @@ public class CourseStepActivity extends MapActivity{
 
         mapOverlays = mapView.getOverlays();
         drawable = this.getResources().getDrawable(R.drawable.androidmarker);
-        itemizedOverlay = new CustomItemizedOverlay(drawable);
+        itemizedOverlay = new CustomItemizedOverlay(drawable, CourseStepActivity.this);
         
         GeoPoint point = new GeoPoint(45759723,4842223);
         OverlayItem overlayItem = new OverlayItem(point, "", "");

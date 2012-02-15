@@ -95,8 +95,8 @@ public class LocalizationService extends Service {
 		Log.d(TAG, "The LocalizationService is starting...");
 		
 		// TODO : Retrieve the user preferences
-		minUpdateTime = 1 * 30 * 1000; // 30 seconds
-		maxUpdateTime = 1 * 60 * 1000; // 1 minute
+		minUpdateTime = 1 * 1 * 1000; // 30 seconds
+		maxUpdateTime = 1 * 5 * 1000; // 1 minute
 		minUpdateDistance = 0; // 0 m
 		
 		// Get access to the localization service
@@ -106,6 +106,10 @@ public class LocalizationService extends Service {
 		criteria = new Criteria();
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
 		bestProvider = locationManager.getBestProvider(criteria, false);
+		
+		// TODO Emulator fix
+		bestProvider = LocationManager.GPS_PROVIDER;
+		
 		Log.d(TAG, "Best current localization provider : " + bestProvider);
 		
 		// Initialization
@@ -164,6 +168,9 @@ public class LocalizationService extends Service {
 			
 			// Update the best provider
 			bestProvider = locationManager.getBestProvider(criteria, false);
+			
+			// TODO Emulator fix
+			bestProvider = LocationManager.GPS_PROVIDER;
 		}
 
 		/**
@@ -174,6 +181,9 @@ public class LocalizationService extends Service {
 			
 			// Update the best provider
 			bestProvider = locationManager.getBestProvider(criteria, false);
+			
+			// TODO Emulator fix
+			bestProvider = LocationManager.GPS_PROVIDER;
 		}
 
 		/**
@@ -184,6 +194,9 @@ public class LocalizationService extends Service {
 			
 			// Update the best provider
 			bestProvider = locationManager.getBestProvider(criteria, false);
+			
+			// TODO Emulator fix
+			bestProvider = LocationManager.GPS_PROVIDER;
 		}
 		
 	}

@@ -1,8 +1,10 @@
 package com.toursims.mobile;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -52,7 +54,14 @@ public class HomeActivity extends Activity {
 				startActivity(Social);
 			}
 		});
-}
+        
+        // Start the localization service
+        ComponentName localizationComponentName = new ComponentName(LocalizationService.class.getPackage().getName(), LocalizationService.class.getName());
+        ComponentName localizationComponentService = startService(new Intent().setComponent(localizationComponentName));
+        if (localizationComponentService == null){
+                Log.e(TAG, "Could not start service " + localizationComponentName.toString());
+        }
+    }
     
     static final String[] COURSES = new String[] {
     	"LaDoua", "INSA", "Lyon1", "IUT-Feyssine"
