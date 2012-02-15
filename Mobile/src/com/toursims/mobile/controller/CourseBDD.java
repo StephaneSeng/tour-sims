@@ -3,6 +3,7 @@ package com.toursims.mobile.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.toursims.mobile.model.City;
 import com.toursims.mobile.model.Course;
 import com.toursims.mobile.model.kml.Placemark;
 import com.toursims.mobile.util.SQLiteHelper;
@@ -93,6 +94,7 @@ public class CourseBDD {
 	
 	public Course getCourseWithId(Integer id){
 		Cursor c = bdd.query(SQLiteHelper.TABLE_COURSE, allColumnsCourse, SQLiteHelper.COL_ID + " LIKE \"" + id +"\"", null, null, null, null);
+		c.moveToFirst();
 		Course course = cursorToCourse(c);
 		c.close();
 		return course;
@@ -100,6 +102,7 @@ public class CourseBDD {
 	
 	public Course getCourseWithURL(String url){
 		Cursor c = bdd.query(SQLiteHelper.TABLE_COURSE, allColumnsCourse, SQLiteHelper.COL_COURSE_URL + " LIKE \"" + url +"\"", null, null, null, null);
+		c.moveToFirst();
 		Course course = cursorToCourse(c);
 		c.close();
 		return course;
@@ -146,6 +149,22 @@ public class CourseBDD {
 		cursor.close();
 		return placemarks;
 	}
+
+	public List<Course> getCoursesWithCity(String city){
+		
+		List<Course> courses = new ArrayList<Course>();
+		Cursor cursor = bdd.query(SQLiteHelper.TABLE_COURSE, allColumnsCourse , SQLiteHelper.COL_COURSE_CITYID + " LIKE \""+city+"\"", null, null, null, null);
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			Course c = cursorToCourse(cursor);
+			courses.add(c);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		
+		return courses;
+	}
+	
 	
 	public List<Placemark> getAllPlacemarksWithCourseId(int it){
 		Course c = new Course();

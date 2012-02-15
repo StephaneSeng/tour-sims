@@ -7,7 +7,7 @@ import java.net.URL;
 import java.util.List;
 
 import com.toursims.mobile.R;
-import com.toursims.mobile.model.Course;
+import com.toursims.mobile.model.City;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -18,30 +18,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 
-public class CourseAdapter extends BaseAdapter {
+public class CityAdapter extends BaseAdapter {
 	
-	List<Course> courses;
+	List<City> cities;
 	LayoutInflater inflater;
 	
-	public CourseAdapter(Context context,List<Course> courses) {
+	public CityAdapter(Context context,List<City> cities) {
 
 		inflater = LayoutInflater.from(context);
-		this.courses = courses;
+		this.cities = cities;
 
 	}
 	
 	public int getCount() {
 		// TODO Auto-generated method stub
-		return courses.size();
+		return cities.size();
 	}
 
 	public Object getItem(int arg0) {
 		// TODO Auto-generated method stub
-		return courses.get(arg0);
+		return cities.get(arg0);
 	}
 
 	public long getItemId(int position) {
@@ -53,8 +52,6 @@ public class CourseAdapter extends BaseAdapter {
 	private class ViewHolder {
 		ImageView image;
 		TextView name;
-		TextView description;
-		RatingBar rating;
 		}
 
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -64,29 +61,22 @@ public class CourseAdapter extends BaseAdapter {
 		
 		if(convertView == null) {
 			holder = new ViewHolder();
-			convertView = inflater.inflate(R.layout.coursegame_item, null);
+			convertView = inflater.inflate(R.layout.city_item, null);
 			
-			holder.image = (ImageView)convertView.findViewById(R.id.courseImage);
-			holder.name = (TextView)convertView.findViewById(R.id.courseName);
-			holder.description = (TextView)convertView.findViewById(R.id.courseDetails);
-			holder.rating = (RatingBar)convertView.findViewById(R.id.courseRating);	
-			
+			holder.image = (ImageView)convertView.findViewById(R.id.cityImage);
+			holder.name = (TextView)convertView.findViewById(R.id.cityName);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		double rating = courses.get(position).getRating();
-		float r = (float) rating;
 		
-		holder.name.setText(courses.get(position).getName());
-		holder.description.setText(courses.get(position).getDesc());
-		holder.rating.setRating((float) r);
+		holder.name.setText(cities.get(position).getName());
 		holder.image.setBackgroundColor(Color.WHITE);
 		
 		try {
 			  Bitmap bitmap = BitmapFactory.decodeStream(
-			                 (InputStream)new URL(courses.get(position).getCoverPictureURL()).getContent());
+			                 (InputStream)new URL(cities.get(position).getCoverPictureURL()).getContent());
 			  holder.image.setImageBitmap(bitmap);
 			} catch (MalformedURLException e) {
 			  e.printStackTrace();

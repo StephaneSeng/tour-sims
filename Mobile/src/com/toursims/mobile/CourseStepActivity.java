@@ -1,8 +1,10 @@
 package com.toursims.mobile;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
+
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -12,12 +14,7 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.toursims.mobile.controller.CourseBDD;
 import com.toursims.mobile.model.kml.Placemark;
-import com.toursims.mobile.model.kml.Point;
 import com.toursims.mobile.ui.utils.CustomItemizedOverlay;
-
-import android.graphics.drawable.Drawable;
-import android.app.Activity;
-import android.os.Bundle;
 
 public class CourseStepActivity extends MapActivity{
     /** Called when the activity is first created. */
@@ -37,17 +34,21 @@ public class CourseStepActivity extends MapActivity{
 		mapController = mapView.getController();
 		mapController.setZoom(13); // Zoom 1 is world view
 		mapController.animateTo(new GeoPoint(45759723,4842223));
-       
-        mapView.setBuiltInZoomControls(true);
 
         mapOverlays = mapView.getOverlays();
-        drawable = this.getResources().getDrawable(R.drawable.androidmarker);
+        drawable = this.getResources().getDrawable(R.drawable.maps_icon);
         itemizedOverlay = new CustomItemizedOverlay(drawable, CourseStepActivity.this);
         
-        GeoPoint point = new GeoPoint(45759723,4842223);
-        OverlayItem overlayItem = new OverlayItem(point, "", "");
+        for(Placemark placemark: getPlaceMarks()){
+        	String[] lL = placemark.getPoint().getCoordinates().split(",");
+        	int l = (new Double(Double.parseDouble(lL[1])* 1000000)).intValue();
+        	int L = (new Double(Double.parseDouble(lL[0])* 1000000)).intValue();
+        	Log.d(getLocalClassName(), String.valueOf(l) + " " + String.valueOf(L));
+        	GeoPoint point = new GeoPoint(l,L);
+        	OverlayItem overlayItem = new OverlayItem(point, "", "");
         
-        itemizedOverlay.addOverlay(overlayItem);
+        	itemizedOverlay.addOverlay(overlayItem);
+        }
         mapOverlays.add(itemizedOverlay);
 	}
     
@@ -66,8 +67,6 @@ public class CourseStepActivity extends MapActivity{
     	List<Placemark> l = datasource.getAllPlacemarksWithCourseId(course_id);
     	
     	datasource.close();
-    	
     	return l;
     }
-
 }

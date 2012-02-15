@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 import android.widget.ListView;
@@ -24,32 +25,49 @@ public void onCreate(Bundle savedInstanceState) {
     
     // Action on default table row
     ListView lv = (ListView) findViewById(R.id.lvListe);
-       
+    TextView title = (TextView) findViewById(R.id.title);
+    TextView noCourse = (TextView) findViewById(R.id.noCourse);
+    
+    Bundle bundle = getIntent().getExtras();
+    String city = bundle.getString("CITY");
+    title.setText(city);
+    
     CourseBDD datasource = new CourseBDD(this);
 	datasource.open();
 	datasource.truncate();
 	
 	Course c1 = KmlParser.getInstance().parse("http://www.x00b.com/tour.kml");
 	c1.setUrl("http://www.x00b.com/tour.kml");
-	c1.setId(1);
 	datasource.insertCourse(c1);
+	c1 = datasource.getCourseWithURL("http://www.x00b.com/tour.kml");
 	datasource.insertPlacemarks(c1);
-			
-	courses = datasource.getAllCourses();   
-
-    CourseAdapter adapter = new CourseAdapter(this, courses);
-    
-    datasource.close();
-    lv.setAdapter(adapter);   
-    lv.setOnItemClickListener(new OnItemClickListener() {
-        
-        public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
-    // When clicked, show Course details
-          Intent courseDetails = new Intent(getApplicationContext(),CourseStepActivity.class);
-          courseDetails.putExtra("COURSE_ID", courses.get(position).getId());
-          startActivity(courseDetails);
-        }
-});
+	
+	Course c2 = KmlParser.getInstance().parse("http://www.x00b.com/tour2.kml");
+	c2.setUrl("http://www.x00b.com/tour2.kml");
+	datasource.insertCourse(c2);
+	c2 = datasource.getCourseWithURL("http://www.x00b.com/tour2.kml");
+	datasource.insertPlacemarks(c2);
+	
+	courses = datasource.getCoursesWithCity(city);
+				
+	if(courses.size()>0) {
+	    CourseAdapter adapter = new CourseAdapter(this, courses);
+	    
+	    datasource.close();
+	    lv.setAdapter(adapter);   
+	    lv.setOnItemClickListener(new OnItemClickListener() {
+	       
+	        public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+	    // When clicked, show Course details
+	          Intent courseDetails = new Intent(getApplicationContext(),CourseStepActivity.class);
+	          courseDetails.putExtra("COURSE_ID", courses.get(position).getId());
+	          startActivity(courseDetails);
+	        
+	    }
+		});
+	} else {
+		noCourse.setText("No courses yet");
+	}
 }
 }
 		

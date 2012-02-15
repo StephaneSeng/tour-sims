@@ -5,11 +5,12 @@
         android:orientation="horizontal"
         android:layout_height="60dip"> 
              
-       <!--   <WebView 
+       <ImageView 
             	android:layout_width="55dip"
                 android:layout_height="60dip"
                 android:id="@+id/courseImage"
-                android:clickable="false" />-->
+                android:clickable="false"
+                 />
             	
     	<LinearLayout
     	    	xmlns:android="http://schemas.android.com/apk/res/android"
@@ -23,7 +24,8 @@
                         android:orientation="horizontal"
                         android:layout_height="wrap_content"
                        > 
-                        <TextView android:layout_width="180dip"
+                        <TextView android:layout_width="190dip"
+                            	android:paddingTop="2dip"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/courseName"
                                 android:textSize="15dip"
