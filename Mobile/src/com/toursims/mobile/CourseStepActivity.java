@@ -1,8 +1,10 @@
 package com.toursims.mobile;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
+
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -11,16 +13,8 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.toursims.mobile.controller.CourseBDD;
-import com.toursims.mobile.controller.KmlParser;
-import com.toursims.mobile.model.Course;
 import com.toursims.mobile.model.kml.Placemark;
-import com.toursims.mobile.model.kml.Point;
 import com.toursims.mobile.ui.utils.CustomItemizedOverlay;
-
-import android.graphics.drawable.Drawable;
-import android.app.Activity;
-import android.os.Bundle;
-import android.util.Log;
 
 public class CourseStepActivity extends MapActivity{
     /** Called when the activity is first created. */
@@ -43,7 +37,7 @@ public class CourseStepActivity extends MapActivity{
 
         mapOverlays = mapView.getOverlays();
         drawable = this.getResources().getDrawable(R.drawable.maps_icon);
-        itemizedOverlay = new CustomItemizedOverlay(drawable);
+        itemizedOverlay = new CustomItemizedOverlay(drawable, CourseStepActivity.this);
         
         for(Placemark placemark: getPlaceMarks()){
         	String[] lL = placemark.getPoint().getCoordinates().split(",");
