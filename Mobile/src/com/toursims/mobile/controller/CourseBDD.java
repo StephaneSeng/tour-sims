@@ -94,6 +94,7 @@ public class CourseBDD {
 	
 	public Course getCourseWithId(Integer id){
 		Cursor c = bdd.query(SQLiteHelper.TABLE_COURSE, allColumnsCourse, SQLiteHelper.COL_ID + " LIKE \"" + id +"\"", null, null, null, null);
+		c.moveToFirst();
 		Course course = cursorToCourse(c);
 		c.close();
 		return course;
@@ -101,6 +102,7 @@ public class CourseBDD {
 	
 	public Course getCourseWithURL(String url){
 		Cursor c = bdd.query(SQLiteHelper.TABLE_COURSE, allColumnsCourse, SQLiteHelper.COL_COURSE_URL + " LIKE \"" + url +"\"", null, null, null, null);
+		c.moveToFirst();
 		Course course = cursorToCourse(c);
 		c.close();
 		return course;

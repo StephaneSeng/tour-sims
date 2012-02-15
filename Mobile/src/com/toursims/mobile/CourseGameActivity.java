@@ -38,12 +38,10 @@ public void onCreate(Bundle savedInstanceState) {
 	
 	Course c1 = KmlParser.getInstance().parse("http://www.x00b.com/tour.kml");
 	c1.setUrl("http://www.x00b.com/tour.kml");
-	c1.setId(1);
 	datasource.insertCourse(c1);
+	c1 = datasource.getCourseWithURL("http://www.x00b.com/tour.kml");
 	datasource.insertPlacemarks(c1);
-			
-	courses = datasource.getAllCourses();   
-
+				
     CourseAdapter adapter = new CourseAdapter(this, courses);
     
     datasource.close();
