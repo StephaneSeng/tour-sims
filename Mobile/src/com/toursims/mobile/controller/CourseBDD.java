@@ -110,6 +110,7 @@ public class CourseBDD {
 			return null;
 		Course course = new Course();
 		course.setId(c.getInt(SQLiteHelper.NUM_COL_ID));
+		course.setDesc(c.getString(SQLiteHelper.NUM_COL_COURSE_DESC));
 		course.setCity(c.getString(SQLiteHelper.NUM_COL_COURSE_CITYID));
 		course.setLength(c.getDouble(SQLiteHelper.NUM_COL_COURSE_TIME));
 		course.setCoverPictureURL(c.getString(SQLiteHelper.NUM_COL_COURSE_PICTURE));
@@ -144,6 +145,13 @@ public class CourseBDD {
 		}
 		cursor.close();
 		return placemarks;
+	}
+	
+	public List<Placemark> getAllPlacemarksWithCourseId(int it){
+		Course c = new Course();
+		c.setId(it);
+		
+		return getAllPlacemarks(c);
 	}
 
 	public void truncate() {

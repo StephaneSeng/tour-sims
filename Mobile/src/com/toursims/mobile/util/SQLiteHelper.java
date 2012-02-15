@@ -26,7 +26,7 @@ public class SQLiteHelper extends SQLiteOpenHelper{
 	public static final int NUM_COL_COURSE_RATING = 6;
 	public static final String COL_COURSE_PICTURE = "PICTURE";
 	public static final int NUM_COL_COURSE_PICTURE = 7;
-	
+		
 	public static final String TABLE_PLACEMARK = "PLACEMARKS";
 	public static final String COL_PLACEMARK_DESCRIPTION = "DESCRIPTION";
 	public static final int NUM_COL_PLACEMARK_DESCRIPTION = 2;
@@ -37,7 +37,6 @@ public class SQLiteHelper extends SQLiteOpenHelper{
 	public static final String COL_PLACEMARK_COURSE_ID = "COURSE";
 	public static final int NUM_COL_PLACEMARK_COURSE_ID = 5;
 
-	
 	private static final String CREATE_BDD_COURSE = "CREATE TABLE " + TABLE_COURSE + " ("
 			+ COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " 
 			+ COL_NAME 			+ " TEXT, "

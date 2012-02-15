@@ -64,17 +64,16 @@ public class CourseStepActivity extends MapActivity{
     }
     
     protected List<Placemark> getPlaceMarks() {
-//    	List<Placemark> l = new ArrayList<Placemark>();
-//    	for (int i = 0; i< 10; i++) {
-//    		Placemark p = new Placemark();
-//    		p.setPoint(new Point());
-//    		l.add(p);
+        Bundle bundle = getIntent().getExtras();
+        int course_id = bundle.getInt("COURSE_ID");
+        
         CourseBDD datasource = new CourseBDD(this);
-		datasource.open();	
-		
-    	KmlParser k = KmlParser.getInstance();
-		Course c1 = k.parse("http://www.x00b.com/tour.kml");
-		
-		return c1.getPlacemarks();
+    	datasource.open();
+    	   	
+    	List<Placemark> l = datasource.getAllPlacemarksWithCourseId(course_id);
+    	
+    	datasource.close();
+    	
+    	return l;
     }
 }
