@@ -48,8 +48,8 @@ public class CourseStepActivity extends MapActivity{
         
         for(Placemark placemark: getPlaceMarks()){
         	String[] lL = placemark.getPoint().getCoordinates().split(",");
-        	int l = Integer.parseInt(lL[0]) * 10^6;
-        	int L = Integer.parseInt(lL[1]) * 10^6;
+        	int l = new Double(Double.parseDouble(lL[0])* 1000000).intValue();
+        	int L = new Double(Double.parseDouble(lL[1])* 1000000).intValue();
         	GeoPoint point = new GeoPoint(l,L);
         	OverlayItem overlayItem = new OverlayItem(point, "", "");
         
