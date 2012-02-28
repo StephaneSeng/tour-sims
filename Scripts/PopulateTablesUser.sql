@@ -4,11 +4,11 @@ INSERT INTO sso (sso_id, name) VALUES (1, 'Google');
 
 -- Table: preferences
 
-INSERT INTO preferences (preferences_id, share_position, is_guide) VALUES (1, false, false);
+INSERT INTO preferences (share_position, is_guide) VALUES (false, false);
 
 -- Table: "user"
 
-INSERT INTO "user" (user_id, name, sso_id, preferences_id) VALUES (1, 'Administrator', 1, 1);
+INSERT INTO "user" (name, sso_id, preferences_id, sso_name) VALUES ('Administrator', 1, 1, 'administrator@toursims.com');
 
 -- Table: checkin
 

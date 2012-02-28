@@ -4,7 +4,7 @@
 
 CREATE TABLE city
 (
-  city_id integer NOT NULL,
+  city_id serial NOT NULL,
   name character varying,
   description character varying,
   latitude double precision,
@@ -23,13 +23,17 @@ ALTER TABLE city
 
 CREATE TABLE course
 (
-  course_id integer NOT NULL,
+  course_id serial NOT NULL,
   name character varying,
   description character varying,
   difficulty integer,
   file character varying,
   user_id integer,
+  city_id integer,
   CONSTRAINT course_pk PRIMARY KEY (course_id ),
+  CONSTRAINT city_id_fk FOREIGN KEY (city_id)
+      REFERENCES city (city_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT user_id_fk FOREIGN KEY (user_id)
       REFERENCES "user" (user_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
@@ -46,11 +50,12 @@ ALTER TABLE course
 
 CREATE TABLE poi
 (
-  poi_id integer NOT NULL,
+  poi_id serial NOT NULL,
   name character varying,
   description character varying,
   latitude double precision,
   longitude character varying,
+  address character varying,
   CONSTRAINT poi_pk PRIMARY KEY (poi_id )
 )
 WITH (
@@ -97,7 +102,7 @@ ALTER TABLE category
 
 CREATE TABLE rating
 (
-  rating_id integer NOT NULL,
+  rating_id serial NOT NULL,
   rating integer,
   user_id integer,
   course_id integer,
@@ -129,7 +134,7 @@ ALTER TABLE rating
 
 CREATE TABLE comment
 (
-  comment_id integer NOT NULL,
+  comment_id serial NOT NULL,
   text character varying,
   date date,
   user_id integer,

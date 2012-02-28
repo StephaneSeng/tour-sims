@@ -20,7 +20,7 @@ ALTER TABLE sso
 
 CREATE TABLE preferences
 (
-  preferences_id integer NOT NULL,
+  preferences_id serial NOT NULL,
   share_position boolean,
   is_guide boolean,
   CONSTRAINT preferences_pk PRIMARY KEY (preferences_id )
@@ -37,10 +37,11 @@ ALTER TABLE preferences
 
 CREATE TABLE "user"
 (
-  user_id integer NOT NULL,
+  user_id serial NOT NULL,
   name character varying,
   sso_id integer,
   preferences_id integer,
+  sso_name character varying,
   CONSTRAINT user_pk PRIMARY KEY (user_id ),
   CONSTRAINT preferences_id_fk FOREIGN KEY (preferences_id)
       REFERENCES preferences (preferences_id) MATCH SIMPLE
@@ -61,7 +62,7 @@ ALTER TABLE "user"
 
 CREATE TABLE checkin
 (
-  checkin_id integer NOT NULL,
+  checkin_id serial NOT NULL,
   latitude double precision,
   longitude double precision,
   date date,

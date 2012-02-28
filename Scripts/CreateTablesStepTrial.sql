@@ -4,7 +4,7 @@
 
 CREATE TABLE step
 (
-  step_id integer NOT NULL,
+  step_id serial NOT NULL,
   name character varying,
   distance integer,
   duration integer,
@@ -38,7 +38,7 @@ ALTER TABLE subject
 
 CREATE TABLE trial
 (
-  trial_id integer NOT NULL,
+  trial_id serial NOT NULL,
   title character varying,
   description character varying,
   answer character varying,
@@ -78,15 +78,18 @@ WITH (
 ALTER TABLE course_step
   OWNER TO postgres;
 
--- Table: step_trial
+-- Table: poi_step_trial
 
--- DROP TABLE step_trial;
+-- DROP TABLE poi_step_trial;
 
-CREATE TABLE step_trial
+CREATE TABLE poi_step_trial
 (
-  step_id integer NOT NULL,
-  trial_id integer NOT NULL,
-  CONSTRAINT step_trial_pk PRIMARY KEY (step_id , trial_id ),
+  step_id integer,
+  trial_id integer,
+  poi_id integer,
+  CONSTRAINT poi_id_fk FOREIGN KEY (poi_id)
+      REFERENCES poi (poi_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT step_id_fk FOREIGN KEY (step_id)
       REFERENCES step (step_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
@@ -97,5 +100,6 @@ CREATE TABLE step_trial
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE step_trial
+ALTER TABLE poi_step_trial
   OWNER TO postgres;
+  

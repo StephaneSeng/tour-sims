@@ -7,17 +7,14 @@ $connection = pg_connect("host=localhost port=5432 dbname=toursims user=postgres
 $query = "
 SELECT
 	c.name,
-	m.text
+	c.file,
+	r.rating
 FROM
-	city AS c,
-	city_course_poi_metadata AS ccpm,
-	metadata AS m,
-	metadata_tag AS mt
-WHERE
-	c.city_id = ccpm.city_id
-	AND ccpm.metadata_id = m.metadata_id
-	AND m.metadata_tag_id = mt.metadata_tag_id
-	AND mt.name = 'IMAGE';
+	course AS c
+LEFT OUTER JOIN
+	rating AS r
+ON
+	c.course_id = r.course_id;
 ";
 $result = pg_query($query) or die('Query failed: '.pg_last_error());
 

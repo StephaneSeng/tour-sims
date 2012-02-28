@@ -14,6 +14,6 @@
 
 --
 
--- Table: step_trial
+-- Table: poi_step_trial
 
 --
