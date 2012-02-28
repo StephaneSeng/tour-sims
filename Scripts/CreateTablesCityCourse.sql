@@ -6,6 +6,9 @@ CREATE TABLE city
 (
   city_id integer NOT NULL,
   name character varying,
+  description character varying,
+  latitude double precision,
+  longitude double precision,
   CONSTRAINT city_pk PRIMARY KEY (city_id )
 )
 WITH (
@@ -193,20 +196,16 @@ WITH (
 ALTER TABLE city_course_metadata
   OWNER TO postgres;
 
--- Table: city_course_category
+-- Table: course_category
 
--- DROP TABLE city_course_category;
+-- DROP TABLE course_category;
 
-CREATE TABLE city_course_category
+CREATE TABLE course_category
 (
   course_id integer,
   category_id integer,
-  city_id integer,
   CONSTRAINT category_id_fk FOREIGN KEY (category_id)
       REFERENCES category (category_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT city_id_fk FOREIGN KEY (city_id)
-      REFERENCES city (city_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT course_id_fk FOREIGN KEY (course_id)
       REFERENCES course (course_id) MATCH SIMPLE
@@ -215,6 +214,6 @@ CREATE TABLE city_course_category
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE city_course_category
+ALTER TABLE course_category
   OWNER TO postgres;
   
