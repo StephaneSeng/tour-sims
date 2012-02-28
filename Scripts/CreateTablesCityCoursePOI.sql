@@ -40,6 +40,25 @@ WITH (
 ALTER TABLE course
   OWNER TO postgres;
 
+-- Table: poi
+
+-- DROP TABLE poi;
+
+CREATE TABLE poi
+(
+  poi_id integer NOT NULL,
+  name character varying,
+  description character varying,
+  latitude double precision,
+  longitude character varying,
+  CONSTRAINT poi_pk PRIMARY KEY (poi_id )
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE poi
+  OWNER TO postgres;
+  
 -- Table: metadata_tag
 
 -- DROP TABLE metadata_tag;
@@ -83,12 +102,16 @@ CREATE TABLE rating
   user_id integer,
   course_id integer,
   city_id integer,
+  poi_id integer,
   CONSTRAINT rating_pk PRIMARY KEY (rating_id ),
   CONSTRAINT city_id_fk FOREIGN KEY (city_id)
       REFERENCES city (city_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT course_id_fk FOREIGN KEY (course_id)
       REFERENCES course (course_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT poi_id_fk FOREIGN KEY (poi_id)
+      REFERENCES poi (poi_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT user_id_fk FOREIGN KEY (user_id)
       REFERENCES "user" (user_id) MATCH SIMPLE
@@ -112,12 +135,16 @@ CREATE TABLE comment
   user_id integer,
   course_id integer,
   city_id integer,
+  poi_id integer,
   CONSTRAINT comment_pk PRIMARY KEY (comment_id ),
   CONSTRAINT city_id_fk FOREIGN KEY (city_id)
       REFERENCES city (city_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT course_id_fk FOREIGN KEY (course_id)
       REFERENCES course (course_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT poi_id_fk FOREIGN KEY (poi_id)
+      REFERENCES poi (poi_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT user_id_fk FOREIGN KEY (user_id)
       REFERENCES "user" (user_id) MATCH SIMPLE
@@ -171,15 +198,16 @@ WITH (
 ALTER TABLE user_category
   OWNER TO postgres;
   
--- Table: city_course_metadata
+-- Table: city_course_poi_metadata
 
--- DROP TABLE city_course_metadata;
+-- DROP TABLE city_course_poi_metadata;
 
-CREATE TABLE city_course_metadata
+CREATE TABLE city_course_poi_metadata
 (
   course_id integer,
   metadata_id integer,
   city_id integer,
+  poi_id integer,
   CONSTRAINT city_id_fk FOREIGN KEY (city_id)
       REFERENCES city (city_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
@@ -188,32 +216,38 @@ CREATE TABLE city_course_metadata
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT metadata_id_fk FOREIGN KEY (metadata_id)
       REFERENCES metadata (metadata_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT poi_id_fk FOREIGN KEY (poi_id)
+      REFERENCES poi (poi_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE city_course_metadata
+ALTER TABLE city_course_poi_metadata
   OWNER TO postgres;
 
--- Table: course_category
+-- Table: course_poi_category
 
--- DROP TABLE course_category;
+-- DROP TABLE course_poi_category;
 
-CREATE TABLE course_category
+CREATE TABLE course_poi_category
 (
   course_id integer,
   category_id integer,
+  poi_id integer,
   CONSTRAINT category_id_fk FOREIGN KEY (category_id)
       REFERENCES category (category_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT course_id_fk FOREIGN KEY (course_id)
       REFERENCES course (course_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT poi_id_fk FOREIGN KEY (poi_id)
+      REFERENCES poi (poi_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE course_category
+ALTER TABLE course_poi_category
   OWNER TO postgres;
-  

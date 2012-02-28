@@ -1,8 +1,8 @@
--- Database: toursims_debug
+-- Database: toursims
 
--- DROP DATABASE toursims_debug;
+-- DROP DATABASE toursims;
 
-CREATE DATABASE toursims_debug
+CREATE DATABASE toursims
   WITH OWNER = postgres
        ENCODING = 'UTF8'
        TABLESPACE = pg_default
