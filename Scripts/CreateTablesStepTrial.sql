@@ -8,11 +8,7 @@ CREATE TABLE step
   name character varying,
   distance integer,
   duration integer,
-  poi_id integer,
-  CONSTRAINT step_pk PRIMARY KEY (step_id ),
-  CONSTRAINT poi_id_fk FOREIGN KEY (poi_id)
-      REFERENCES poi (poi_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
+  CONSTRAINT step_pk PRIMARY KEY (step_id )
 )
 WITH (
   OIDS=FALSE
@@ -82,18 +78,24 @@ WITH (
 ALTER TABLE course_step
   OWNER TO postgres;
 
--- Table: poi_trial
+-- Table: step_trial
 
--- DROP TABLE poi_trial;
+-- DROP TABLE step_trial;
 
-CREATE TABLE poi_trial
+CREATE TABLE step_trial
 (
-  poi_id integer NOT NULL,
+  step_id integer NOT NULL,
   trial_id integer NOT NULL,
-  CONSTRAINT poi_trial_pk PRIMARY KEY (poi_id , trial_id )
+  CONSTRAINT step_trial_pk PRIMARY KEY (step_id , trial_id ),
+  CONSTRAINT step_id_fk FOREIGN KEY (step_id)
+      REFERENCES step (step_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT trial_id_fk FOREIGN KEY (trial_id)
+      REFERENCES trial (trial_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE poi_trial
+ALTER TABLE step_trial
   OWNER TO postgres;

@@ -24,31 +24,17 @@ CREATE TABLE course
   name character varying,
   description character varying,
   difficulty integer,
-  CONSTRAINT course_pk PRIMARY KEY (course_id )
+  file character varying,
+  user_id integer,
+  CONSTRAINT course_pk PRIMARY KEY (course_id ),
+  CONSTRAINT user_id_fk FOREIGN KEY (user_id)
+      REFERENCES "user" (user_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 WITH (
   OIDS=FALSE
 );
 ALTER TABLE course
-  OWNER TO postgres;
-
--- Table: poi
-
--- DROP TABLE poi;
-
-CREATE TABLE poi
-(
-  poi_id integer NOT NULL,
-  name character varying,
-  description character varying,
-  latitude double precision,
-  longitude double precision,
-  CONSTRAINT poi_pk PRIMARY KEY (poi_id )
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE poi
   OWNER TO postgres;
 
 -- Table: metadata_tag
@@ -93,7 +79,6 @@ CREATE TABLE rating
   rating integer,
   user_id integer,
   course_id integer,
-  poi_id integer,
   city_id integer,
   CONSTRAINT rating_pk PRIMARY KEY (rating_id ),
   CONSTRAINT city_id_fk FOREIGN KEY (city_id)
@@ -101,9 +86,6 @@ CREATE TABLE rating
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT course_id_fk FOREIGN KEY (course_id)
       REFERENCES course (course_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT poi_id_fk FOREIGN KEY (poi_id)
-      REFERENCES poi (poi_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT user_id_fk FOREIGN KEY (user_id)
       REFERENCES "user" (user_id) MATCH SIMPLE
@@ -126,7 +108,6 @@ CREATE TABLE comment
   date date,
   user_id integer,
   course_id integer,
-  poi_id integer,
   city_id integer,
   CONSTRAINT comment_pk PRIMARY KEY (comment_id ),
   CONSTRAINT city_id_fk FOREIGN KEY (city_id)
@@ -134,9 +115,6 @@ CREATE TABLE comment
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT course_id_fk FOREIGN KEY (course_id)
       REFERENCES course (course_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT poi_id_fk FOREIGN KEY (poi_id)
-      REFERENCES poi (poi_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT user_id_fk FOREIGN KEY (user_id)
       REFERENCES "user" (user_id) MATCH SIMPLE
@@ -190,15 +168,14 @@ WITH (
 ALTER TABLE user_category
   OWNER TO postgres;
   
--- Table: city_course_poi_metadata
+-- Table: city_course_metadata
 
--- DROP TABLE city_course_poi_metadata;
+-- DROP TABLE city_course_metadata;
 
-CREATE TABLE city_course_poi_metadata
+CREATE TABLE city_course_metadata
 (
   course_id integer,
   metadata_id integer,
-  poi_id integer,
   city_id integer,
   CONSTRAINT city_id_fk FOREIGN KEY (city_id)
       REFERENCES city (city_id) MATCH SIMPLE
@@ -208,26 +185,22 @@ CREATE TABLE city_course_poi_metadata
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT metadata_id_fk FOREIGN KEY (metadata_id)
       REFERENCES metadata (metadata_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT poi_id_fk FOREIGN KEY (poi_id)
-      REFERENCES poi (poi_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE city_course_poi_metadata
+ALTER TABLE city_course_metadata
   OWNER TO postgres;
 
--- Table: city_course_poi_category
+-- Table: city_course_category
 
--- DROP TABLE city_course_poi_category;
+-- DROP TABLE city_course_category;
 
-CREATE TABLE city_course_poi_category
+CREATE TABLE city_course_category
 (
   course_id integer,
   category_id integer,
-  poi_id integer,
   city_id integer,
   CONSTRAINT category_id_fk FOREIGN KEY (category_id)
       REFERENCES category (category_id) MATCH SIMPLE
@@ -237,14 +210,11 @@ CREATE TABLE city_course_poi_category
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT course_id_fk FOREIGN KEY (course_id)
       REFERENCES course (course_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT poi_id_fk FOREIGN KEY (poi_id)
-      REFERENCES poi (poi_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE city_course_poi_category
+ALTER TABLE city_course_category
   OWNER TO postgres;
   
