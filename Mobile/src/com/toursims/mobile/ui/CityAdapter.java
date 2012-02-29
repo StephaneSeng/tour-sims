@@ -1,10 +1,16 @@
 package com.toursims.mobile.ui;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
+
+import org.apache.http.util.ByteArrayBuffer;
 
 import com.toursims.mobile.R;
 import com.toursims.mobile.model.City;
@@ -13,6 +19,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +32,13 @@ public class CityAdapter extends BaseAdapter {
 	
 	List<City> cities;
 	LayoutInflater inflater;
+	String cachePath;
 	
-	public CityAdapter(Context context,List<City> cities) {
+	public CityAdapter(Context context,List<City> cities,String cachePath) {
 
 		inflater = LayoutInflater.from(context);
 		this.cities = cities;
+		this.cachePath = cachePath;
 
 	}
 	
@@ -70,14 +79,43 @@ public class CityAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		
 		holder.name.setText(cities.get(position).getName());
 		holder.image.setBackgroundColor(Color.WHITE);
 		
 		try {
-			  Bitmap bitmap = BitmapFactory.decodeStream(
-			                 (InputStream)new URL(cities.get(position).getCoverPictureURL()).getContent());
-			  holder.image.setImageBitmap(bitmap);
+			String fileURL = cities.get(position).getCoverPictureURL();
+			String fileName = cachePath + fileURL.replaceAll("[.|/|:]", "_");
+			
+			File file = new File(fileName);
+			
+			if(!file.exists()){
+				URL url = new URL(fileURL); 
+				Log.d("ImageManager", "downloaded file name:" + fileName);
+				                        /* Open a connection to that URL. */
+				URLConnection ucon = url.openConnection();
+				 
+				InputStream is = ucon.getInputStream();
+				BufferedInputStream bis = new BufferedInputStream(is);
+				 
+				ByteArrayBuffer baf = new ByteArrayBuffer(50);
+				int current = 0;
+				while ((current = bis.read()) != -1) {
+					baf.append((byte) current);
+				}
+				 
+				/* Convert the Bytes read to a String. */
+				FileOutputStream fos = new FileOutputStream(file);
+				fos.write(baf.toByteArray());
+				fos.close();			 
+			}  else {
+				Log.d("ImageManager", "file already existname:" + fileName);
+			}
+				
+			if(file.exists()){
+			    Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+			    holder.image.setImageBitmap(myBitmap);
+			}
+			
 			} catch (MalformedURLException e) {
 			  e.printStackTrace();
 			} catch (IOException e) {

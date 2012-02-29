@@ -84,8 +84,7 @@ public class CourseStepActivity extends MapActivity{
         drawable = this.getResources().getDrawable(R.drawable.maps_icon);
         itemizedOverlay = new CustomItemizedOverlay(drawable, this);
         
-        String[] formerPoint = null;
-        
+        String[] formerPoint = null;       
         
         /***** load overlays ******/
         for(Placemark placemark: getPlaceMarks()){
@@ -123,6 +122,16 @@ public class CourseStepActivity extends MapActivity{
 		myLocationOverlay.enableMyLocation();
 		mapOverlays.add(myLocationOverlay);
         doBindService();
+        
+        BroadcastReceiver alertTimer = new BroadcastReceiver() {	
+			@Override
+			public void onReceive(Context arg0, Intent arg1) {
+				// TODO Auto-generated method stub
+			}
+		};
+		
+    	IntentFilter intentFilter2 = new IntentFilter("TIMER");  	
+    	registerReceiver(alertTimer, intentFilter2);
     }
 	
 	Handler mHandler = new Handler() {

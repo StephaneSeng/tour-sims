@@ -36,9 +36,10 @@ public class CityActivity extends Activity{
 	    cities.add(new City("Paris", "http://lh5.ggpht.com/I7ZXI1UTSQQIje-omgMRi5KAU2f0-wz2OHCbqrcaKohKu2QicRVBCGiX_b-ZuDK4wc0k5p6g_l9nqWX7NTg=s128-c"));
 	    cities.add(new City("Sydney", "http://t3.gstatic.com/images?q=tbn:ANd9GcQ_KGX0AytX6zDGhXiHog_320deXd0flkNjjylh7gPOkKFhBSOGCu6ksPMr"));
 	    
-	    CityAdapter adapter = new CityAdapter(this, cities);
+	    CityAdapter adapter = new CityAdapter(this, cities,getCacheDir().getAbsolutePath());
 	    ListView lv = (ListView) findViewById(R.id.lvListe);
-	    lv.setAdapter(adapter);   	    
+	    lv.setAdapter(adapter);   	
+	
 	    
 	    lv.setOnItemClickListener(new OnItemClickListener() {
 	        
