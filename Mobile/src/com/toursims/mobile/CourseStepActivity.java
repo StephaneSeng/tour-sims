@@ -32,7 +32,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -45,13 +44,11 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.SlidingDrawer;
 import android.widget.Toast;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Handler;
-import android.widget.TextView;
 
 public class CourseStepActivity extends MapActivity{
     /** Called when the activity is first created. */
@@ -223,6 +220,7 @@ public class CourseStepActivity extends MapActivity{
 	
 	private void doBindService() {
 		bindService(new Intent(this, LocalizationService.class), mConnection,Context.BIND_AUTO_CREATE);
+		updateReceiver();
 	}
 	
 	static int currentPoint = 0;
