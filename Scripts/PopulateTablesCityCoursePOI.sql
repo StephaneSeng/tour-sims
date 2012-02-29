@@ -5,11 +5,32 @@ INSERT INTO city (name, description, latitude, longitude) VALUES ('Paris', 'Fluc
 
 -- Table: course
 
-INSERT INTO course (name, description, difficulty, file, user_id, city_id) VALUES ('INSA de Lyon', 'Découvrez le campus de la Doua', 10, '', 1, 1);
+INSERT INTO course (name, description, difficulty, file, user_id, city_id, "timestamp") VALUES ('INSA de Lyon', 'Découvrez le campus de la Doua', 10, '', 1, 1, now());
 
 -- Table: poi
 
---
+INSERT INTO poi(name, description, latitude, longitude, address)
+SELECT
+	name,
+	description,
+	latitude,
+	longitude,
+	address
+FROM
+	dblink(
+		'dbname=osm port=5432 user=postgres password=postgres',
+		'SELECT
+			tags -> ''name'' AS name,
+			tags -> ''address'' AS address,
+			tags -> ''description'' AS description,
+			ST_Y(geom) AS latitude,
+			ST_X(geom) AS longitude
+		FROM
+			nodes
+		WHERE
+			tags ? ''name''
+			AND tags ? ''tourism'';')
+	AS nodes(name character varying, address character varying, description character varying, latitude double precision, longitude double precision);
 
 -- Table: metadata_tag
 
