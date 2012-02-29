@@ -1,21 +1,27 @@
 -- Table: city
 
 INSERT INTO city (name, description, latitude, longitude) VALUES ('Lyon', 'Avant, avant, Lion le melhor', 45.7597, 4.8422);
-INSERT INTO city (name, description, latitude, longitude) VALUES ('Paris', 'Fluctuat nec mergitur', 45.7597, 4.8422);
+INSERT INTO city (name, description, latitude, longitude) VALUES ('Paris', 'Fluctuat nec mergitur', 48.8567, 2.3508);
+INSERT INTO city (name, description, latitude, longitude) VALUES ('Berlin', '', 52.500556, 13.398889);
+INSERT INTO city (name, description, latitude, longitude) VALUES ('Hong Kong', '', 22.278333, 114.158889);
+INSERT INTO city (name, description, latitude, longitude) VALUES ('Sydney', '', -33.859972, 151.211111);
 
 -- Table: course
 
-INSERT INTO course (name, description, difficulty, file, user_id, city_id, "timestamp") VALUES ('INSA de Lyon', 'Découvrez le campus de la Doua', 10, '', 1, 1, now());
+INSERT INTO course (name, description, difficulty, file, user_id, city_id, "timestamp") VALUES ('La DOUA - IF', 'Parcours de la DOUA qui prend environ 3h', 10, 'http://www.x00b.com/tour.kml', 1, 1, now());
+INSERT INTO course (name, description, difficulty, file, user_id, city_id, "timestamp") VALUES ('Only Lyon', 'Un vrai tour de Lyon!', 10, 'http://www.x00b.com/tour2.kml', 1, 1, now());
 
 -- Table: poi
 
-INSERT INTO poi(name, description, latitude, longitude, address)
+INSERT INTO poi(name, description, latitude, longitude, address, user_id, "timestamp")
 SELECT
 	name,
 	description,
 	latitude,
 	longitude,
-	address
+	address,
+	1 AS user_id,
+	now() AS "timestamp"
 FROM
 	dblink(
 		'dbname=osm port=5432 user=postgres password=postgres',
