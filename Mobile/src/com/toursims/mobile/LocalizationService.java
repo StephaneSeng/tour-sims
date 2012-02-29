@@ -69,7 +69,11 @@ public class LocalizationService extends Service {
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
-				localizationListener.onLocationChanged(locationManager.getLastKnownLocation(bestProvider));			
+				localizationListener.onLocationChanged(locationManager.getLastKnownLocation(bestProvider));
+				
+				Intent intent=new Intent();
+				intent.setAction("TIMER");
+				sendBroadcast(intent);
 			}
 		}, 0, UPDATE_INTERVAL);
 		Log.d(getClass().getSimpleName(), "Timer started.");
@@ -85,20 +89,7 @@ public class LocalizationService extends Service {
 		pendingIntentForProximityAlert = PendingIntent.getBroadcast(getApplicationContext(), requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 		locationManager.addProximityAlert(lat, lon, radius, expiration, pendingIntentForProximityAlert);
 		
-		Log.d("setProximityAlert","An alert has been set for :"+lat+","+lon);
-		
-		/*IntentFilter intentFilter = new IntentFilter(proximityIntentAction);
-		registerReceiver(new BroadcastReceiver() {
-			
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				// TODO Auto-generated method stub
-		        Log.v("SomeTag","Proximity Alert Intent Received");
-			}
-		}, intentFilter);
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-		locationManager.addProximityAlert(lat, lon, radius, expiration, pendingIntent);*/
-	
+		Log.d("setProximityAlert","An alert has been set for :"+lat+","+lon);		
 	}
 	
 	private final class LocalizationListener implements LocationListener {
