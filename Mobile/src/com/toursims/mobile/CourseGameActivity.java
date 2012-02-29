@@ -51,7 +51,7 @@ public void onCreate(Bundle savedInstanceState) {
 	courses = datasource.getCoursesWithCity(city);
 				
 	if(courses.size()>0) {
-	    CourseAdapter adapter = new CourseAdapter(this, courses);
+	    CourseAdapter adapter = new CourseAdapter(this, courses,getCacheDir().getAbsolutePath());
 	    
 	    datasource.close();
 	    lv.setAdapter(adapter);   

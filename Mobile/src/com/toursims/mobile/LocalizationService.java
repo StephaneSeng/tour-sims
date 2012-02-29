@@ -70,7 +70,6 @@ public class LocalizationService extends Service {
 			@Override
 			public void run() {
 				localizationListener.onLocationChanged(locationManager.getLastKnownLocation(bestProvider));
-				
 				Intent intent=new Intent();
 				intent.setAction("TIMER");
 				sendBroadcast(intent);
@@ -141,9 +140,7 @@ public class LocalizationService extends Service {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		
-		timer.cancel();
-		
+		timer.cancel();		
 		Log.d(TAG, "The LocalizationService has be destroyed");
 	}	
 }

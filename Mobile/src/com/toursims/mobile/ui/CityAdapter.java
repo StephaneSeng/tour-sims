@@ -84,7 +84,6 @@ public class CityAdapter extends BaseAdapter {
 		
 		try {
 			String fileURL = cities.get(position).getCoverPictureURL();
-			String PATH = cachePath;		
 			String fileName = cachePath + fileURL.replaceAll("[.|/|:]", "_");
 			
 			File file = new File(fileName);
