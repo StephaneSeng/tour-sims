@@ -59,7 +59,7 @@ public void onCreate(Bundle savedInstanceState) {
 	       
 	        public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
 	    // When clicked, show Course details
-	          Intent courseDetails = new Intent(getApplicationContext(),CourseStepActivity.class);
+	          Intent courseDetails = new Intent(getApplicationContext(),CourseDetailsActivity.class);
 	          courseDetails.putExtra("COURSE_ID", courses.get(position).getId());
 	          startActivity(courseDetails);
 	        

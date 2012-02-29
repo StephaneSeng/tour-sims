@@ -32,7 +32,7 @@
         <activity android:name=".CourseGameActivity"> </activity>
         <activity android:name=".CourseDetailsActivity"
             android:label="CourseDetails"> </activity>
-        <activity android:name=".MapActivity"> </activity>
+        <activity android:name=".CourseMapActivity"> </activity>
         <activity android:name=".CourseStepActivity"> </activity>
         <activity android:name=".POIActivity"> </activity>
         <activity android:name=".SocialActivity"> </activity>      

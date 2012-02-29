@@ -10,10 +10,4 @@
         android:layout_height="wrap_content"
         android:text="Map"
         android:textAppearance="?android:attr/textAppearanceLarge" />
- <com.google.android.maps.MapView
-                 android:id="@+id/map"
-                 android:layout_width="fill_parent"
-                 android:layout_height="fill_parent"
-                 android:apiKey="0UtEsm2mlQi8j4KHjCmoq1xXDkIEU2kRcC4mYcg"
-                 />
 </LinearLayout>
