@@ -13,6 +13,7 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.toursims.mobile.LocalizationService.MyBinder;
@@ -62,7 +63,8 @@ public class CourseStepActivity extends MapActivity{
 	private CustomItemizedOverlay itemizedOverlay;
 	private List<Road> mRoads;
 	private MapView mapView;
-    
+	private MyLocationOverlay myLocationOverlay;
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,49 +119,11 @@ public class CourseStepActivity extends MapActivity{
         	itemizedOverlay.addOverlay(overlayItem);
         }
         mapOverlays.add(itemizedOverlay);
-        
+		myLocationOverlay = new MyLocationOverlay(this, mapView);
+		myLocationOverlay.enableMyLocation();
+		mapOverlays.add(myLocationOverlay);
         doBindService();
     }
-    
-	@Override
-	protected void onResume() {
-		super.onResume();
-		
-		// Get the current user position
-		LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-		
-		// Try to get the best localization provider
-		Criteria criteria = new Criteria();
-		criteria.setAccuracy(Criteria.ACCURACY_FINE);
-		String bestProvider = locationManager.getBestProvider(criteria, false);
-		
-		// TODO Emulator fix
-		bestProvider = LocationManager.GPS_PROVIDER;
-		
-		Location lastLocation = locationManager.getLastKnownLocation(bestProvider);
-		
-		// Display the map with the user at its center
-		if(lastLocation != null)
-		{
-			mapController.animateTo(new GeoPoint((int)(lastLocation.getLatitude() * 1e6), (int)(lastLocation.getLongitude() * 1e6)));
-			
-			// Display the user
-			displayUser(lastLocation);
-		}
-	}
-	
-	/**
-	 * Display the user on the MapView
-	 */
-	protected void displayUser(Location location) {
-		GeoPoint point = new GeoPoint((int)(location.getLatitude() * 1e6), (int)(location.getLongitude() * 1e6));
-        OverlayItem overlayItem = new OverlayItem(point, "User Name", "Latitude : " + location.getLatitude() + ", Longitude : " + location.getLongitude());
-        
-        drawable = this.getResources().getDrawable(R.drawable.androidmarkerred);
-        CustomItemizedOverlay itemizedOverlay2 = new CustomItemizedOverlay(drawable, CourseStepActivity.this);
-        itemizedOverlay2.addOverlay(overlayItem);
-        mapOverlays.add(itemizedOverlay2);
-	}
 	
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
