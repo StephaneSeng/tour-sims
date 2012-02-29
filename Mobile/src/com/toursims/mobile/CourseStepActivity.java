@@ -52,16 +52,15 @@ import android.os.Handler;
 
 public class CourseStepActivity extends MapActivity{
     /** Called when the activity is first created. */
-	
 	private static LocalizationService serviceLocalization;
 	private String proximityIntentAction = new String("CourseStepActivity");
 	private List<Placemark> placemarks;
 	
 	private MapController mapController;
-    	private List<Overlay> mapOverlays;
-    	private Drawable drawable;
-    	private CustomItemizedOverlay itemizedOverlay;
-    	private Road mRoad;
+	private List<Overlay> mapOverlays;
+	private Drawable drawable;
+	private CustomItemizedOverlay itemizedOverlay;
+	private List<Road> mRoads;
 	private MapView mapView;
     
 	@Override
@@ -77,7 +76,7 @@ public class CourseStepActivity extends MapActivity{
 		mapView.setBuiltInZoomControls(true);
 		//mapView.setStreetView(true);
 		mapController = mapView.getController();
-		mapController.setZoom(13); // Zoom 1 is world view
+		mapController.setZoom(14); // Zoom 1 is world view
 		
         mapOverlays = mapView.getOverlays();
         drawable = this.getResources().getDrawable(R.drawable.maps_icon);
@@ -101,8 +100,11 @@ public class CourseStepActivity extends MapActivity{
 	    			   public void run() {
 	    				   String url = RoadProvider.getUrl(fromLat, fromLon, toLat, toLon);
 	    				   InputStream is = getConnection(url);
-	    				   mRoad = RoadProvider.getRoute(is);
-	    				   mHandler.sendEmptyMessage(0);
+	    				   if (mRoads == null) {
+	    					   mRoads = new ArrayList<Road>();
+	    				   }
+	    				   mRoads.add(RoadProvider.getRoute(is));
+	    				   mHandler.sendEmptyMessage(mRoads.size() - 1);
 	    			   }
 	    		};
 	    		t.setCoord(formerPoint, lL);
@@ -170,12 +172,12 @@ public class CourseStepActivity extends MapActivity{
 	
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
-		   MapOverlay mapOverlay = new MapOverlay(mRoad, mapView);
-		   List<Overlay> listOfOverlays = mapView.getOverlays();
+		   MapOverlay mapOverlay = new MapOverlay(mRoads.get(msg.what), mapView);
+		   mapOverlays.add(mapOverlay);
 		   //listOfOverlays.clear();
-		   listOfOverlays.add(mapOverlay);
 		   mapView.invalidate();
-		   mapController.setZoom(13);
+		   //mapController.setZoom(14);
+		   Log.d("mHandler", "route tracee");
 		};
 	};
 	
