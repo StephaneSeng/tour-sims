@@ -15,6 +15,7 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
+import com.toursims.mobile.LocalizationService.MyBinder;
 import com.toursims.mobile.controller.CourseBDD;
 import com.toursims.mobile.controller.KmlParser;
 import com.toursims.mobile.controller.PlaceWrapper;
@@ -31,29 +32,45 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.util.Log;
+import android.widget.Toast;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
-import android.widget.TextView;
 
 public class CourseStepActivity extends MapActivity{
     /** Called when the activity is first created. */
-	MapView mapView;
-    private MapController mapController;
-    private List<Overlay> mapOverlays;
-    private Drawable drawable;
-    private CustomItemizedOverlay itemizedOverlay;
-    private List<Road> mRoads;
+	private static LocalizationService serviceLocalization;
+	private String proximityIntentAction = new String("CourseStepActivity");
+	private List<Placemark> placemarks;
+	
+	private MapController mapController;
+	private List<Overlay> mapOverlays;
+	private Drawable drawable;
+	private CustomItemizedOverlay itemizedOverlay;
+	private List<Road> mRoads;
+	private MapView mapView;
     
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.coursestep);
+		
+        Log.d("Bind Service","Bind Service");
+       
+        placemarks = getPlaceMarks();
         
         mapView = (MapView) findViewById(R.id.map);
 		mapView.setBuiltInZoomControls(true);
@@ -100,7 +117,9 @@ public class CourseStepActivity extends MapActivity{
         	itemizedOverlay.addOverlay(overlayItem);
         }
         mapOverlays.add(itemizedOverlay);
-	}
+        
+        doBindService();
+    }
     
 	@Override
 	protected void onResume() {
@@ -186,6 +205,66 @@ public class CourseStepActivity extends MapActivity{
     	
     	datasource.close();
     	return l;
+    }
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+		public void onServiceConnected(ComponentName className, IBinder binder) {
+			serviceLocalization = ((LocalizationService.MyBinder) binder).getService();
+			Toast.makeText(CourseStepActivity.this, "Connected", Toast.LENGTH_SHORT).show();
+			updateReceiver();
+		}
+
+		public void onServiceDisconnected(ComponentName className) {
+			serviceLocalization = null;
+		}
+	};
+	
+	private void doBindService() {
+		bindService(new Intent(this, LocalizationService.class), mConnection,Context.BIND_AUTO_CREATE);
+		updateReceiver();
+	}
+	
+	static int currentPoint = 0;
+    static BroadcastReceiver receiverLocalization;
+    
+    public void updateReceiver() {    	
+    	Log.d("updateReceiver","Receiver Update");
+    	
+    	if(serviceLocalization!=null&&!placemarks.isEmpty()){
+		    	if(receiverLocalization!=null){
+		    		unregisterReceiver(receiverLocalization);
+		    					
+			    	NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+			    	Notification notification = new Notification(R.drawable.ic_launcher,placemarks.get(currentPoint).getName(), System.currentTimeMillis());
+			    	notification.flags |= Notification.FLAG_AUTO_CANCEL;
+			    	notification.number += 1;
+			    	
+			    	PendingIntent activity = PendingIntent.getActivity(getBaseContext(), 0, new Intent(getBaseContext(),HomeActivity.class),0);
+			    	notification.setLatestEventInfo(getBaseContext(), placemarks.get(currentPoint).getName(),placemarks.get(currentPoint).getName(), activity);
+			    	notificationManager.notify(0, notification);
+			    	currentPoint += 1;
+		    	} 
+	    	
+		    if(currentPoint<placemarks.size()){
+		    	receiverLocalization = new BroadcastReceiver() {			
+					@Override
+					public void onReceive(Context context, Intent intent) {			    	
+				    	updateReceiver();
+						Log.d("ReceiverGPS","Proximity Alert");
+					}
+	    		};
+	    	
+	    	IntentFilter intentFilter = new IntentFilter(proximityIntentAction);  	
+	    	registerReceiver(receiverLocalization, intentFilter);
+	    	
+	    	serviceLocalization.setProximityAlert(placemarks.get(currentPoint).getPoint().getLongitude(),
+	    			placemarks.get(currentPoint).getPoint().getLattitude(), 1, 0,proximityIntentAction);  	
+	    	}
+	    }
+     else {
+		Log.d("ReceiverGPS","Service not connected");
+     }
     }
 }
 

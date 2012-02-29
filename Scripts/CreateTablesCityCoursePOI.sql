@@ -30,6 +30,7 @@ CREATE TABLE course
   file character varying,
   user_id integer,
   city_id integer,
+  "timestamp" timestamp with time zone,
   CONSTRAINT course_pk PRIMARY KEY (course_id ),
   CONSTRAINT city_id_fk FOREIGN KEY (city_id)
       REFERENCES city (city_id) MATCH SIMPLE
@@ -167,7 +168,7 @@ ALTER TABLE comment
 
 CREATE TABLE metadata
 (
-  metadata_id integer NOT NULL,
+  metadata_id serial NOT NULL,
   text character varying,
   metadata_tag_id integer,
   CONSTRAINT metadata_pk PRIMARY KEY (metadata_id ),
