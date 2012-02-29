@@ -1,4 +1,5 @@
 Mobile/.classpath
+Mobile/bin
 Mobile/gen
-Mobile/project.properties
-
+MobileTest/bin
+MobileTest/gen
