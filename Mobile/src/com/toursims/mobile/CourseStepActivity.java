@@ -1,5 +1,10 @@
 package com.toursims.mobile;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -12,52 +17,153 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.toursims.mobile.controller.CourseBDD;
 import com.toursims.mobile.controller.KmlParser;
+import com.toursims.mobile.controller.PlaceWrapper;
 import com.toursims.mobile.model.Course;
 import com.toursims.mobile.model.kml.Placemark;
 import com.toursims.mobile.model.kml.Point;
+import com.toursims.mobile.model.places.Place;
+import com.toursims.mobile.model.places.Road;
 import com.toursims.mobile.ui.utils.CustomItemizedOverlay;
+import com.toursims.mobile.ui.utils.DirectionPathOverlay;
+import com.toursims.mobile.ui.utils.RoadProvider;
 
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.app.Activity;
+import android.content.Context;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.widget.TextView;
 
 public class CourseStepActivity extends MapActivity{
     /** Called when the activity is first created. */
+	MapView mapView;
     private MapController mapController;
-    List<Overlay> mapOverlays;
-    Drawable drawable;
-    CustomItemizedOverlay itemizedOverlay;
+    private List<Overlay> mapOverlays;
+    private Drawable drawable;
+    private CustomItemizedOverlay itemizedOverlay;
+    private Road mRoad;
     
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.coursestep);
         
-        MapView mapView = (MapView) findViewById(R.id.map);
+        mapView = (MapView) findViewById(R.id.map);
 		mapView.setBuiltInZoomControls(true);
 		//mapView.setStreetView(true);
 		mapController = mapView.getController();
 		mapController.setZoom(13); // Zoom 1 is world view
-		mapController.animateTo(new GeoPoint(45759723,4842223));
-
+		
         mapOverlays = mapView.getOverlays();
         drawable = this.getResources().getDrawable(R.drawable.maps_icon);
         itemizedOverlay = new CustomItemizedOverlay(drawable, this);
         
+        String[] formerPoint = null;
+        
+        
+        /***** load overlays ******/
         for(Placemark placemark: getPlaceMarks()){
         	String[] lL = placemark.getPoint().getCoordinates().split(",");
         	int l = (new Double(Double.parseDouble(lL[1])* 1000000)).intValue();
         	int L = (new Double(Double.parseDouble(lL[0])* 1000000)).intValue();
         	Log.d(getLocalClassName(), String.valueOf(l) + " " + String.valueOf(L));
         	GeoPoint point = new GeoPoint(l,L);
-        	OverlayItem overlayItem = new OverlayItem(point, "", "");
-        
+        	OverlayItem overlayItem = new OverlayItem(point, placemark.getName(),placemark.getDescription());
+        	
+        	/***** load routes *****/
+        	if(formerPoint != null) {
+        		roadConnectionThread t = new roadConnectionThread() {
+	    			   @Override
+	    			   public void run() {
+	    				   String url = RoadProvider.getUrl(fromLat, fromLon, toLat, toLon);
+	    				   InputStream is = getConnection(url);
+	    				   mRoad = RoadProvider.getRoute(is);
+	    				   mHandler.sendEmptyMessage(0);
+	    			   }
+	    		};
+	    		t.setCoord(formerPoint, lL);
+        		t.start();
+        	} else {
+        		mapController.animateTo(point);
+        	}
+        	formerPoint = lL;
         	itemizedOverlay.addOverlay(overlayItem);
         }
         mapOverlays.add(itemizedOverlay);
 	}
     
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		// Get the current user position
+		LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+		
+		// Try to get the best localization provider
+		Criteria criteria = new Criteria();
+		criteria.setAccuracy(Criteria.ACCURACY_FINE);
+		String bestProvider = locationManager.getBestProvider(criteria, false);
+		
+		// TODO Emulator fix
+		bestProvider = LocationManager.GPS_PROVIDER;
+		
+		Location lastLocation = locationManager.getLastKnownLocation(bestProvider);
+		
+		// Display the map with the user at its center
+		if(lastLocation != null)
+		{
+			mapController.animateTo(new GeoPoint((int)(lastLocation.getLatitude() * 1e6), (int)(lastLocation.getLongitude() * 1e6)));
+			
+			// Display the user
+			displayUser(lastLocation);
+		}
+	}
+	
+	/**
+	 * Display the user on the MapView
+	 */
+	protected void displayUser(Location location) {
+		GeoPoint point = new GeoPoint((int)(location.getLatitude() * 1e6), (int)(location.getLongitude() * 1e6));
+        OverlayItem overlayItem = new OverlayItem(point, "User Name", "Latitude : " + location.getLatitude() + ", Longitude : " + location.getLongitude());
+        
+        drawable = this.getResources().getDrawable(R.drawable.androidmarkerred);
+        CustomItemizedOverlay itemizedOverlay2 = new CustomItemizedOverlay(drawable, CourseStepActivity.this);
+        itemizedOverlay2.addOverlay(overlayItem);
+        mapOverlays.add(itemizedOverlay2);
+	}
+	
+	Handler mHandler = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+		   MapOverlay mapOverlay = new MapOverlay(mRoad, mapView);
+		   List<Overlay> listOfOverlays = mapView.getOverlays();
+		   //listOfOverlays.clear();
+		   listOfOverlays.add(mapOverlay);
+		   mapView.invalidate();
+		   mapController.setZoom(13);
+		};
+	};
+	
+	
+	private InputStream getConnection(String url) {
+		  InputStream is = null;
+		  try {
+		   URLConnection conn = new URL(url).openConnection();
+		   is = conn.getInputStream();
+		  } catch (MalformedURLException e) {
+		   e.printStackTrace();
+		  } catch (IOException e) {
+		   e.printStackTrace();
+		  }
+		  return is;
+    }
+	
     @Override
     protected boolean isRouteDisplayed() {
         return false;
@@ -78,4 +184,70 @@ public class CourseStepActivity extends MapActivity{
     	datasource.close();
     	return l;
     }
+}
+
+class MapOverlay extends com.google.android.maps.Overlay {
+    Road mRoad;
+    ArrayList<GeoPoint> mPoints;
+
+    public MapOverlay(Road road, MapView mv) {
+            mRoad = road;
+            if (road.mRoute.length > 0) {
+                    mPoints = new ArrayList<GeoPoint>();
+                    for (int i = 0; i < road.mRoute.length; i++) {
+                            mPoints.add(new GeoPoint((int) (road.mRoute[i][1] * 1000000),
+                                            (int) (road.mRoute[i][0] * 1000000)));
+                    }
+//                    int moveToLat = (mPoints.get(0).getLatitudeE6() + (mPoints.get(
+//                                    mPoints.size() - 1).getLatitudeE6() - mPoints.get(0)
+//                                    .getLatitudeE6()) / 2);
+//                    int moveToLong = (mPoints.get(0).getLongitudeE6() + (mPoints.get(
+//                                    mPoints.size() - 1).getLongitudeE6() - mPoints.get(0)
+//                                    .getLongitudeE6()) / 2);
+//                    GeoPoint moveTo = new GeoPoint(moveToLat, moveToLong);
+
+//                    MapController mapController = mv.getController();
+//                    mapController.animateTo(moveTo);
+//                    mapController.setZoom(7);
+            }
+    }
+
+    @Override
+    public boolean draw(Canvas canvas, MapView mv, boolean shadow, long when) {
+            super.draw(canvas, mv, shadow);
+            drawPath(mv, canvas);
+            return true;
+    }
+
+    public void drawPath(MapView mv, Canvas canvas) {
+            int x1 = -1, y1 = -1, x2 = -1, y2 = -1;
+            Paint paint = new Paint();
+            paint.setColor(Color.BLUE);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(3);
+            for (int i = 0; i < mPoints.size(); i++) {
+                    android.graphics.Point point = new android.graphics.Point();
+                    mv.getProjection().toPixels(mPoints.get(i), point);
+                    x2 = point.x;
+                    y2 = point.y;
+                    if (i > 0) {
+                            canvas.drawLine(x1, y1, x2, y2, paint);
+                    }
+                    x1 = x2;
+                    y1 = y2;
+            }
+    }
+}
+
+
+class roadConnectionThread extends Thread {
+ 	   double fromLat, fromLon; 
+ 	   double toLat, toLon;
+	
+ 	   public void setCoord(String[] from, String[] to) {
+ 		   this.fromLat = Double.parseDouble(from[1]);
+ 		   this.fromLon = Double.parseDouble(from[0]);
+ 		   this.toLat = Double.parseDouble(to[1]);
+ 		   this.toLon = Double.parseDouble(to[0]);
+ 	   }
 }

@@ -8,14 +8,15 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Step ..."
+        android:text="Parcours"
         android:textAppearance="?android:attr/textAppearanceLarge" />
     
              <com.google.android.maps.MapView
                  android:id="@+id/map"
                  android:layout_width="fill_parent"
                  android:layout_height="fill_parent"
-                 android:apiKey="0UtEsm2mlQi8j4KHjCmoq1xXDkIEU2kRcC4mYcg"
+                 android:clickable="true"
+                 android:apiKey="0g1OZhPQNgET2leSdlX1cN4YAsXKFSZlC07X1oA"
                  />
 
 </LinearLayout>
