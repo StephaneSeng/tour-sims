@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+		<meta content="initial-scale=1.0, user-scalable=no" name="viewport">
+		<style type="text/css">
+			html { height: 100% }
+			body { height: 100%; margin: 0; padding: 0 }
+			#map_canvas { height: 100% }
+		</style>
+		<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBPu7IEDMsGOR9ShaWCLCCIt1YqDLIQ8zk&sensor=true"> </script>
+		<script type="text/javascript">
+		var geocoder;
+		var map;
+		var markerArray = [];
+		var directionDisplay;
+		var directionService = new google.maps.DirectionsService();
+		function initialize() {
+			geocoder = new google.maps.Geocoder();
+			directionDisplay = new google.maps.DirectionsRenderer();
+			directionDisplay.suppressMarkers = true;
+			var myOptions = {
+				center: new google.maps.LatLng(45.774043,4.835659),
+				zoom: 13,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			};
+			map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);
+			google.maps.event.addListener(map, 'click', function(event) {
+				placeMarker(event.latLng);
+			});
+			directionDisplay.setMap(map);
+			directionDisplay.setPanel(document.getElementById("directionsPanel"));
+		}
+
+		function searchAddress() {
+			var address = document.getElementById("address").value;
+			geocoder.geocode( { 'address': address}, function(results, status) {
+				if (status == google.maps.GeocoderStatus.OK) {
+					map.setCenter(results[0].geometry.location);
+				} else {
+					alert("Address not found");
+				}
+			});
+		}
+		function placeMarker(location) {
+			var marker = new google.maps.Marker({
+				position: location, 
+				map: map, 
+				draggable :true, 
+			});
+			google.maps.event.addListener(marker, "rightclick", function() {
+				marker.setMap(null);
+				markerArray.splice(markerArray.indexOf(marker),1);
+				if(markerArray.length >1)
+					drawRoute();
+			});
+			markerArray.push(marker);
+			if(markerArray.length >1)
+					drawRoute();
+			google.maps.event.addListener(marker, "dragend", function() {
+				if(markerArray.length >1)
+					drawRoute();
+			});
+		}
+		
+		function drawRoute() {
+			if(directionDisplay != null) {
+				directionDisplay.setMap(map);
+				directionDisplay.setPanel(document.getElementById("directionsPanel"));
+			}
+			var i = 0;
+			var waypts =[];
+			var start = markerArray[0].getPosition();
+			var end = markerArray[markerArray.length-1].getPosition();
+			for(i=1;i<markerArray.length-1;i++){
+				waypts.push({location: markerArray[i].getPosition()});
+			}
+			var request = {
+				origin:start,
+				destination:end,
+				waypoints:waypts,
+				optimizeWaypoints:true,
+				avoidTolls:true,
+				travelMode: google.maps.DirectionsTravelMode.DRIVING
+			};
+			directionService.route(request, function(response, status) {
+				if (status == google.maps.DirectionsStatus.OK) {
+					directionDisplay.setDirections(response);
+				}
+			});
+		}
+
+		function saveCourse() {
+			
+		}
+
+		function clearOverlays() {
+			directionDisplay.setMap(null);
+			directionDisplay.setPanel(null);
+			for (i in markerArray){
+				markerArray[i].setMap(null);
+			}
+			markerArray.splice(0);
+		}
+		</script>
+		<title>Tour'SIMS</title>
+	</head>
+	
+	<body onload="initialize()">
+		<table style="text-align: left; background-color: rgb(0, 204, 204); width: 100%; height: 68px;" border="0" cellpadding="2" cellspacing="2">
+			<tbody>
+			<tr>
+			<td style="width: 68px;"><img style="width: 45px; height: 55px;" alt="" src="images/logo.png"></td>
+			<td style="text-align: center; color: white; font-weight: bold; width: 1064px;"><big>Tour'SIMS</big></td>
+			</tr>
+			</tbody>
+		</table>
+		<br>
+		<div style="width: 100%; float: left; margin : 0;background-color:#ffffff">
+			<div style="width: 30%; margin: 40px; float: left; background-color:#ffffff">
+				Name
+				<input id="courseName" value="" type="textbox">
+			</div> 
+			<div style="width: 40%; margin:40px; float: left;background-color:#ffffff">
+				<input id="address" value="Search your city" type="textbox" onfocus="value=''">
+				<input value="Search" onclick="searchAddress()" type="button">
+			</div> 
+			<div style="margin: 40px; float: right;background-color:#ffffff">
+				<input value="Save" onclick="saveCourse()" type="button">
+				<span style="margin-left:30px;"><input value="Clear" onclick="clearOverlays()" type="button"></span>
+			</div> 
+		</div>
+			<br>
+		<div style="width: 100%; height: 65%; float: left; margin : 0x;background-color:#ffffff">
+			<div style="margin: 1%; width: 28%; float: left;" id="directionsPanel">
+			</div>
+			<div style="margin: 0; width: 68%; background-color:#ffffff" id="map_canvas">
+			</div>
+		</div>
+	</body>
+</html>
