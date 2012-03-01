@@ -6,7 +6,6 @@ $connection = pg_connect("host=localhost port=5432 dbname=toursims user=postgres
 // Define and perform the SQL queries
 switch ($_REQUEST['action']) {
 	case "authenticate":
-
 		// Check if the user has already been registred in our service
 		$query = "
 		SELECT
@@ -51,9 +50,12 @@ switch ($_REQUEST['action']) {
 			";
 			$result = pg_query($query) or die('Query failed: '.pg_last_error());
 		}
+		
 		break;
 	default:
+		// The requested action is invalid
 		die('Invalid action');
+		
 		break;
 }
 

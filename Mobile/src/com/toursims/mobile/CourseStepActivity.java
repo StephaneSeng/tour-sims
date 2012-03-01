@@ -14,6 +14,7 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.toursims.mobile.LocalizationService.MyBinder;
@@ -74,16 +75,16 @@ public class CourseStepActivity extends MapActivity{
 	private CustomItemizedOverlay itemizedOverlay;
 	private List<Road> mRoads;
 	private MapView mapView;
-	
+	private MyLocationOverlay myLocationOverlay;
+	private MapView mapView;
 	private static final long MINIMUM_DISTANCECHANGE_FOR_UPDATE = 1; // in Meters
-    private static final long MINIMUM_TIME_BETWEEN_UPDATE = 3000; // in Milliseconds
-    private static final long POINT_RADIUS = 1000; // in Meters
-    private static final long PROX_ALERT_EXPIRATION = -1;    
-    private static final String PROX_ALERT_INTENT = 
+	private static final long MINIMUM_TIME_BETWEEN_UPDATE = 3000; // in Milliseconds
+    	private static final long POINT_RADIUS = 1000; // in Meters
+    	private static final long PROX_ALERT_EXPIRATION = -1;    
+    	private static final String PROX_ALERT_INTENT = 
             "com.javacodegeeks.android.lbs.ProximityAlert";  
-    private LocationManager locationManager;
+    	private LocationManager locationManager;
 
-	    
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,7 +146,7 @@ public class CourseStepActivity extends MapActivity{
         	itemizedOverlay.addOverlay(overlayItem);
         }
         mapOverlays.add(itemizedOverlay);
-    
+   
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         locationManager.requestLocationUpdates(
@@ -156,6 +157,11 @@ public class CourseStepActivity extends MapActivity{
         );
         
         updateReceiver();
+
+	myLocationOverlay = new MyLocationOverlay(this, mapView);
+	myLocationOverlay.enableMyLocation();
+	mapOverlays.add(myLocationOverlay);
+
         }
     
 	@Override

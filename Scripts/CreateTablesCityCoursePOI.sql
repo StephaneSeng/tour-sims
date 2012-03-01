@@ -57,7 +57,12 @@ CREATE TABLE poi
   latitude double precision,
   longitude character varying,
   address character varying,
-  CONSTRAINT poi_pk PRIMARY KEY (poi_id )
+  user_id integer,
+  "timestamp" timestamp with time zone,
+  CONSTRAINT poi_pk PRIMARY KEY (poi_id ),
+  CONSTRAINT user_id_fk FOREIGN KEY (user_id)
+      REFERENCES "user" (user_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 WITH (
   OIDS=FALSE

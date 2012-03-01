@@ -8,7 +8,11 @@ CREATE TABLE step
   name character varying,
   distance integer,
   duration integer,
-  CONSTRAINT step_pk PRIMARY KEY (step_id )
+  poi_id integer,
+  CONSTRAINT step_pk PRIMARY KEY (step_id ),
+  CONSTRAINT poi_id_fk FOREIGN KEY (poi_id)
+      REFERENCES poi (poi_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 WITH (
   OIDS=FALSE
