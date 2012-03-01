@@ -24,14 +24,14 @@ public class Document {
 	@Element(data=true,required=false)
 	private String Snippet;
 	
-	@Element(required=false)
-	private ExtendedData ExtendedData;
+	@ElementList(entry="Data",required=false)
+	private List<Data> ExtendedData;
 	
-	public ExtendedData getExtendedData() {
+	public List<Data> getExtendedData() {
 		return ExtendedData;
 	}
 	
-	public void setExtendedData(ExtendedData extendedData) {
+	public void setExtendedData(List<Data> extendedData) {
 		ExtendedData = extendedData;
 	}
 

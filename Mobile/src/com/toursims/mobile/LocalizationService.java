@@ -42,8 +42,7 @@ public class LocalizationService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		
-		
+			
 		Log.d(TAG, "The LocalizationService is starting...");
 		
 		locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);

@@ -1,8 +1,11 @@
 package com.toursims.mobile;
 
+import com.toursims.mobile.model.Course;
+
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TabHost;
 
 public class CourseDetailsActivity extends TabActivity{
@@ -24,9 +27,22 @@ public class CourseDetailsActivity extends TabActivity{
         // Initialize a TabSpec for each tab and add it to the TabHost
         // Tab Map
         Bundle bundle = getIntent().getExtras();
-        int course_id = bundle.getInt("COURSE_ID");
         intent = new Intent().setClass(this, CourseStepActivity.class);
-        intent.putExtra("COURSE_ID", course_id);
+
+        if(bundle.containsKey(Course.COURSE_ID_EXTRA)){
+	        int course_id = bundle.getInt(Course.COURSE_ID_EXTRA);
+	        intent.putExtra(Course.COURSE_ID_EXTRA, course_id);
+        }
+        
+        if(bundle.containsKey(Course.COURSE_URL_EXTRA)){
+	        String course_url = bundle.getString(Course.COURSE_URL_EXTRA);
+	        intent.putExtra(Course.COURSE_URL_EXTRA, course_url);
+        }
+        if(bundle.containsKey(Course.COURSE_NEXT_PLACEMARK)){
+	        boolean next_placemark = bundle.getBoolean(Course.COURSE_NEXT_PLACEMARK);
+	        intent.putExtra(Course.COURSE_NEXT_PLACEMARK, next_placemark);
+        }
+        
         spec = tabHost.newTabSpec("map").setIndicator("Map")
                       .setContent(intent);
         tabHost.addTab(spec);

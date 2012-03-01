@@ -101,7 +101,6 @@ public class CourseAdapter extends BaseAdapter {
 			
 			if(!file.exists()){
 				URL url = new URL(fileURL); 
-				Log.d("ImageManager", "downloaded file name:" + fileName);
 				                        /* Open a connection to that URL. */
 				URLConnection ucon = url.openConnection();
 				 
@@ -118,10 +117,7 @@ public class CourseAdapter extends BaseAdapter {
 				FileOutputStream fos = new FileOutputStream(file);
 				fos.write(baf.toByteArray());
 				fos.close();			 
-			}  else {
-				Log.d("ImageManager", "file already existname:" + fileName);
-			}
-				
+			} 
 			if(file.exists()){
 			    Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 			    holder.image.setImageBitmap(myBitmap);

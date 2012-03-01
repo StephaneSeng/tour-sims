@@ -89,9 +89,7 @@ public class CityAdapter extends BaseAdapter {
 			File file = new File(fileName);
 			
 			if(!file.exists()){
-				URL url = new URL(fileURL); 
-				Log.d("ImageManager", "downloaded file name:" + fileName);
-				                        /* Open a connection to that URL. */
+				URL url = new URL(fileURL); 				                        /* Open a connection to that URL. */
 				URLConnection ucon = url.openConnection();
 				 
 				InputStream is = ucon.getInputStream();
@@ -107,9 +105,7 @@ public class CityAdapter extends BaseAdapter {
 				FileOutputStream fos = new FileOutputStream(file);
 				fos.write(baf.toByteArray());
 				fos.close();			 
-			}  else {
-				Log.d("ImageManager", "file already existname:" + fileName);
-			}
+			}  
 				
 			if(file.exists()){
 			    Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());

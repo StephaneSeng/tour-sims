@@ -1,4 +1,5 @@
 package com.toursims.mobile.model.kml;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.simpleframework.xml.Element;
@@ -21,13 +22,18 @@ public class Placemark {
 	@Element(required=false)
 	private String name;
 
-	@Element(data=true,required=false)
+	@Element(required=false)
 	private String description;
+	
+	@Element(required=false)
+	private String hint;
+	
+	@Element(required=false)
+	private String greetings;
 
 	@Element(required=false)
 	private String address;
 
-	// Ici nous n'avons pas besoin de l'attribut inline car les éléments ne sont pas mêlés à d'autres
 	@ElementList(required=false)
 	private List<Style> StyleMap;
 
@@ -43,18 +49,27 @@ public class Placemark {
 	@Element(required=false)
 	private String styleUrl;
 	
-	@Element(required=false)
-	private ExtendedData ExtendedData;
+	@ElementList(entry="Data",required=false)
+	private List<Data> ExtendedData;
 	
-	public ExtendedData getExtendedData() {
+	@ElementList(entry="Question",required=false)
+	private List<Question> Questions;
+	
+	public List<Data> getExtendedData() {
 		return ExtendedData;
 	}
 	
-	public void setExtendedData(ExtendedData extendedData) {
-		ExtendedData = extendedData;
+	public List<Question> getQuestions() {
+		return Questions;
 	}
 	
+	public void setQuestions(List<Question> questions) {
+		Questions = questions;
+	}
 	
+	public void setExtendedData(List<Data> extendedData) {
+		this.ExtendedData = extendedData;
+	}	
 
 	public String getName() {
 		return name;
@@ -123,4 +138,21 @@ public class Placemark {
 	public void setStyleUrl(String styleUrl) {
 		this.styleUrl = styleUrl;
 	}
+	
+	public void setGreetings(String greetings) {
+		this.greetings = greetings;
+	}
+	
+	public void setHint(String hint) {
+		this.hint = hint;
+	}
+	
+	public String getGreetings() {
+		return greetings;
+	}
+	
+	public String getHint() {
+		return hint;
+	}
+	
 }

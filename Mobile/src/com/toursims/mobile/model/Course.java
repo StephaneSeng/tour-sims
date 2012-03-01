@@ -7,6 +7,11 @@ import com.toursims.mobile.model.kml.Placemark;
 
 public class Course {
 	
+	public static final String COURSE_URL_EXTRA = "course_url";
+	public static final String COURSE_ID_EXTRA = "course_id";
+	public static final String COURSE_NEXT_PLACEMARK = "course_next_placemark";
+	public static final String COURSE_CURRENT_PLACEMARK = "placemark";
+	
 	private Integer id;
 	private String city; 
 	private String coverPictureURL;
@@ -14,8 +19,11 @@ public class Course {
 	private Double length;
 	private Double rating; 
 	private String url;
-	private String name; 
+	private String name;
+	private String type;
 	
+	public static final String TYPE_COURSE = "course";
+	public static final String TYPE_GAME = "game";
 			
 	private List<Placemark> placemarks = new ArrayList<Placemark>();
 	
@@ -90,5 +98,13 @@ public class Course {
 	
 	public void setRating(Double rating) {
 		this.rating = rating;
+	}
+	
+	public void setType(String type) {
+		this.type = type;
+	}
+	
+	public String getType() {
+		return type;
 	}
 }

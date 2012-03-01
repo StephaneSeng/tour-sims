@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -17,7 +18,7 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.toursims.mobile.LocalizationService.MyBinder;
 import com.toursims.mobile.controller.CourseBDD;
-import com.toursims.mobile.controller.KmlParser;
+import com.toursims.mobile.controller.CourseLoader;
 import com.toursims.mobile.controller.PlaceWrapper;
 import com.toursims.mobile.model.Course;
 import com.toursims.mobile.model.kml.Placemark;
@@ -28,25 +29,34 @@ import com.toursims.mobile.ui.utils.CustomItemizedOverlay;
 import com.toursims.mobile.ui.utils.DirectionPathOverlay;
 import com.toursims.mobile.ui.utils.RoadProvider;
 
+import android.R.integer;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
+import android.webkit.WebView;
 import android.widget.Toast;
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Handler;
 
@@ -55,23 +65,42 @@ public class CourseStepActivity extends MapActivity{
 	private static LocalizationService serviceLocalization;
 	private String proximityIntentAction = new String("CourseStepActivity");
 	private List<Placemark> placemarks;
-	
+	private Course course;
+	private static String type;
+		
 	private MapController mapController;
 	private List<Overlay> mapOverlays;
 	private Drawable drawable;
 	private CustomItemizedOverlay itemizedOverlay;
 	private List<Road> mRoads;
 	private MapView mapView;
-    
+	
+	private static final long MINIMUM_DISTANCECHANGE_FOR_UPDATE = 1; // in Meters
+    private static final long MINIMUM_TIME_BETWEEN_UPDATE = 3000; // in Milliseconds
+    private static final long POINT_RADIUS = 1000; // in Meters
+    private static final long PROX_ALERT_EXPIRATION = -1;    
+    private static final String PROX_ALERT_INTENT = 
+            "com.javacodegeeks.android.lbs.ProximityAlert";  
+    private LocationManager locationManager;
+
+	    
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        Bundle bundle = getIntent().getExtras();
+                
+        Log.d("CourseStepActivity","onCreate Called");
+        
         setContentView(R.layout.coursestep);
 		
-        Log.d("Bind Service","Bind Service");
-       
         placemarks = getPlaceMarks();
         
+        if(bundle.containsKey(Course.COURSE_NEXT_PLACEMARK)){
+        	if(currentPoint<placemarks.size()-1)
+        	currentPoint += 1;
+        }
+                
         mapView = (MapView) findViewById(R.id.map);
 		mapView.setBuiltInZoomControls(true);
 		//mapView.setStreetView(true);
@@ -82,10 +111,10 @@ public class CourseStepActivity extends MapActivity{
         drawable = this.getResources().getDrawable(R.drawable.maps_icon);
         itemizedOverlay = new CustomItemizedOverlay(drawable, this);
         
-        String[] formerPoint = null;       
+        String[] formerPoint = null; 
         
         /***** load overlays ******/
-        for(Placemark placemark: getPlaceMarks()){
+        for(Placemark placemark: placemarks){
         	String[] lL = placemark.getPoint().getCoordinates().split(",");
         	int l = (new Double(Double.parseDouble(lL[1])* 1000000)).intValue();
         	int L = (new Double(Double.parseDouble(lL[0])* 1000000)).intValue();
@@ -116,26 +145,27 @@ public class CourseStepActivity extends MapActivity{
         	itemizedOverlay.addOverlay(overlayItem);
         }
         mapOverlays.add(itemizedOverlay);
+    
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER, 
+                        MINIMUM_TIME_BETWEEN_UPDATE, 
+                        MINIMUM_DISTANCECHANGE_FOR_UPDATE,
+                        new MyLocationListener()
+        );
         
-        doBindService();
-        
-        BroadcastReceiver alertTimer = new BroadcastReceiver() {	
-			@Override
-			public void onReceive(Context arg0, Intent arg1) {
-				// TODO Auto-generated method stub
-			}
-		};
-		
-    	IntentFilter intentFilter2 = new IntentFilter("TIMER");  	
-    	registerReceiver(alertTimer, intentFilter2);
-    }
+        updateReceiver();
+        }
     
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
-		// Get the current user position
-		LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+		Log.d("On Resume","Resume Course Step Activity");
+		Log.d("course","course "+course.getName());
+		Log.d("course","course "+currentPoint);
+
+		locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 		
 		// Try to get the best localization provider
 		Criteria criteria = new Criteria();
@@ -155,6 +185,7 @@ public class CourseStepActivity extends MapActivity{
 			// Display the user
 			displayUser(lastLocation);
 		}
+		
 	}
 	
 	/**
@@ -201,8 +232,8 @@ public class CourseStepActivity extends MapActivity{
     }
     
     protected List<Placemark> getPlaceMarks() {
-        Bundle bundle = getIntent().getExtras();
-        int course_id = bundle.getInt("COURSE_ID");
+        
+        /*int course_id = bundle.getInt("COURSE_ID");
         
         CourseBDD datasource = new CourseBDD(this);
     	datasource.open();
@@ -212,69 +243,110 @@ public class CourseStepActivity extends MapActivity{
     	   	
     	List<Placemark> l = datasource.getAllPlacemarks(c);
     	
-    	datasource.close();
-    	return l;
+    	datasource.close();*/
+    	
+    	Bundle bundle = getIntent().getExtras();
+    	String course_url = bundle.getString(Course.COURSE_URL_EXTRA);    	
+    	
+    	course = CourseLoader.getInstance().parse(course_url);
+    	type = course.getType();
+    	
+    	return course.getPlacemarks();
     }
-
-    private ServiceConnection mConnection = new ServiceConnection() {
-
-		public void onServiceConnected(ComponentName className, IBinder binder) {
-			serviceLocalization = ((LocalizationService.MyBinder) binder).getService();
-			Toast.makeText(CourseStepActivity.this, "Connected", Toast.LENGTH_SHORT).show();
-			updateReceiver();
-		}
-
-		public void onServiceDisconnected(ComponentName className) {
-			serviceLocalization = null;
-		}
-	};
-	
-	private void doBindService() {
-		bindService(new Intent(this, LocalizationService.class), mConnection,Context.BIND_AUTO_CREATE);
-		updateReceiver();
-	}
 	
 	static int currentPoint = 0;
     static BroadcastReceiver receiverLocalization;
     
     public void updateReceiver() {    	
     	Log.d("updateReceiver","Receiver Update");
+    	Log.d("placemark size","placemark size "+placemarks.size());
+    	      	
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);       
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     	
-    	if(serviceLocalization!=null&&!placemarks.isEmpty()){
-		    	if(receiverLocalization!=null){
-		    		unregisterReceiver(receiverLocalization);
-		    					
-			    	NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-			    	Notification notification = new Notification(R.drawable.ic_launcher,placemarks.get(currentPoint).getName(), System.currentTimeMillis());
-			    	notification.flags |= Notification.FLAG_AUTO_CANCEL;
-			    	notification.number += 1;
-			    	
-			    	PendingIntent activity = PendingIntent.getActivity(getBaseContext(), 0, new Intent(getBaseContext(),HomeActivity.class),0);
-			    	notification.setLatestEventInfo(getBaseContext(), placemarks.get(currentPoint).getName(),placemarks.get(currentPoint).getName(), activity);
-			    	notificationManager.notify(0, notification);
-			    	currentPoint += 1;
-		    	} 
+    	if(!placemarks.isEmpty()){
+    		
+
 	    	
 		    if(currentPoint<placemarks.size()){
 		    	receiverLocalization = new BroadcastReceiver() {			
 					@Override
 					public void onReceive(Context context, Intent intent) {			    	
 				    	updateReceiver();
-						Log.d("ReceiverGPS","Proximity Alert");
+					   	unregisterReceiver(receiverLocalization);    					
+					    Log.d("ReceiverGPS","Proximity Alert");
+						displayNotification();
 					}
 	    		};
+	    		
+		    	IntentFilter intentFilter = new IntentFilter(PROX_ALERT_INTENT);  	
+		    	registerReceiver(receiverLocalization, intentFilter);
 	    	
-	    	IntentFilter intentFilter = new IntentFilter(proximityIntentAction);  	
-	    	registerReceiver(receiverLocalization, intentFilter);
-	    	
-	    	serviceLocalization.setProximityAlert(placemarks.get(currentPoint).getPoint().getLongitude(),
-	    			placemarks.get(currentPoint).getPoint().getLattitude(), 1, 0,proximityIntentAction);  	
-	    	}
-	    }
-     else {
-		Log.d("ReceiverGPS","Service not connected");
-     }
+	    		Intent intent = new Intent(PROX_ALERT_INTENT);
+	            PendingIntent proximityIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+	            
+	            locationManager.addProximityAlert(
+	            		placemarks.get(currentPoint).getPoint().getLatitude(), // the latitude of the central point of the alert region
+	            		placemarks.get(currentPoint).getPoint().getLongitude(), // the longitude of the central point of the alert region
+	            		POINT_RADIUS, // the radius of the central point of the alert region, in meters
+	            		PROX_ALERT_EXPIRATION, // time for this proximity alert, in milliseconds, or -1 to indicate no expiration 
+	            		proximityIntent // will be used to generate an Intent to fire when entry to or exit from the alert region is detected
+	           );	
+	            
+				Log.d("Alert Proximity","Alert Proximity Set for lat :"+placemarks.get(currentPoint).getPoint().getLatitude()+", long : "+placemarks.get(currentPoint).getPoint().getLongitude());
+ 	
+		    }
+    	} 
     }
+
+
+	private void displayNotification() {
+		
+		//check for class in foreground
+		Context context = getBaseContext();
+		ActivityManager am = (ActivityManager) context.getSystemService(Activity.ACTIVITY_SERVICE);
+		String packageName = am.getRunningTasks(1).get(0).topActivity.getPackageName();
+		String className = am.getRunningTasks(1).get(0).topActivity.getClassName();
+		Log.d("topActivity-ClassName",className);
+		Log.d("getName",CourseStepActivity.class.getName());
+		
+		if(!className.equals(CourseDetailsActivity.class.getName())) {
+			//send notification in not in foreground
+				NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+				Notification notification = new Notification(R.drawable.ic_launcher,placemarks.get(currentPoint).getName(), System.currentTimeMillis());
+				notification.flags |= Notification.FLAG_AUTO_CANCEL;
+				notification.number += 1;
+				
+				PendingIntent activity = PendingIntent.getActivity(getBaseContext(), 0, new Intent(getBaseContext(),CourseDetailsActivity.class),0);
+				notification.setLatestEventInfo(getBaseContext(), placemarks.get(currentPoint).getName(),placemarks.get(currentPoint).getName(), activity);
+				notificationManager.notify(0, notification);
+		} else {
+				AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+				
+				if(type.equals(Course.TYPE_GAME)) {
+					dialog.setTitle(placemarks.get(currentPoint).getName());
+					dialog.setMessage(placemarks.get(currentPoint).getGreetings());
+					dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+							
+							public void onClick(DialogInterface dialog, int which) {
+								// TODO Auto-generated method stub
+						          Intent gameActivity = new Intent(getApplicationContext(),GameActivity.class);
+						          gameActivity.putExtra(Course.COURSE_URL_EXTRA, course.getUrl());
+						          gameActivity.putExtra(Course.COURSE_CURRENT_PLACEMARK, currentPoint);
+						          startActivity(gameActivity);	
+							}
+						});
+				} else {
+					dialog.setTitle(placemarks.get(currentPoint).getName());
+					dialog.setMessage(placemarks.get(currentPoint).getDescription());
+				}
+				
+				dialog.show();
+		}
+	}
+	
+
 }
 
 class MapOverlay extends com.google.android.maps.Overlay {
@@ -341,4 +413,18 @@ class roadConnectionThread extends Thread {
  		   this.toLat = Double.parseDouble(to[1]);
  		   this.toLon = Double.parseDouble(to[0]);
  	   }
+}
+
+
+class MyLocationListener implements LocationListener {
+    public void onLocationChanged(Location location) {
+		Log.d("Location", "New user position : (" + location.getLatitude() + ", " + location.getLongitude() + ")");	
+
+    }
+    public void onStatusChanged(String s, int i, Bundle b) {            
+    }
+    public void onProviderDisabled(String s) {
+    }
+    public void onProviderEnabled(String s) {            
+    }
 }
