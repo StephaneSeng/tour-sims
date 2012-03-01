@@ -73,7 +73,7 @@ public class GameActivity extends Activity{
 			   nextQuestion();
 		   }  else if(currentQuestion > 0) {
 			   AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-			   dialog.setTitle("Bien répondu"); 
+			   dialog.setTitle("Bien rï¿½pondu"); 
 
 			   if(currentQuestion == p.getQuestions().size()) {
 				   
@@ -107,12 +107,12 @@ public class GameActivity extends Activity{
    
 public void nextQuestion() {
 	description.setText(p.getQuestions().get(currentQuestion).getTitle());
-	buttonNext.setText("Répondez");
+	buttonNext.setText("Rï¿½pondez");
 }
    
 public void dialogEnd() {
 	AlertDialog.Builder dialog2 = new AlertDialog.Builder(this);
-	dialog2.setTitle("Vous pouvez passer à l'étape suivante"); 
+	dialog2.setTitle("Vous pouvez passer ï¿½ l'ï¿½tape suivante"); 
 	
 	dialog2.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 		

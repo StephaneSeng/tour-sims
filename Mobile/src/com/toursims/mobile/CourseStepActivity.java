@@ -67,14 +67,12 @@ public class CourseStepActivity extends MapActivity{
 	private String proximityIntentAction = new String("CourseStepActivity");
 	private List<Placemark> placemarks;
 	private Course course;
-	private static String type;
-		
+	private static String type;	
 	private MapController mapController;
 	private List<Overlay> mapOverlays;
 	private Drawable drawable;
 	private CustomItemizedOverlay itemizedOverlay;
 	private List<Road> mRoads;
-	private MapView mapView;
 	private MyLocationOverlay myLocationOverlay;
 	private MapView mapView;
 	private static final long MINIMUM_DISTANCECHANGE_FOR_UPDATE = 1; // in Meters
