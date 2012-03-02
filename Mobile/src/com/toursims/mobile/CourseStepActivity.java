@@ -331,7 +331,7 @@ public class CourseStepActivity extends MapActivity{
 				if(type.equals(Course.TYPE_GAME)) {
 					dialog.setTitle(placemarks.get(currentPoint).getName());
 					dialog.setMessage(placemarks.get(currentPoint).getGreetings());
-					dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					dialog.setPositiveButton(R.string.game_play, new DialogInterface.OnClickListener() {
 							
 							public void onClick(DialogInterface dialog, int which) {
 								// TODO Auto-generated method stub

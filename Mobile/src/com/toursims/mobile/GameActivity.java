@@ -49,9 +49,9 @@ public class GameActivity extends Activity{
     	
     	
     	if(p.getQuestions() == null) {
- 		   buttonNext.setText("Etape Suivante");   
+ 		   buttonNext.setText(R.string.game_next_stage);   
  	   } else {
- 		   buttonNext.setText("Jouer");   
+ 		   buttonNext.setText(R.string.game_play);   
  	   }
     	
     	buttonNext.setOnClickListener(new OnClickListener() {
@@ -77,7 +77,7 @@ public class GameActivity extends Activity{
 
 			   if(currentQuestion == p.getQuestions().size()) {
 				   
-				   dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				   dialog.setPositiveButton(R.string.game_ok, new DialogInterface.OnClickListener() {
 						
 						public void onClick(DialogInterface dialog, int which) {
 							// TODO Auto-generated method stub
@@ -88,7 +88,7 @@ public class GameActivity extends Activity{
 			     
 			   } else {
 				   
-				   dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				   dialog.setPositiveButton(R.string.game_ok, new DialogInterface.OnClickListener() {
 						
 						public void onClick(DialogInterface dialog, int which) {
 							// TODO Auto-generated method stub
@@ -107,12 +107,12 @@ public class GameActivity extends Activity{
    
 public void nextQuestion() {
 	description.setText(p.getQuestions().get(currentQuestion).getTitle());
-	buttonNext.setText("R�pondez");
+	buttonNext.setText(R.string.game_answer);
 }
    
 public void dialogEnd() {
 	AlertDialog.Builder dialog2 = new AlertDialog.Builder(this);
-	dialog2.setTitle("Vous pouvez passer � l'�tape suivante"); 
+	dialog2.setTitle(R.string.game_next_stage); 
 	
 	dialog2.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 		
