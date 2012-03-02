@@ -1,5 +1,7 @@
 package com.toursims.mobile.util;
 
+import java.io.InputStream;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -68,10 +70,10 @@ public class SQLiteHelper extends SQLiteOpenHelper{
  
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		db.execSQL("INSERT INTO \"android_metadata\" VALUES ('en_US')");
 		db.execSQL("DROP TABLE " + TABLE_COURSE + ";");
 		db.execSQL("DROP TABLE " + TABLE_PLACEMARK + ";");
 		onCreate(db);
 	}
 	
- 
 }

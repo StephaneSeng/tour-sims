@@ -1,5 +1,7 @@
 package com.toursims.mobile;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import com.toursims.mobile.controller.CourseBDD;
 import com.toursims.mobile.controller.CourseLoader;
@@ -18,7 +20,7 @@ import android.widget.ListView;
 
 public class CourseGameActivity extends Activity {
 	
-	private static List<Course> courses;
+	private static List<Course> courses = new ArrayList<Course>();
 	
 	public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -33,11 +35,18 @@ public class CourseGameActivity extends Activity {
     String city = bundle.getString("CITY");
     title.setText(city);
     
-    CourseBDD datasource = new CourseBDD(this);
-	datasource.open();
-	datasource.truncate();
+    CourseBDD datasource;
+	try {
+		datasource = new CourseBDD(this);
+		datasource.open();
+		courses = datasource.getCoursesWithCity(city);
+	    datasource.close();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 	
-	Course c1 = CourseLoader.getInstance().parse("http://www.x00b.com/tour.kml");
+/*	Course c1 = CourseLoader.getInstance().parse("http://www.x00b.com/tour.kml");
 	datasource.insertCourse(c1);
 	c1.setId(datasource.getCourseIdWithURL("http://www.x00b.com/tour.kml"));
 	datasource.insertPlacemarks(c1);
@@ -50,14 +59,12 @@ public class CourseGameActivity extends Activity {
 	Course c3 = CourseLoader.getInstance().parse("http://www.x00b.com/tour3.kml");
 	datasource.insertCourse(c3);
 	c3.setId(datasource.getCourseIdWithURL("http://www.x00b.com/tour3.kml"));
-	datasource.insertPlacemarks(c3);
+	datasource.insertPlacemarks(c3);*/
 		
-	courses = datasource.getCoursesWithCity(city);
 				
 	if(courses.size()>0) {
 	    CourseAdapter adapter = new CourseAdapter(this, courses,getCacheDir().getAbsolutePath());
 	    
-	    datasource.close();
 	    lv.setAdapter(adapter);   
 	    lv.setOnItemClickListener(new OnItemClickListener() {
 	       

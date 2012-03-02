@@ -1,5 +1,8 @@
 package com.toursims.mobile.controller;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +21,10 @@ public class CourseBDD {
 	private SQLiteDatabase bdd;
 	private static final int VERSION_BDD = 1;
 	private static final String NOM_BDD = "sqlite.db";
-	public CourseBDD(Context context){
+	private Context context;
+	
+	public CourseBDD(Context context) throws IOException{
+		copyDataBase(context);
 		maBaseSQLite = new SQLiteHelper(context, NOM_BDD, null, VERSION_BDD);
 	}
  
@@ -174,13 +180,33 @@ public class CourseBDD {
 		return courses;
 	}
 	
-
-
 	public void truncate() {
 		bdd.execSQL("DELETE FROM " + SQLiteHelper.TABLE_PLACEMARK + ";");
 		bdd.execSQL("DELETE FROM " + SQLiteHelper.TABLE_COURSE + ";");
-
 	}
 	
+	private void copyDataBase(Context c) throws IOException{
+		 
+    	//Open your local db as the input stream
+    	InputStream myInput = c.getAssets().open(NOM_BDD);
+ 
+    	// Path to the just created empty db
+    	String outFileName = "/data/data/com.toursims.mobile/databases/" + NOM_BDD;
+ 
+    	//Open the empty db as the output stream
+    	java.io.OutputStream myOutput = new FileOutputStream(outFileName);
+ 
+    	//transfer bytes from the inputfile to the outputfile
+    	byte[] buffer = new byte[1024];
+    	int length;
+    	while ((length = myInput.read(buffer))>0){
+    		myOutput.write(buffer, 0, length);
+    	}
+ 
+    	//Close the streams
+    	myOutput.flush();
+    	myOutput.close();
+    	myInput.close();
+    }
 	
 }
