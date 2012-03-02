@@ -1,20 +1,28 @@
 package com.toursims.mobile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.toursims.mobile.controller.CourseLoader;
 import com.toursims.mobile.model.Course;
+import com.toursims.mobile.model.kml.Answer;
 import com.toursims.mobile.model.kml.Placemark;
+import com.toursims.mobile.model.kml.Question;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
-import android.content.DialogInterface.OnKeyListener;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 public class GameActivity extends Activity{
@@ -26,6 +34,9 @@ public class GameActivity extends Activity{
 	private static TextView description;
 	private static Button buttonNext;
 	private static Placemark p;
+	private static Question q;
+	private static LinearLayout answers;
+	private static EditText e;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,6 +58,7 @@ public class GameActivity extends Activity{
     	title.setText(p.getName());
     	description.setText(p.getDescription());
     	
+    	Log.d("GameActivity","nb questions"+p.getQuestions().size());
     	
     	if(p.getQuestions() == null) {
  		   buttonNext.setText(R.string.game_next_stage);   
@@ -68,35 +80,49 @@ public class GameActivity extends Activity{
 	   if(p.getQuestions() == null) {
 		   quitView();
 	   } else {		   
-		   currentQuestion += 1;
-		   if(currentQuestion == 0){
+		   if(currentQuestion == -1){
+			   currentQuestion++;
 			   nextQuestion();
-		   }  else if(currentQuestion > 0) {
+		   }  else if(currentQuestion >= 0) {
+			   
 			   AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-			   dialog.setTitle("Bien r�pondu"); 
-
-			   if(currentQuestion == p.getQuestions().size()) {
-				   
-				   dialog.setPositiveButton(R.string.game_ok, new DialogInterface.OnClickListener() {
-						
-						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
-							dialog.dismiss();
-							dialogEnd();	
-						}
-					});
-			     
+			   			   
+			   if(checkAnswer()) {
+				   currentQuestion++;
+				   dialog.setTitle(R.string.game_good_answer);
+				   if(currentQuestion == p.getQuestions().size()) {
+					   
+					   dialog.setPositiveButton(R.string.game_ok, new DialogInterface.OnClickListener() {
+							
+							public void onClick(DialogInterface dialog, int which) {
+								// TODO Auto-generated method stub
+								dialog.dismiss();
+								dialogEnd();	
+							}
+						});
+				     
+				   } else {
+					   
+					   dialog.setPositiveButton(R.string.game_ok, new DialogInterface.OnClickListener() {
+							
+							public void onClick(DialogInterface dialog, int which) {
+								// TODO Auto-generated method stub
+								dialog.dismiss();
+								nextQuestion();	
+							}
+						});
+				   }		  
 			   } else {
-				   
+				   dialog.setTitle(R.string.game_try_again); 
 				   dialog.setPositiveButton(R.string.game_ok, new DialogInterface.OnClickListener() {
 						
 						public void onClick(DialogInterface dialog, int which) {
 							// TODO Auto-generated method stub
 							dialog.dismiss();
-							nextQuestion();		
 						}
 					});
-			   }		   
+			   }
+			      
 			   dialog.show();
 	   } 
 		   
@@ -106,8 +132,70 @@ public class GameActivity extends Activity{
    }
    
 public void nextQuestion() {
-	description.setText(p.getQuestions().get(currentQuestion).getTitle());
+	q = p.getQuestions().get(currentQuestion);
+	
+	description.setText(q.getTitle());
+    setContentView(R.layout.game_question);
+    
+	title = (TextView)findViewById(R.id.title);
+	buttonNext = (Button)findViewById(R.id.buttonNext);
+	description = (TextView)findViewById(R.id.description);
+	
+	answers = (LinearLayout) findViewById(R.id.answers);
+	answers.setOrientation(LinearLayout.VERTICAL);
+	
+	title.setText(p.getName());
+	description.setText(q.getTitle());
+	
+	if(q.getType().equals(Question.TYPE_MULTIPLE_CHOICE)){
+		
+		// multiple answers
+		if(q.hasMultipleAnswers()) {
+			int i = 0;
+			for (Answer a : q.getAnswers()) {
+				CheckBox item = new CheckBox(this);
+				item.setText(a.getValue());
+				item.setId(i++);	
+				answers.addView(item);
+			}
+		} else {
+		//only one answer	
+			RadioGroup r = new RadioGroup(this);
+			
+			int i = 0;			
+			for (Answer a : q.getAnswers()) {
+				RadioButton item = new RadioButton(this);
+				item.setText(a.getValue());
+				item.setId(i++);
+				r.addView(item);
+			}
+			answers.addView(r);
+		}
+	} else if(q.getType().equals(Question.TYPE_EXACT)){
+		e = new EditText(this);
+		e.setText(R.string.game_your_answer);
+		e.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				e.setText("");
+			}
+		});
+		
+		answers.addView(e);
+		
+		
+	}
+	
 	buttonNext.setText(R.string.game_answer);
+	buttonNext.setOnClickListener(new OnClickListener() {
+		
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			buttonClicked();
+		}
+	});
+		
 }
    
 public void dialogEnd() {
@@ -126,7 +214,7 @@ public void dialogEnd() {
 	
 }
 
-   public void quitView() {
+public void quitView() {
        Intent courseDetails = new Intent(getApplicationContext(),CourseDetailsActivity.class);
        courseDetails.putExtra(Course.COURSE_ID_EXTRA, course.getId());
        courseDetails.putExtra(Course.COURSE_URL_EXTRA, course.getUrl());
@@ -134,5 +222,33 @@ public void dialogEnd() {
        startActivity(courseDetails);
        finish();
    }
+   
+public boolean checkAnswer() {
+	if(q.getType().equals(Question.TYPE_MULTIPLE_CHOICE)) {
+		if(q.hasMultipleAnswers()){
+			List<Integer> ints = new ArrayList<Integer>();
+			int size = answers.getChildCount();
+			int i = 0;
+			
+			while(i<size){
+				CheckBox c = (CheckBox) answers.getChildAt(i);
+				if(c.isChecked()) {
+					ints.add(i);
+				}
+				i++;
+			}
+			
+			return q.checkAnswers(ints);
+		} else {
+			RadioGroup r = (RadioGroup) answers.getChildAt(0);
+			return q.checkAnswer(r.getCheckedRadioButtonId());			
+		}
+	} else if(q.getType().equals(Question.TYPE_EXACT)) {
+		EditText e = (EditText) answers.getChildAt(0);
+		Log.d("edit","edit"+e.getText().toString());
+		return q.checkAnswer(e.getText().toString());
+	}
+	return true;
+}
    
 }

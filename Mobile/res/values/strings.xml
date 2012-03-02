@@ -8,4 +8,7 @@
     <string name="game_play">Jouer!</string>
     <string name="game_ok">OK</string>
     <string name="game_answer">Répondre</string>
+    <string name="game_your_answer">Votre réponse</string>
+    <string name="game_good_answer">Bien répondu</string>
+    <string name="game_try_again">Mauvaise Réponse</string>
 </resources>

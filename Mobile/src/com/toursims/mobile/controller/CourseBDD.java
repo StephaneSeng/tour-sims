@@ -1,5 +1,6 @@
 package com.toursims.mobile.controller;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,13 +16,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class CourseBDD {
-	private SQLiteHelper maBaseSQLite;
-	private SQLiteDatabase bdd;
 	private static final int VERSION_BDD = 1;
 	private static final String NOM_BDD = "sqlite.db";
-	private Context context;
+	private static final String PATH_BDD = "/data/data/com.toursims.mobile/databases/";
+	
+	private SQLiteHelper maBaseSQLite;
+	private SQLiteDatabase bdd;
 	
 	public CourseBDD(Context context) throws IOException{
 		copyDataBase(context);
@@ -216,12 +219,16 @@ public class CourseBDD {
 	
 	private void copyDataBase(Context c) throws IOException{
 		 
+		Log.d("CourseBDD","Copy Database");
     	//Open your local db as the input stream
     	InputStream myInput = c.getAssets().open(NOM_BDD);
  
     	// Path to the just created empty db
-    	String outFileName = "/data/data/com.toursims.mobile/databases/" + NOM_BDD;
+    	String outFileName = PATH_BDD + NOM_BDD;
  
+    	File f = new File(PATH_BDD);
+    	f.mkdirs();
+    	    	
     	//Open the empty db as the output stream
     	java.io.OutputStream myOutput = new FileOutputStream(outFileName);
  

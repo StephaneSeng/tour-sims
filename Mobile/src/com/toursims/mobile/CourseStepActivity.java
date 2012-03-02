@@ -65,23 +65,25 @@ public class CourseStepActivity extends MapActivity{
     /** Called when the activity is first created. */
 	private static LocalizationService serviceLocalization;
 	private String proximityIntentAction = new String("CourseStepActivity");
-	private List<Placemark> placemarks;
-	private Course course;
+	private static List<Placemark> placemarks;
+	private static Course course;
 	private static String type;	
 	private MapController mapController;
 	private List<Overlay> mapOverlays;
 	private Drawable drawable;
 	private CustomItemizedOverlay itemizedOverlay;
+	private CustomItemizedOverlay itemizedOverlay_currentPoint;
 	private List<Road> mRoads;
 	private MyLocationOverlay myLocationOverlay;
 	private MapView mapView;
 	private static final long MINIMUM_DISTANCECHANGE_FOR_UPDATE = 1; // in Meters
 	private static final long MINIMUM_TIME_BETWEEN_UPDATE = 3000; // in Milliseconds
-    	private static final long POINT_RADIUS = 1000; // in Meters
-    	private static final long PROX_ALERT_EXPIRATION = -1;    
-    	private static final String PROX_ALERT_INTENT = 
-            "com.javacodegeeks.android.lbs.ProximityAlert";  
-    	private LocationManager locationManager;
+    private static final long POINT_RADIUS = 1000; // in Meters
+    private static final long PROX_ALERT_EXPIRATION = -1;    
+    private static final String PROX_ALERT_INTENT = "com.javacodegeeks.android.lbs.ProximityAlert"; 
+    private LocationManager locationManager;
+    private static int currentPoint = 0;
+    private static BroadcastReceiver receiverLocalization;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -109,8 +111,10 @@ public class CourseStepActivity extends MapActivity{
         mapOverlays = mapView.getOverlays();
         drawable = this.getResources().getDrawable(R.drawable.maps_icon);
         itemizedOverlay = new CustomItemizedOverlay(drawable, this);
+        itemizedOverlay_currentPoint = new CustomItemizedOverlay(drawable, this);
         
-        String[] formerPoint = null; 
+        String[] formerPoint = null;
+        int i = 0;
         
         /***** load overlays ******/
         for(Placemark placemark: placemarks){
@@ -120,6 +124,18 @@ public class CourseStepActivity extends MapActivity{
         	Log.d(getLocalClassName(), String.valueOf(l) + " " + String.valueOf(L));
         	GeoPoint point = new GeoPoint(l,L);
         	OverlayItem overlayItem = new OverlayItem(point, placemark.getName(),placemark.getDescription());
+        	
+        	if(i==currentPoint){
+        		Drawable d = this.getResources().getDrawable(R.drawable.maps_icon_current);
+                itemizedOverlay_currentPoint = new CustomItemizedOverlay(d, this);
+                itemizedOverlay_currentPoint.addOverlay(overlayItem);
+                mapOverlays.add(itemizedOverlay_currentPoint);
+        	} else {
+            	itemizedOverlay.addOverlay(overlayItem);
+        	}
+ 
+        	i++;
+        	
         	
         	/***** load routes *****/
         	if(formerPoint != null) {
@@ -141,7 +157,7 @@ public class CourseStepActivity extends MapActivity{
         		mapController.animateTo(point);
         	}
         	formerPoint = lL;
-        	itemizedOverlay.addOverlay(overlayItem);
+
         }
         mapOverlays.add(itemizedOverlay);
    
@@ -257,10 +273,7 @@ public class CourseStepActivity extends MapActivity{
     	
     	return course.getPlacemarks();
     }
-	
-	static int currentPoint = 0;
-    static BroadcastReceiver receiverLocalization;
-    
+	    
     public void updateReceiver() {    	
     	Log.d("updateReceiver","Receiver Update");
     	Log.d("placemark size","placemark size "+placemarks.size());
@@ -271,8 +284,6 @@ public class CourseStepActivity extends MapActivity{
     	
     	if(!placemarks.isEmpty()){
     		
-
-	    	
 		    if(currentPoint<placemarks.size()){
 		    	receiverLocalization = new BroadcastReceiver() {			
 					@Override
