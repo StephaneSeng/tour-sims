@@ -15,6 +15,10 @@ public class City {
 		this.coverPictureURL = coverPictureURL;
 	}
 	
+	public City() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public void setId(Integer id) {
 		this.id = id;
 	}

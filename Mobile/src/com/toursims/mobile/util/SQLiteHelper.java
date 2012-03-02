@@ -39,6 +39,10 @@ public class SQLiteHelper extends SQLiteOpenHelper{
 	public static final String COL_PLACEMARK_COURSE_ID = "COURSE";
 	public static final int NUM_COL_PLACEMARK_COURSE_ID = 5;
 
+	public static final String TABLE_CITY = "CITIES";
+	public static final String COL_CITY_COVERPICTUREURL = "COVERPICTUREURL";
+	public static final int NUM_COL_CITY_COVERPICTUREURL = 2;
+	/*
 	private static final String CREATE_BDD_COURSE = "CREATE TABLE " + TABLE_COURSE + " ("
 			+ COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " 
 			+ COL_NAME 			+ " TEXT, "
@@ -57,23 +61,23 @@ public class SQLiteHelper extends SQLiteOpenHelper{
 			+ COL_PLACEMARK_POINT			+ " TEXT, "
 			+ COL_PLACEMARK_COURSE_ID + " TEXT);"
 		;
-		
+	*/
 	public SQLiteHelper(Context context, String name, CursorFactory factory, int version) {
 		super(context, name, factory, version);
 	}
  
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		db.execSQL(CREATE_BDD_COURSE);
-		db.execSQL(CREATE_BDD_PLACEMARK);
+	//	db.execSQL(CREATE_BDD_COURSE);
+	//	db.execSQL(CREATE_BDD_PLACEMARK);
 	}
  
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		db.execSQL("INSERT INTO \"android_metadata\" VALUES ('en_US')");
-		db.execSQL("DROP TABLE " + TABLE_COURSE + ";");
-		db.execSQL("DROP TABLE " + TABLE_PLACEMARK + ";");
-		onCreate(db);
+	//	db.execSQL("INSERT INTO \"android_metadata\" VALUES ('en_US')");
+	//	db.execSQL("DROP TABLE " + TABLE_COURSE + ";");
+	//	db.execSQL("DROP TABLE " + TABLE_PLACEMARK + ";");
+	//	onCreate(db);
 	}
 	
 }

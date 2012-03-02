@@ -40,6 +40,11 @@ public class CourseBDD {
 		return bdd;
 	}
 	
+	private String[] allColumnsCity = {SQLiteHelper.COL_ID, 
+			SQLiteHelper.COL_NAME,
+			SQLiteHelper.COL_CITY_COVERPICTUREURL
+	};
+	
 	private String[] allColumnsCourse = {SQLiteHelper.COL_ID, 
 			SQLiteHelper.COL_NAME,
 			SQLiteHelper.COL_COURSE_CITYID,
@@ -138,6 +143,16 @@ public class CourseBDD {
 		return course;
 	}
 	
+	private City cursorToCity(Cursor c){
+		if (c.getCount() == 0)
+			return null;
+		City item = new City();
+		item.setId(c.getInt(SQLiteHelper.NUM_COL_ID));
+		item.setName(c.getString(SQLiteHelper.NUM_COL_NAME));
+		item.setCoverPictureURL(c.getString(SQLiteHelper.NUM_COL_CITY_COVERPICTUREURL));
+		return item;
+	}
+	
 	public List<Course> getAllCourses() {
 		List<Course> courses = new ArrayList<Course>();
 		Cursor cursor = bdd.query(SQLiteHelper.TABLE_COURSE,
@@ -152,6 +167,20 @@ public class CourseBDD {
 		return courses;
 	}
 	
+	public List<City> getAllCities() {
+		List<City> list = new ArrayList<City>();
+		Cursor cursor = bdd.query(SQLiteHelper.TABLE_CITY,
+				allColumnsCity, null, null, null, null, null);
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			City item = cursorToCity(cursor);
+			list.add(item);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return list;
+	}
+	
 	public List<Placemark> getAllPlacemarks(Course course){
 		List<Placemark> placemarks = new ArrayList<Placemark>();
 		Cursor cursor = bdd.query(SQLiteHelper.TABLE_PLACEMARK, allColumnsPlacemark , SQLiteHelper.COL_PLACEMARK_COURSE_ID + " = "+course.getId(), null, null, null, null);
@@ -164,7 +193,7 @@ public class CourseBDD {
 		cursor.close();
 		return placemarks;
 	}
-
+	
 	public List<Course> getCoursesWithCity(String city){
 		
 		List<Course> courses = new ArrayList<Course>();
