@@ -1,8 +1,13 @@
 package com.toursims.mobile;
 
+import com.toursims.mobile.model.Course;
+
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,7 +18,7 @@ public class HomeActivity extends Activity {
 	
 	public static final String PREF_FILE = "PREF_FILE";
 	public static final String PREF_CURRENT_COURSE_URL = "PREF_CURRENT_COURSE_URL";
-	public static final String PREF_CURRENT_COURSE_STARTED = "PREF_CURRENT_COURSE_STARTED";
+	public static final String PREF_CURRENT_COURSE_TIME_STARTED = "PREF_CURRENT_COURSE_STARTED";
     
 	/**
 	 * Android debugging tag
@@ -101,5 +106,32 @@ public class HomeActivity extends Activity {
 		}
 	}
 
-}
+    private void resumeCourse(){
+    	
+    }
+    
+    private boolean startedCourse() {
+    	/*
+    	SharedPreferences settings = getSharedPreferences(PREF_FILE, 0);
 
+    	if(settings.contains(PREF_CURRENT_COURSE_URL)){
+			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+
+    		dialog.setTitle();
+			dialog.setMessage(placemarks.get(currentPoint).getGreetings());
+			dialog.setPositiveButton(R.string.game_play, new DialogInterface.OnClickListener() {
+					
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+				          Intent gameActivity = new Intent(getApplicationContext(),GameActivity.class);
+				          gameActivity.putExtra(Course.COURSE_URL_EXTRA, course.getUrl());
+				          gameActivity.putExtra(Course.COURSE_CURRENT_PLACEMARK, currentPoint);
+				          startActivity(gameActivity);	
+					}
+				});
+    	}
+    	
+    	return false;
+    }*/
+}
+ 

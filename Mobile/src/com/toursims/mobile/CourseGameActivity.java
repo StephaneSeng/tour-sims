@@ -83,7 +83,7 @@ public class CourseGameActivity extends Activity {
 	          editor.putString(HomeActivity.PREF_CURRENT_COURSE_URL, courses.get(position).getUrl());
 	          Calendar c = Calendar.getInstance(); 
 	          int seconds = c.get(Calendar.SECOND);
-	          editor.putInt(HomeActivity.PREF_CURRENT_COURSE_STARTED, seconds);
+	          editor.putInt(HomeActivity.PREF_CURRENT_COURSE_TIME_STARTED, seconds);
 	          // Commit the edits!
 	          editor.commit();
 	    }
