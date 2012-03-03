@@ -101,8 +101,5 @@ public class HomeActivity extends Activity {
 		}
 	}
 
-	static final String[] COURSES = new String[] {
-    	"LaDoua", "INSA", "Lyon1", "IUT-Feyssine"
-    };
 }
 
