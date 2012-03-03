@@ -8,6 +8,7 @@ import org.simpleframework.xml.Root;
 
 @Root
 public class Placemark {
+	public static final String NAME = "Placemark_NAME";
 
 	private Integer id;
 	

@@ -4,6 +4,9 @@ import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.toursims.mobile.model.kml.Placemark;
+import com.toursims.mobile.model.kml.Point;
+
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -22,7 +25,11 @@ import android.util.Log;
 public class LocalizationService extends Service {
 	
 	private final IBinder mBinder = new MyBinder();
+	private Timer timer = new Timer();
+
 	private static final String TAG = LocalizationService.class.getName();
+	private static final String PROXIMITY_INTENT = TAG+".PROXIMITY_INTENT";
+
 	private static final long UPDATE_INTERVAL = 5000;
 	private long minUpdateTime = 1 * 1 * 1000; // 30 seconds
 	private long maxUpdateTime = 1 * 5 * 1000; // 1 minute
@@ -31,7 +38,6 @@ public class LocalizationService extends Service {
 	private Criteria criteria;
 	private String bestProvider;
 	private LocalizationListener localizationListener;
-	private Timer timer = new Timer();
 	private Location lastLocation;
 	private Calendar lastUpdateTime;
 	private PendingIntent pendingIntentForProximityAlert = null;
@@ -62,8 +68,47 @@ public class LocalizationService extends Service {
 		
 		localizationTask();		
 		Log.d(TAG, "The LocalizationService has been started");
+		
+
+		
+		
 	}
 
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		// TODO Auto-generated method stub
+		Bundle b = intent.getExtras();
+		
+		if(b.containsKey(Point.LATITUDE)&&b.containsKey(Point.LONGITUDE)&&b.containsKey(Placemark.NAME)){
+			setProximityAlert(b.getDouble(Point.LATITUDE),
+					b.getDouble(Point.LONGITUDE),
+					0, 
+					0, 
+					PROXIMITY_INTENT);
+		
+		BroadcastReceiver r = new BroadcastReceiver() {
+			
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				// TODO Auto-generated method stub
+				Log.d(PROXIMITY_INTENT,"Proximity Intent received from Service");
+			}
+		};
+		
+    	IntentFilter intentFilter = new IntentFilter(PROXIMITY_INTENT);  	
+    	registerReceiver(r, intentFilter);
+		
+		
+		} else {
+			Log.d(TAG,"Missing Arguments");
+		}
+		
+		
+		
+		return super.onStartCommand(intent, flags, startId);
+	}
+	
+	
 	private void localizationTask() {
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
@@ -142,4 +187,5 @@ public class LocalizationService extends Service {
 		timer.cancel();		
 		Log.d(TAG, "The LocalizationService has be destroyed");
 	}	
+	
 }

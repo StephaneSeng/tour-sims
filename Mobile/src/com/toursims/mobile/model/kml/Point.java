@@ -2,6 +2,9 @@ package com.toursims.mobile.model.kml;
 import org.simpleframework.xml.Element;
 
 public class Point {
+	public static final String LATITUDE = "point_latitude";
+	public static final String LONGITUDE = "point_longitude";
+	
 
 	@Element
 	private String coordinates;

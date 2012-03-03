@@ -54,6 +54,8 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Toast;
 import android.location.Criteria;
 import android.location.Location;
@@ -63,8 +65,13 @@ import android.os.Handler;
 
 public class CourseStepActivity extends MapActivity{
     /** Called when the activity is first created. */
+	private static final String TAG = LocalizationService.class.getName();
+	private static final String PROXIMITY_INTENT = LocalizationService.class.getName()+".PROXIMITY_INTENT";
+	private static final String PROXIMITY_RECEIVER = LocalizationService.class.getName()+".PROXIMITY_RECEIVER";
+
+	
+	
 	private static LocalizationService serviceLocalization;
-	private String proximityIntentAction = new String("CourseStepActivity");
 	private static List<Placemark> placemarks;
 	private static Course course;
 	private static String type;	
@@ -84,15 +91,15 @@ public class CourseStepActivity extends MapActivity{
     private LocationManager locationManager;
     private static int currentPoint = 0;
     private static BroadcastReceiver receiverLocalization;
+	private LocalizationService s;
 
+
+    
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        Bundle bundle = getIntent().getExtras();
-                
-        Log.d("CourseStepActivity","onCreate Called");
-        
+        Bundle bundle = getIntent().getExtras();       
         setContentView(R.layout.coursestep);
 		
         placemarks = getPlaceMarks();
@@ -172,18 +179,37 @@ public class CourseStepActivity extends MapActivity{
         
         updateReceiver();
 
-	myLocationOverlay = new MyLocationOverlay(this, mapView);
-	myLocationOverlay.enableMyLocation();
-	mapOverlays.add(myLocationOverlay);
-
+		myLocationOverlay = new MyLocationOverlay(this, mapView);
+		myLocationOverlay.enableMyLocation();
+		mapOverlays.add(myLocationOverlay);
+		
+		Button b = (Button)findViewById(R.id.button1);
+		
+	
+				
         }
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		Log.d("TAG","Start Service");
+		
+		Intent i = new Intent(this, LocalizationService.class);
+		i.putExtra(Point.LATITUDE, placemarks.get(currentPoint).getPoint().getLatitude());
+		i.putExtra(Point.LONGITUDE, placemarks.get(currentPoint).getPoint().getLatitude());
+		i.putExtra(Placemark.NAME, placemarks.get(currentPoint).getName());
+
+		startService(i);
+	}
+	
     
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Log.d("On Resume","Resume Course Step Activity");
-		Log.d("course","course "+course.getName());
-		Log.d("course","course "+currentPoint);
+		
+		Log.d("TAG","Stop service");
+		stopService(new Intent(this, LocalizationService.class));
 
 		locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 		
@@ -245,12 +271,7 @@ public class CourseStepActivity extends MapActivity{
 		  }
 		  return is;
     }
-	
-    @Override
-    protected boolean isRouteDisplayed() {
-        return false;
-    }
-    
+	    
     protected List<Placemark> getPlaceMarks() {
         
         /*int course_id = bundle.getInt("COURSE_ID");
@@ -274,7 +295,8 @@ public class CourseStepActivity extends MapActivity{
     	return course.getPlacemarks();
     }
 	    
-    public void updateReceiver() {    	
+    public void updateReceiver() {      	
+    	
     	Log.d("updateReceiver","Receiver Update");
     	Log.d("placemark size","placemark size "+placemarks.size());
     	      	
@@ -290,15 +312,15 @@ public class CourseStepActivity extends MapActivity{
 					public void onReceive(Context context, Intent intent) {			    	
 				    	updateReceiver();
 					   	unregisterReceiver(receiverLocalization);    					
-					    Log.d("ReceiverGPS","Proximity Alert");
+					    Log.d(PROXIMITY_RECEIVER,"Proximity Alert");
 						displayNotification();
 					}
 	    		};
 	    		
-		    	IntentFilter intentFilter = new IntentFilter(PROX_ALERT_INTENT);  	
+		    	IntentFilter intentFilter = new IntentFilter(PROXIMITY_INTENT);  	
 		    	registerReceiver(receiverLocalization, intentFilter);
 	    	
-	    		Intent intent = new Intent(PROX_ALERT_INTENT);
+	    		Intent intent = new Intent(PROXIMITY_INTENT);
 	            PendingIntent proximityIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 	            
 	            locationManager.addProximityAlert(
@@ -309,7 +331,7 @@ public class CourseStepActivity extends MapActivity{
 	            		proximityIntent // will be used to generate an Intent to fire when entry to or exit from the alert region is detected
 	           );	
 	            
-				Log.d("Alert Proximity","Alert Proximity Set for lat :"+placemarks.get(currentPoint).getPoint().getLatitude()+", long : "+placemarks.get(currentPoint).getPoint().getLongitude());
+				Log.d(PROXIMITY_INTENT,"Alert Proximity Set for lat :"+placemarks.get(currentPoint).getPoint().getLatitude()+", long : "+placemarks.get(currentPoint).getPoint().getLongitude());
  	
 		    }
     	} 
@@ -361,7 +383,31 @@ public class CourseStepActivity extends MapActivity{
 		}
 	}
 	
+	private ServiceConnection mConnection = new ServiceConnection() {
 
+		public void onServiceConnected(ComponentName className, IBinder binder) {
+			s = ((LocalizationService.MyBinder) binder).getService();
+			Log.d("Connect","Connected Home Activity");
+		}
+
+		public void onServiceDisconnected(ComponentName className) {
+			s = null;
+		}
+	};
+
+	void doBindService() {
+		Log.d("Connect","do Bind");
+		bindService(new Intent(this, LocalizationService.class), mConnection,
+				Context.BIND_AUTO_CREATE);
+	}
+	
+
+	@Override
+	protected boolean isRouteDisplayed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+  
 }
 
 class MapOverlay extends com.google.android.maps.Overlay {
@@ -415,6 +461,8 @@ class MapOverlay extends com.google.android.maps.Overlay {
                     y1 = y2;
             }
     }
+    
+
 }
 
 
@@ -434,7 +482,6 @@ class roadConnectionThread extends Thread {
 class MyLocationListener implements LocationListener {
     public void onLocationChanged(Location location) {
 		Log.d("Location", "New user position : (" + location.getLatitude() + ", " + location.getLongitude() + ")");	
-
     }
     public void onStatusChanged(String s, int i, Bundle b) {            
     }
@@ -443,3 +490,5 @@ class MyLocationListener implements LocationListener {
     public void onProviderEnabled(String s) {            
     }
 }
+
+
