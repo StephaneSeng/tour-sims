@@ -10,6 +10,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class HomeActivity extends Activity {
+	
+	public static final String PREF_FILE = "PREF_FILE";
+	public static final String PREF_CURRENT_COURSE_URL = "PREF_CURRENT_COURSE_URL";
+	public static final String PREF_CURRENT_COURSE_STARTED = "PREF_CURRENT_COURSE_STARTED";
     
 	/**
 	 * Android debugging tag

@@ -2,6 +2,7 @@ package com.toursims.mobile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import com.toursims.mobile.controller.CourseBDD;
 import com.toursims.mobile.controller.CourseLoader;
@@ -9,6 +10,7 @@ import com.toursims.mobile.model.Course;
 import com.toursims.mobile.ui.CourseAdapter;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,7 +21,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 public class CourseGameActivity extends Activity {
-	
+		
 	private static List<Course> courses = new ArrayList<Course>();
 	
 	public void onCreate(Bundle savedInstanceState) {
@@ -73,7 +75,17 @@ public class CourseGameActivity extends Activity {
 	          Intent courseDetails = new Intent(getApplicationContext(),CourseDetailsActivity.class);
 	          courseDetails.putExtra(Course.COURSE_ID_EXTRA, courses.get(position).getId());
 	          courseDetails.putExtra(Course.COURSE_URL_EXTRA, courses.get(position).getUrl());
-	          startActivity(courseDetails);	        
+	          startActivity(courseDetails);
+	          
+	          //Put that a course is started
+	          SharedPreferences settings = getSharedPreferences(HomeActivity.PREF_FILE, 0);
+	          SharedPreferences.Editor editor = settings.edit();
+	          editor.putString(HomeActivity.PREF_CURRENT_COURSE_URL, courses.get(position).getUrl());
+	          Calendar c = Calendar.getInstance(); 
+	          int seconds = c.get(Calendar.SECOND);
+	          editor.putInt(HomeActivity.PREF_CURRENT_COURSE_STARTED, seconds);
+	          // Commit the edits!
+	          editor.commit();
 	    }
 		});
 	} else {

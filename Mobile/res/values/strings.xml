@@ -11,4 +11,8 @@
     <string name="game_your_answer">Votre réponse</string>
     <string name="game_good_answer">Bien répondu</string>
     <string name="game_try_again">Mauvaise Réponse</string>
+    
+	<string name="preferences_current_course_url">PREFERENCES_CURRENT_COURSE</string> 
+    <string name="preferences_file">PREFS</string>
+
 </resources>
