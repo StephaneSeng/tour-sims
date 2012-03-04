@@ -38,6 +38,7 @@ import android.graphics.drawable.Drawable;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -69,6 +70,10 @@ public class CourseStepActivity extends MapActivity{
 	private static final String TAG = LocalizationService.class.getName();
 	private static final String PROXIMITY_INTENT = LocalizationService.class.getName()+".PROXIMITY_INTENT";
 	private static final String PROXIMITY_RECEIVER = LocalizationService.class.getName()+".PROXIMITY_RECEIVER";
+	private static final long MINIMUM_DISTANCECHANGE_FOR_UPDATE = 1; // in Meters
+	private static final long MINIMUM_TIME_BETWEEN_UPDATE = 3000; // in Milliseconds
+    private static final long POINT_RADIUS = 1000; // in Meters
+    private static final long PROX_ALERT_EXPIRATION = -1;    
 
 	private static LocalizationService serviceLocalization;
 	private static List<Placemark> placemarks;
@@ -82,11 +87,6 @@ public class CourseStepActivity extends MapActivity{
 	private List<Road> mRoads;
 	private MyLocationOverlay myLocationOverlay;
 	private MapView mapView;
-	private static final long MINIMUM_DISTANCECHANGE_FOR_UPDATE = 1; // in Meters
-	private static final long MINIMUM_TIME_BETWEEN_UPDATE = 3000; // in Milliseconds
-    private static final long POINT_RADIUS = 1000; // in Meters
-    private static final long PROX_ALERT_EXPIRATION = -1;    
-    private static final String PROX_ALERT_INTENT = "com.javacodegeeks.android.lbs.ProximityAlert"; 
     private LocationManager locationManager;
     private static int currentPlacemark = 0;
     private static BroadcastReceiver receiverLocalization;
@@ -100,7 +100,7 @@ public class CourseStepActivity extends MapActivity{
         
         Bundle bundle = getIntent().getExtras();       
         setContentView(R.layout.coursestep);
-		
+        
         placemarks = getPlaceMarks();
         
         if(bundle.containsKey(Course.NEXT_PLACEMARK)){
@@ -218,7 +218,6 @@ public class CourseStepActivity extends MapActivity{
 			currentPlacemark++;
 		}
 		
-		
 		// Try to get the best localization provider
 		Criteria criteria = new Criteria();
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
@@ -289,7 +288,6 @@ public class CourseStepActivity extends MapActivity{
     }
 	    
     public void updatePlacemark() {      	
-    	   	
     	Log.d("updateReceiver","Receiver Update");
     	Log.d("placemark size","placemark size "+placemarks.size());
     	      	
@@ -300,7 +298,6 @@ public class CourseStepActivity extends MapActivity{
     	if(!placemarks.isEmpty()){
     		
 		    if(currentPlacemark<placemarks.size()){
-		    	
 		    	//Present the new objective with its description
 		       	Placemark item = placemarks.get(currentPlacemark);
 		    	
@@ -315,14 +312,11 @@ public class CourseStepActivity extends MapActivity{
 									dialog.dismiss();
 							}
 						});
-				
 				dialog.show();
 					
-		    	
-		    	receiverLocalization = new BroadcastReceiver() {			
+		     	receiverLocalization = new BroadcastReceiver() {			
 					@Override
 					public void onReceive(Context context, Intent intent) {			    	
-				    	updatePlacemark();
 					   	unregisterReceiver(receiverLocalization);    					
 					    Log.d(PROXIMITY_RECEIVER,"Proximity Alert");
 						displayNotification();
@@ -335,6 +329,12 @@ public class CourseStepActivity extends MapActivity{
 	    		Intent intent = new Intent(PROXIMITY_INTENT);
 	            PendingIntent proximityIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 	            
+	            String[] lL = placemarks.get(currentPlacemark).getPoint().getCoordinates().split(",");
+	        	double l = Double.parseDouble(lL[1]);	        	
+	        	double L = Double.parseDouble(lL[0]);
+	        		        	
+	        	Log.d(TAG,"latl"+l+"latPl"+placemarks.get(currentPlacemark).getPoint().getLatitude());
+	            
 	            locationManager.addProximityAlert(
 	            		placemarks.get(currentPlacemark).getPoint().getLatitude(), // the latitude of the central point of the alert region
 	            		placemarks.get(currentPlacemark).getPoint().getLongitude(), // the longitude of the central point of the alert region
@@ -344,6 +344,7 @@ public class CourseStepActivity extends MapActivity{
 	           );
 	            	            
 				Log.d(PROXIMITY_INTENT,"Alert Proximity Set for lat :"+placemarks.get(currentPlacemark).getPoint().getLatitude()+", long : "+placemarks.get(currentPlacemark).getPoint().getLongitude());
+
 		    } else {
 		    	//End of the course 
 		    	SharedPreferences settings = getSharedPreferences(HomeActivity.PREF_FILE, 0);    	
@@ -377,8 +378,6 @@ public class CourseStepActivity extends MapActivity{
 		ActivityManager am = (ActivityManager) context.getSystemService(Activity.ACTIVITY_SERVICE);
 		String packageName = am.getRunningTasks(1).get(0).topActivity.getPackageName();
 		String className = am.getRunningTasks(1).get(0).topActivity.getClassName();
-		Log.d("topActivity-ClassName",className);
-		Log.d("getName",CourseStepActivity.class.getName());
 		
 		if(!className.equals(CourseDetailsActivity.class.getName())) {
 			//send notification in not in foreground
@@ -390,7 +389,7 @@ public class CourseStepActivity extends MapActivity{
 				PendingIntent activity = PendingIntent.getActivity(getBaseContext(), 0, new Intent(getBaseContext(),CourseDetailsActivity.class),0);
 				notification.setLatestEventInfo(getBaseContext(), placemarks.get(currentPlacemark).getName(),placemarks.get(currentPlacemark).getName(), activity);
 				notificationManager.notify(0, notification);
-		} else {
+		} else {		
 				AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 				
 				if(type.equals(Course.TYPE_GAME)) {
@@ -403,12 +402,23 @@ public class CourseStepActivity extends MapActivity{
 						          Intent gameActivity = new Intent(getApplicationContext(),GameActivity.class);
 						          gameActivity.putExtra(Course.URL_EXTRA, course.getUrl());
 						          gameActivity.putExtra(Course.CURRENT_PLACEMARK, currentPlacemark);
-						          startActivity(gameActivity);	
+						          startActivity(gameActivity);
+						          dialog.dismiss();
 							}
 						});
 				} else {
 					dialog.setTitle(placemarks.get(currentPlacemark).getName());
 					dialog.setMessage(placemarks.get(currentPlacemark).getDescription());
+					dialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+						
+						public void onClick(DialogInterface dialog, int which) {
+							// TODO Auto-generated method stub
+							currentPlacemark++;
+					        updatePlacemark();
+					        dialog.dismiss();
+						}
+					});
+
 				}
 				
 				dialog.show();

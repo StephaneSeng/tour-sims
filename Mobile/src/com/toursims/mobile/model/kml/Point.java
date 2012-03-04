@@ -5,7 +5,6 @@ public class Point {
 	public static final String LATITUDE = "point_latitude";
 	public static final String LONGITUDE = "point_longitude";
 	
-
 	@Element
 	private String coordinates;
 	private double longitude;
@@ -17,10 +16,6 @@ public class Point {
 
 	public Point(String coordinates) {
 		super();
-		this.coordinates = coordinates;
-		String[] lL = coordinates.split(",");
-    	latitude = Double.parseDouble(lL[1]);
-    	longitude = Double.parseDouble(lL[0]);
 	}
 
 	public String getCoordinates() {
@@ -32,10 +27,23 @@ public class Point {
 	}
 	
 	public double getLongitude(){
-		return longitude;
+        String[] lL = getCoordinates().split(",");
+    	double l = Double.parseDouble(lL[1]);	        	
+    	double L = Double.parseDouble(lL[0]);
+    	return L;
 	}
 	
 	public double getLatitude(){
-		return latitude;
+        String[] lL = getCoordinates().split(",");
+    	double l = Double.parseDouble(lL[1]);	        	
+    	return l;
+	}
+	
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+	
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
 	}
 }
