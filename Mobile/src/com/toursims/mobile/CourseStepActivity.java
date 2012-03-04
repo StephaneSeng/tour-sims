@@ -70,8 +70,6 @@ public class CourseStepActivity extends MapActivity{
 	private static final String PROXIMITY_INTENT = LocalizationService.class.getName()+".PROXIMITY_INTENT";
 	private static final String PROXIMITY_RECEIVER = LocalizationService.class.getName()+".PROXIMITY_RECEIVER";
 
-	
-	
 	private static LocalizationService serviceLocalization;
 	private static List<Placemark> placemarks;
 	private static Course course;
@@ -291,17 +289,36 @@ public class CourseStepActivity extends MapActivity{
     }
 	    
     public void updateReceiver() {      	
-    	
+    	   	
     	Log.d("updateReceiver","Receiver Update");
     	Log.d("placemark size","placemark size "+placemarks.size());
     	      	
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_FINE);       
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-    	
+            	
     	if(!placemarks.isEmpty()){
     		
 		    if(currentPlacemark<placemarks.size()){
+		    	
+		    	//Present the new objective with its description
+		       	Placemark item = placemarks.get(currentPlacemark);
+		    	
+		       	AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+
+				dialog.setTitle(item.getName());
+				dialog.setMessage(item.getDirection());
+				dialog.setPositiveButton(R.string.course_finished_button_ok, new DialogInterface.OnClickListener() {
+							
+						public void onClick(DialogInterface dialog, int which) {
+											// TODO Auto-generated method stub
+									dialog.dismiss();
+							}
+						});
+				
+				dialog.show();
+					
+		    	
 		    	receiverLocalization = new BroadcastReceiver() {			
 					@Override
 					public void onReceive(Context context, Intent intent) {			    	
@@ -324,10 +341,11 @@ public class CourseStepActivity extends MapActivity{
 	            		POINT_RADIUS, // the radius of the central point of the alert region, in meters
 	            		PROX_ALERT_EXPIRATION, // time for this proximity alert, in milliseconds, or -1 to indicate no expiration 
 	            		proximityIntent // will be used to generate an Intent to fire when entry to or exit from the alert region is detected
-	           );	
-	            
+	           );
+	            	            
 				Log.d(PROXIMITY_INTENT,"Alert Proximity Set for lat :"+placemarks.get(currentPlacemark).getPoint().getLatitude()+", long : "+placemarks.get(currentPlacemark).getPoint().getLongitude());
 		    } else {
+		    	//End of the course 
 		    	SharedPreferences settings = getSharedPreferences(HomeActivity.PREF_FILE, 0);    	
 		    	SharedPreferences.Editor editor = settings.edit();
 				editor.remove(Course.PREFERENCES_STARTED_URL);

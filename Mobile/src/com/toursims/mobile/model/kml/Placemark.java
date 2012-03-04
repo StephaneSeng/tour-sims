@@ -1,5 +1,4 @@
 package com.toursims.mobile.model.kml;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.simpleframework.xml.Element;
@@ -11,7 +10,7 @@ public class Placemark {
 	public static final String NAME = "Placemark_NAME";
 
 	private Integer id;
-	
+		
 	public void setId(Integer id) {
 		this.id = id;
 	}
@@ -19,6 +18,12 @@ public class Placemark {
 	public Integer getId() {
 		return id;
 	}
+	
+	@Element(required=false)
+	private String clueTitle;
+		
+	@Element(required=false)
+	private String direction;
 	
 	@Element(required=false)
 	private String name;
@@ -107,6 +112,8 @@ public class Placemark {
 	public Point getPoint() {
 		return Point;
 	}
+	
+
 
 	public void setPoint(Point point) {
 		this.Point = point;
@@ -154,6 +161,28 @@ public class Placemark {
 	
 	public String getHint() {
 		return hint;
+	}
+	
+	public String getDirection() {
+		if (direction == null){
+			return description;
+		}
+		return direction;
+	}
+	
+	public void setDirection(String direction) {
+		this.direction = direction;
+	}
+	
+	public String getClueTitle() {
+		if (clueTitle == null){
+			return name;
+		}
+		return clueTitle;
+	}
+	
+	public void setClueTitle(String clueTitle) {
+		this.clueTitle = clueTitle;
 	}
 	
 }
