@@ -76,34 +76,34 @@ public class LocalizationService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub		
 		Bundle b = intent.getExtras();
 		
-		if(b.containsKey(Point.LATITUDE)&&b.containsKey(Point.LONGITUDE)&&b.containsKey(Placemark.NAME)){
-			setProximityAlert(b.getDouble(Point.LATITUDE),
-					b.getDouble(Point.LONGITUDE),
-					0, 
-					0, 
-					PROXIMITY_INTENT);
-		
-		BroadcastReceiver r = new BroadcastReceiver() {
+		if(b!=null){
+			if(b.containsKey(Point.LATITUDE)&&b.containsKey(Point.LONGITUDE)&&b.containsKey(Placemark.NAME)){
+				setProximityAlert(b.getDouble(Point.LATITUDE),
+						b.getDouble(Point.LONGITUDE),
+						0, 
+						0, 
+						PROXIMITY_INTENT);
 			
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				// TODO Auto-generated method stub
-				Log.d(PROXIMITY_INTENT,"Proximity Intent received from Service");
-			}
-		};
-		
-    	IntentFilter intentFilter = new IntentFilter(PROXIMITY_INTENT);  	
-    	registerReceiver(r, intentFilter);
-		
-		
-		} else {
-			Log.d(TAG,"Missing Arguments");
+			BroadcastReceiver r = new BroadcastReceiver() {
+				
+				@Override
+				public void onReceive(Context context, Intent intent) {
+					// TODO Auto-generated method stub
+					Log.d(PROXIMITY_INTENT,"Proximity Intent received from Service");
+				}
+			};
+			
+	    	IntentFilter intentFilter = new IntentFilter(PROXIMITY_INTENT);  	
+	    	registerReceiver(r, intentFilter);
+			
+			
+			} else {
+				Log.d(TAG,"Missing Arguments");
+			}	
 		}
-		
-		
 		
 		return super.onStartCommand(intent, flags, startId);
 	}

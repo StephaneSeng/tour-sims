@@ -16,14 +16,14 @@ import android.widget.TextView;
 
 public class HomeActivity extends Activity {
 	
-	public static final String PREF_FILE = "PREF_FILE";
-	public static final String PREF_CURRENT_COURSE_URL = "PREF_CURRENT_COURSE_URL";
-	public static final String PREF_CURRENT_COURSE_TIME_STARTED = "PREF_CURRENT_COURSE_STARTED";
-    
+	public static final String PREF_FILE = "toursims_pref_file";
+	
 	/**
 	 * Android debugging tag
 	 */
 	private static final String TAG = HomeActivity.class.getName(); 
+	private static SharedPreferences settings;
+
 	
 	/** Called when the activity is first created. */
     @Override
@@ -31,6 +31,8 @@ public class HomeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
+        restartCourse();
+                
         Button btnCourseGame = (Button) findViewById(R.id.btnCourseGame);
         
         //Listening to button event
@@ -79,12 +81,12 @@ public class HomeActivity extends Activity {
 			}
 		});
         
-        // Start the localization service
-        ComponentName localizationComponentName = new ComponentName(LocalizationService.class.getPackage().getName(), LocalizationService.class.getName());
-        ComponentName localizationComponentService = startService(new Intent().setComponent(localizationComponentName));
-        if (localizationComponentService == null){
-                Log.e(TAG, "Could not start service " + localizationComponentName.toString());
-        }
+      // Start the localization service
+      //  ComponentName localizationComponentName = new ComponentName(LocalizationService.class.getPackage().getName(), LocalizationService.class.getName());
+      //  ComponentName localizationComponentService = startService(new Intent().setComponent(localizationComponentName));
+      //  if (localizationComponentService == null){
+      //          Log.e(TAG, "Could not start service " + localizationComponentName.toString());
+      //  }
     }
     
     @Override
@@ -104,34 +106,46 @@ public class HomeActivity extends Activity {
 			nameTextView.setText("Welcome " + tourSims.getUserName() + " !");
 			btnGoogleLogin.setVisibility(Button.INVISIBLE);
 		}
+		
+        restartCourse();
 	}
-
-    private void resumeCourse(){
-    	
-    }
     
-    private boolean startedCourse() {
-    	/*
-    	SharedPreferences settings = getSharedPreferences(PREF_FILE, 0);
-
-    	if(settings.contains(PREF_CURRENT_COURSE_URL)){
+    private void restartCourse() {
+    	
+    	settings = getSharedPreferences(PREF_FILE, 0);    	
+    	
+    	if(settings.contains(Course.PREFERENCES_STARTED_URL)){
+    		    		
 			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-
-    		dialog.setTitle();
-			dialog.setMessage(placemarks.get(currentPoint).getGreetings());
-			dialog.setPositiveButton(R.string.game_play, new DialogInterface.OnClickListener() {
+			
+    		dialog.setTitle(R.string.course_already_started_title);
+			dialog.setMessage(R.string.course_already_started_message);
+			dialog.setPositiveButton(R.string.course_already_started_go_on, new DialogInterface.OnClickListener() {
 					
-					public void onClick(DialogInterface dialog, int which) {
+				public void onClick(DialogInterface dialog, int which) {	
 						// TODO Auto-generated method stub
-				          Intent gameActivity = new Intent(getApplicationContext(),GameActivity.class);
-				          gameActivity.putExtra(Course.COURSE_URL_EXTRA, course.getUrl());
-				          gameActivity.putExtra(Course.COURSE_CURRENT_PLACEMARK, currentPoint);
-				          startActivity(gameActivity);	
+				          Intent activity = new Intent(getApplicationContext(),CourseDetailsActivity.class);
+				          activity.putExtra(Course.URL_EXTRA, settings.getString(Course.PREFERENCES_STARTED_URL, null));
+				          activity.putExtra(Course.ID_EXTRA, settings.getInt(Course.PREFERENCES_STARTED_ID, 0));
+				          startActivity(activity);
 					}
 				});
-    	}
-    	*/
-    	return false;
+			
+			dialog.setNegativeButton(R.string.course_already_started_discard, new DialogInterface.OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					SharedPreferences.Editor editor = settings.edit();
+					editor.remove(Course.PREFERENCES_STARTED_URL);
+					editor.remove(Course.PREFERENCES_STARTED_TIME_STARTED);
+					editor.remove(Course.PREFERENCES_STARTED_ID);
+					dialog.dismiss();
+				}
+			});
+			
+			dialog.show();
+    	} 
+    	
     }
 }
  

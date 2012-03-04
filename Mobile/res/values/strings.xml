@@ -12,9 +12,14 @@
     <string name="game_good_answer">Bien répondu</string>
     <string name="game_try_again">Mauvaise Réponse</string>
     
-    <string name="course_already_started">Parcours déjà lancé</string>
+    <string name="course_already_started_title">Parcours déjà lancé</string>
+    <string name="course_already_started_message">Voulez vous le reprendre?</string>
     <string name="course_already_started_go_on">Reprendre</string>
-    <string name="course_already_started_cancel">Annuler</string>
+    <string name="course_already_started_discard">Annuler</string>
+    
+    <string name="course_finished_title">Parcours fini</string>
+    <string name="course_finished_message">Merci de noter ce parcours</string>
+    <string name="course_finished_button_ok">Notez!</string>
     
 	<string name="preferences_current_course_url">PREFERENCES_CURRENT_COURSE</string> 
     <string name="preferences_file">PREFS</string>

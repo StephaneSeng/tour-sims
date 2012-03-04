@@ -29,20 +29,19 @@ public class CourseDetailsActivity extends TabActivity{
         Bundle bundle = getIntent().getExtras();
         intent = new Intent().setClass(this, CourseStepActivity.class);
 
-        if(bundle.containsKey(Course.COURSE_ID_EXTRA)){
-	        int course_id = bundle.getInt(Course.COURSE_ID_EXTRA);
-	        intent.putExtra(Course.COURSE_ID_EXTRA, course_id);
+        if(bundle.containsKey(Course.ID_EXTRA)){
+	        int course_id = bundle.getInt(Course.ID_EXTRA);
+	        intent.putExtra(Course.ID_EXTRA, course_id);
         }
         
-        if(bundle.containsKey(Course.COURSE_URL_EXTRA)){
-	        String course_url = bundle.getString(Course.COURSE_URL_EXTRA);
-	        intent.putExtra(Course.COURSE_URL_EXTRA, course_url);
+        if(bundle.containsKey(Course.URL_EXTRA)){
+	        String course_url = bundle.getString(Course.URL_EXTRA);
+	        intent.putExtra(Course.URL_EXTRA, course_url);
         }
-        if(bundle.containsKey(Course.COURSE_NEXT_PLACEMARK)){
-	        boolean next_placemark = bundle.getBoolean(Course.COURSE_NEXT_PLACEMARK);
-	        intent.putExtra(Course.COURSE_NEXT_PLACEMARK, next_placemark);
-        }
-        
+        if(bundle.containsKey(Course.NEXT_PLACEMARK)){
+	        boolean next_placemark = bundle.getBoolean(Course.NEXT_PLACEMARK);
+	        intent.putExtra(Course.NEXT_PLACEMARK, next_placemark);
+        } 
         spec = tabHost.newTabSpec("map").setIndicator("Map")
                       .setContent(intent);
         tabHost.addTab(spec);

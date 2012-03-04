@@ -73,17 +73,18 @@ public class CourseGameActivity extends Activity {
 	        public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
 	    // When clicked, show Course details
 	          Intent courseDetails = new Intent(getApplicationContext(),CourseDetailsActivity.class);
-	          courseDetails.putExtra(Course.COURSE_ID_EXTRA, courses.get(position).getId());
-	          courseDetails.putExtra(Course.COURSE_URL_EXTRA, courses.get(position).getUrl());
+	          courseDetails.putExtra(Course.ID_EXTRA, courses.get(position).getId());
+	          courseDetails.putExtra(Course.URL_EXTRA, courses.get(position).getUrl());
 	          startActivity(courseDetails);
 	          
 	          //Put that a course is started
 	          SharedPreferences settings = getSharedPreferences(HomeActivity.PREF_FILE, 0);
 	          SharedPreferences.Editor editor = settings.edit();
-	          editor.putString(HomeActivity.PREF_CURRENT_COURSE_URL, courses.get(position).getUrl());
+	          editor.putString(Course.PREFERENCES_STARTED_URL, courses.get(position).getUrl());
+	          editor.putInt(Course.PREFERENCES_STARTED_ID, courses.get(position).getId());
 	          Calendar c = Calendar.getInstance(); 
 	          int seconds = c.get(Calendar.SECOND);
-	          editor.putInt(HomeActivity.PREF_CURRENT_COURSE_TIME_STARTED, seconds);
+	          editor.putInt(Course.PREFERENCES_STARTED_TIME_STARTED, seconds);
 	          // Commit the edits!
 	          editor.commit();
 	    }
@@ -93,12 +94,3 @@ public class CourseGameActivity extends Activity {
 	}
 }
 }
-		
-		
-		
-		
-               
-        
-
-
-

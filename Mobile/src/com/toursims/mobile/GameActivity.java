@@ -49,8 +49,8 @@ public class GameActivity extends Activity{
     	description = (TextView)findViewById(R.id.description);
         
         Bundle bundle = getIntent().getExtras();
-        String course_url = bundle.getString(Course.COURSE_URL_EXTRA); 
-    	currentPlacemark = bundle.getInt(Course.COURSE_CURRENT_PLACEMARK);
+        String course_url = bundle.getString(Course.URL_EXTRA); 
+    	currentPlacemark = bundle.getInt(Course.CURRENT_PLACEMARK);
     	   	
     	course = CourseLoader.getInstance().parse(course_url);
     	
@@ -216,9 +216,9 @@ public void dialogEnd() {
 
 public void quitView() {
        Intent courseDetails = new Intent(getApplicationContext(),CourseDetailsActivity.class);
-       courseDetails.putExtra(Course.COURSE_ID_EXTRA, course.getId());
-       courseDetails.putExtra(Course.COURSE_URL_EXTRA, course.getUrl());
-       courseDetails.putExtra(Course.COURSE_NEXT_PLACEMARK, true);
+       courseDetails.putExtra(Course.ID_EXTRA, course.getId());
+       courseDetails.putExtra(Course.URL_EXTRA, course.getUrl());
+       courseDetails.putExtra(Course.NEXT_PLACEMARK, true);
        startActivity(courseDetails);
        finish();
    }
