@@ -178,7 +178,7 @@ public class CourseStepActivity extends MapActivity{
                         new MyLocationListener()
         );
         
-        updateReceiver();
+        updatePlacemark();
 
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		myLocationOverlay.enableMyLocation();
@@ -288,7 +288,7 @@ public class CourseStepActivity extends MapActivity{
     	return course.getPlacemarks();
     }
 	    
-    public void updateReceiver() {      	
+    public void updatePlacemark() {      	
     	   	
     	Log.d("updateReceiver","Receiver Update");
     	Log.d("placemark size","placemark size "+placemarks.size());
@@ -308,7 +308,7 @@ public class CourseStepActivity extends MapActivity{
 
 				dialog.setTitle(item.getName());
 				dialog.setMessage(item.getDirection());
-				dialog.setPositiveButton(R.string.course_finished_button_ok, new DialogInterface.OnClickListener() {
+				dialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 							
 						public void onClick(DialogInterface dialog, int which) {
 											// TODO Auto-generated method stub
@@ -322,7 +322,7 @@ public class CourseStepActivity extends MapActivity{
 		    	receiverLocalization = new BroadcastReceiver() {			
 					@Override
 					public void onReceive(Context context, Intent intent) {			    	
-				    	updateReceiver();
+				    	updatePlacemark();
 					   	unregisterReceiver(receiverLocalization);    					
 					    Log.d(PROXIMITY_RECEIVER,"Proximity Alert");
 						displayNotification();

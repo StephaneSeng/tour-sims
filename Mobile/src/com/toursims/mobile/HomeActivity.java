@@ -17,6 +17,7 @@ import android.widget.TextView;
 public class HomeActivity extends Activity {
 	
 	public static final String PREF_FILE = "toursims_pref_file";
+	public static final String ALREADY_ASKED_TO_RESUME = "already_asked_to_resume";
 	
 	/**
 	 * Android debugging tag
@@ -112,9 +113,9 @@ public class HomeActivity extends Activity {
     
     private void restartCourse() {
     	
-    	settings = getSharedPreferences(PREF_FILE, 0);    	
-    	
-    	if(settings.contains(Course.PREFERENCES_STARTED_URL)){
+    	settings = getSharedPreferences(PREF_FILE, 0); 
+    	    	
+    	if(settings.contains(Course.PREFERENCES_STARTED_URL)&&settings.getBoolean(ALREADY_ASKED_TO_RESUME, false)){
     		    		
 			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 			
@@ -143,9 +144,28 @@ public class HomeActivity extends Activity {
 				}
 			});
 			
+			dialog.setNeutralButton(R.string.later, new DialogInterface.OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					SharedPreferences.Editor editor = settings.edit();
+					editor.putBoolean(ALREADY_ASKED_TO_RESUME, true);
+					editor.commit();
+					dialog.dismiss();		
+				}
+			});
 			dialog.show();
     	} 
     	
+    }
+    
+    @Override
+    protected void onDestroy() {
+    	// TODO Auto-generated method stub
+		SharedPreferences.Editor editor = settings.edit();
+		editor.remove(ALREADY_ASKED_TO_RESUME);
+		editor.commit();
+    	super.onDestroy();
     }
 }
  

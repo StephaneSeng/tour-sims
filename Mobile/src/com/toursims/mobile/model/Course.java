@@ -3,6 +3,8 @@ package com.toursims.mobile.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.R.bool;
+
 import com.toursims.mobile.model.kml.Placemark;
 
 public class Course {
@@ -14,7 +16,6 @@ public class Course {
 	public static final String PREFERENCES_STARTED_URL = "course_url_for_preferences";
 	public static final String PREFERENCES_STARTED_TIME_STARTED = "course_started_time_for_preferences";
 	public static final String PREFERENCES_STARTED_ID = "course_id_for_preferences";
-
 	
 	private Integer id;
 	private String city; 

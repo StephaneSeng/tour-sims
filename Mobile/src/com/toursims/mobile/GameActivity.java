@@ -13,10 +13,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.inputmethodservice.Keyboard.Key;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyCharacterMap;
+import android.view.KeyCharacterMap.KeyData;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -70,13 +75,13 @@ public class GameActivity extends Activity{
 			
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				buttonClicked();
+				buttonValidateClicked();
 			}
 		});
     	
     }
     
-   public void buttonClicked() {
+   public void buttonValidateClicked() {
 	   if(p.getQuestions() == null) {
 		   quitView();
 	   } else {		   
@@ -182,9 +187,18 @@ public void nextQuestion() {
 			}
 		});
 		
-		answers.addView(e);
+		e.setOnKeyListener(new OnKeyListener() {
+			
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				// TODO Auto-generated method stub
+			    if (event.getAction()==KeyEvent.ACTION_DOWN&&keyCode==KeyEvent.KEYCODE_ENTER){
+			    	buttonValidateClicked();
+			    }
+				return false;
+			}
+		});
 		
-		
+		answers.addView(e);		
 	}
 	
 	buttonNext.setText(R.string.game_answer);
@@ -192,7 +206,7 @@ public void nextQuestion() {
 		
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
-			buttonClicked();
+			buttonValidateClicked();
 		}
 	});
 		
