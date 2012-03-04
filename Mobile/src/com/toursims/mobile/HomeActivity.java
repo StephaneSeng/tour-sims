@@ -130,8 +130,8 @@ public class HomeActivity extends Activity {
 					}
 				});
     	}
-    	
+    	*/
     	return false;
-    }*/
+    }
 }
  
