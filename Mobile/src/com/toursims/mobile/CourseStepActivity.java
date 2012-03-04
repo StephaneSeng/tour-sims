@@ -45,6 +45,7 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -327,6 +328,12 @@ public class CourseStepActivity extends MapActivity{
 	            
 				Log.d(PROXIMITY_INTENT,"Alert Proximity Set for lat :"+placemarks.get(currentPlacemark).getPoint().getLatitude()+", long : "+placemarks.get(currentPlacemark).getPoint().getLongitude());
 		    } else {
+		    	SharedPreferences settings = getSharedPreferences(HomeActivity.PREF_FILE, 0);    	
+		    	SharedPreferences.Editor editor = settings.edit();
+				editor.remove(Course.PREFERENCES_STARTED_URL);
+				editor.remove(Course.PREFERENCES_STARTED_TIME_STARTED);
+				editor.remove(Course.PREFERENCES_STARTED_ID);		    	
+		    	
 		    	AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 				
 				dialog.setTitle(R.string.course_finished_title);
