@@ -27,5 +27,8 @@
     <string name="ok">OK</string>
     
     <string name="later">Plus tard</string>
+    
+    <string name="menu_pause">Pause</string>
+    <string name="menu_help">Help</string>
 
 </resources>

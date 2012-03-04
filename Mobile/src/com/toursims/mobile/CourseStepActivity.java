@@ -54,10 +54,14 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.SlidingDrawer;
 import android.widget.Toast;
 import android.location.Criteria;
 import android.location.Location;
@@ -448,6 +452,27 @@ public class CourseStepActivity extends MapActivity{
 	protected boolean isRouteDisplayed() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.coursestep, menu);
+
+	    return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	        case R.id.pause:
+	        	return true;
+	        case R.id.help:
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
   
 }
