@@ -62,7 +62,7 @@ public class Placemark {
 	private List<Question> Questions;
 	
 	@Element(required=false)
-	private String routePlacemark;
+	private String routePlacemark = "false";
 	
 	public List<Data> getExtendedData() {
 		return ExtendedData;
