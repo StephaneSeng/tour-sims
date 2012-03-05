@@ -8,17 +8,20 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class HomeActivity extends Activity {
 	
 	public static final String PREF_FILE = "toursims_pref_file";
 	public static final String ALREADY_ASKED_TO_RESUME = "already_asked_to_resume";
-	
+		
 	/**
 	 * Android debugging tag
 	 */
@@ -29,10 +32,12 @@ public class HomeActivity extends Activity {
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    	super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-                
+        
+        LinearLayout l = (LinearLayout) findViewById(R.id.layout);
         Button btnCourseGame = (Button) findViewById(R.id.btnCourseGame);
+          
         
         //Listening to button event
         btnCourseGame.setOnClickListener(new View.OnClickListener() {

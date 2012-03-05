@@ -76,7 +76,7 @@ public class CourseStepActivity extends MapActivity{
 	private static final String PROXIMITY_RECEIVER = LocalizationService.class.getName()+".PROXIMITY_RECEIVER";
 	private static final long MINIMUM_DISTANCECHANGE_FOR_UPDATE = 1; // in Meters
 	private static final long MINIMUM_TIME_BETWEEN_UPDATE = 3000; // in Milliseconds
-    private static final long POINT_RADIUS = 1000; // in Meters
+    private static final long POINT_RADIUS = 10; // in Meters
     private static final long PROX_ALERT_EXPIRATION = -1;    
 
 	private static LocalizationService serviceLocalization;
