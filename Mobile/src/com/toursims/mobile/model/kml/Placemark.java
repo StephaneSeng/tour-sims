@@ -60,7 +60,7 @@ public class Placemark {
 	
 	@ElementList(entry="Question",required=false)
 	private List<Question> Questions;
-	
+		
 	public List<Data> getExtendedData() {
 		return ExtendedData;
 	}

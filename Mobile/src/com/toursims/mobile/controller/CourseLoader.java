@@ -68,22 +68,7 @@ public class CourseLoader {
 			} 
 		
 		Course course = new Course();
-		
-		course.setUrl(address);
-		course.setName(kml1.getDocument().getName());
-		
-		try {
-			course.setCity(kml1.getDocument().getExtendedData().get(0).getValue());
-			course.setCoverPictureURL(kml1.getDocument().getExtendedData().get(1).getValue());
-			course.setDesc(kml1.getDocument().getExtendedData().get(2).getValue());
-			course.setRating(Double.valueOf(kml1.getDocument().getExtendedData().get(3).getValue()));
-			course.setLength(Double.valueOf(kml1.getDocument().getExtendedData().get(4).getValue()));
-			course.setType(kml1.getDocument().getExtendedData().get(5).getValue());
-		} catch (IndexOutOfBoundsException e) {
-			course.setType(Course.TYPE_COURSE);
-		}
-			
-		course.setPlacemarks(kml1.getDocument().getPlacemarks());
+		course.copyFromDocument(kml1.getDocument(), address);
 		
 		return course;
 		}

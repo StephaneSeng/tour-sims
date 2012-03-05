@@ -92,7 +92,7 @@ public class CourseStepActivity extends MapActivity{
 	private MyLocationOverlay myLocationOverlay;
 	private MapView mapView;
     private LocationManager locationManager;
-    private static int currentPlacemark = 0;
+    private static int currentPlacemark = -1;
     private static BroadcastReceiver receiverLocalization;
 	private LocalizationService s;
 
@@ -119,6 +119,7 @@ public class CourseStepActivity extends MapActivity{
 		mapController.setZoom(14); // Zoom 1 is world view
 		
 		updateMap();
+
    
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -214,8 +215,8 @@ public class CourseStepActivity extends MapActivity{
     protected List<Placemark> getPlaceMarks() {
         
     	Bundle bundle = getIntent().getExtras();
-    	String course_url = bundle.getString(Course.URL_EXTRA);    	
-    	    	
+    	String course_url = bundle.getString(Course.URL_EXTRA);
+    	
     	course = CourseLoader.getInstance().parse(course_url);
     	type = course.getType();
     	
@@ -294,8 +295,25 @@ public class CourseStepActivity extends MapActivity{
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             	
     	if(!placemarks.isEmpty()){
-    		updateMap();
-		    if(currentPlacemark<placemarks.size()){
+
+			updateMap();
+    		if(currentPlacemark==-1){
+    			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+
+				dialog.setTitle(course.getName());
+				dialog.setMessage(course.getPresentation());
+				dialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+							
+						public void onClick(DialogInterface dialog, int which) {
+											// TODO Auto-generated method stub
+									updatePlacemark();
+									dialog.dismiss();
+							}
+						});
+				dialog.show();
+    			
+    			currentPlacemark++;
+    		} else if(currentPlacemark<placemarks.size()){
 		    	//Present the new objective with its description
 		       	Placemark item = placemarks.get(currentPlacemark);
 		    	
@@ -354,7 +372,7 @@ public class CourseStepActivity extends MapActivity{
 		    	AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 				
 				dialog.setTitle(R.string.course_finished_title);
-				dialog.setMessage(R.string.course_already_started_message);
+				dialog.setMessage(course.getEnd());
 				dialog.setPositiveButton(R.string.course_finished_button_ok, new DialogInterface.OnClickListener() {
 							
 					public void onClick(DialogInterface dialog, int which) {
@@ -362,7 +380,6 @@ public class CourseStepActivity extends MapActivity{
 							dialog.dismiss();
 					}
 				});
-				
 				dialog.show();
 		    }
     	} 
@@ -563,5 +580,3 @@ class MyLocationListener implements LocationListener {
     public void onProviderEnabled(String s) {            
     }
 }
-
-
