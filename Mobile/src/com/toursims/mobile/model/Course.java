@@ -137,9 +137,7 @@ public class Course {
 	}
 	
 	public void copyFromDocument(Document item,String address){
-		setUrl(address);
 		setName(item.getName());
-		
 		try {
 			setUrl(address);
 			setCity(item.getExtendedData().get(0).getValue());
