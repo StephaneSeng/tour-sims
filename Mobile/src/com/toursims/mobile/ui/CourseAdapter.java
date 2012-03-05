@@ -128,6 +128,7 @@ public class CourseAdapter extends BaseAdapter {
 			  e.printStackTrace();
 			} catch (NullPointerException e) {
 			  e.printStackTrace();
+			  holder.image.setBackgroundColor(Color.BLACK);
 			}
 		
 	return convertView;
