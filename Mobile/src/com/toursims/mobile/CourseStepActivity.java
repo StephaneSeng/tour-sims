@@ -570,5 +570,3 @@ class MyLocationListener implements LocationListener {
     public void onProviderEnabled(String s) {            
     }
 }
-
-
