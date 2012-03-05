@@ -401,7 +401,11 @@ public class CourseStepActivity extends MapActivity{
 				notification.flags |= Notification.FLAG_AUTO_CANCEL;
 				notification.number += 1;
 				
-				PendingIntent activity = PendingIntent.getActivity(getBaseContext(), 0, new Intent(getBaseContext(),CourseDetailsActivity.class),0);
+				Intent i = new Intent(getBaseContext(),CourseStepActivity.class);
+				i.putExtra(Course.ID_EXTRA, course.getId());
+		        i.putExtra(Course.URL_EXTRA, course.getUrl());
+				
+				PendingIntent activity = PendingIntent.getActivity(getBaseContext(), 0, i,0);
 				notification.setLatestEventInfo(getBaseContext(), placemarks.get(currentPlacemark).getName(),placemarks.get(currentPlacemark).getName(), activity);
 				notificationManager.notify(0, notification);
 		} else {		
