@@ -44,7 +44,7 @@ public class HomeActivity extends Activity {
 		
 		// User connection management
 		TourSims tourSims = (TourSims)getApplicationContext();
-		TextView nameTextView = (TextView)findViewById(R.id.nameTextView);
+		//TextView nameTextView = (TextView)findViewById(R.id.nameTextView);
 		TextView btnGoogleLogin = (TextView)findViewById(R.id.googleLogin);
 		
 		if (tourSims.getUserName().isEmpty()) {

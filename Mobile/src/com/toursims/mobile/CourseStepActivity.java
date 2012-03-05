@@ -96,8 +96,6 @@ public class CourseStepActivity extends MapActivity{
     private static BroadcastReceiver receiverLocalization;
 	private LocalizationService s;
 
-
-    
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,7 +117,6 @@ public class CourseStepActivity extends MapActivity{
 		mapController.setZoom(14); // Zoom 1 is world view
 		
 		updateMap();
-
    
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -134,9 +131,7 @@ public class CourseStepActivity extends MapActivity{
 
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		myLocationOverlay.enableMyLocation();
-		mapOverlays.add(myLocationOverlay);
-		
-	
+		mapOverlays.add(myLocationOverlay);	
 	}
 	
 	@Override
