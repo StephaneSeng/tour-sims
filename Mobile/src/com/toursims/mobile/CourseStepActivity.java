@@ -118,60 +118,7 @@ public class CourseStepActivity extends MapActivity{
 		mapController = mapView.getController();
 		mapController.setZoom(14); // Zoom 1 is world view
 		
-        mapOverlays = mapView.getOverlays();
-        drawable = this.getResources().getDrawable(R.drawable.maps_icon);
-        itemizedOverlay = new CustomItemizedOverlay(drawable, this);
-        itemizedOverlay_currentPoint = new CustomItemizedOverlay(drawable, this);
-        
-        
-        /***** load overlays ******/
-        
-        String[] formerPoint = null;
-        int i = 0;
-        
-        for(Placemark placemark: placemarks){
-        	String[] lL = placemark.getPoint().getCoordinates().split(",");
-        	int l = (new Double(Double.parseDouble(lL[1])* 1000000)).intValue();
-        	int L = (new Double(Double.parseDouble(lL[0])* 1000000)).intValue();
-        	Log.d(getLocalClassName(), String.valueOf(l) + " " + String.valueOf(L));
-        	GeoPoint point = new GeoPoint(l,L);
-        	OverlayItem overlayItem = new OverlayItem(point, placemark.getName(),placemark.getDescription());
-        	
-        	if(i==currentPlacemark){
-        		Drawable d = this.getResources().getDrawable(R.drawable.maps_icon_current);
-                itemizedOverlay_currentPoint = new CustomItemizedOverlay(d, this);
-                itemizedOverlay_currentPoint.addOverlay(overlayItem);
-                mapOverlays.add(itemizedOverlay_currentPoint);
-        	} else {
-            	itemizedOverlay.addOverlay(overlayItem);
-        	}
- 
-        	i++;
-        	
-        	
-        	/***** load routes *****/
-        	if(formerPoint != null) {
-        		roadConnectionThread t = new roadConnectionThread() {
-	    			   @Override
-	    			   public void run() {
-	    				   String url = RoadProvider.getUrl(fromLat, fromLon, toLat, toLon);
-	    				   InputStream is = getConnection(url);
-	    				   if (mRoads == null) {
-	    					   mRoads = new ArrayList<Road>();
-	    				   }
-	    				   mRoads.add(RoadProvider.getRoute(is));
-	    				   mHandler.sendEmptyMessage(mRoads.size() - 1);
-	    			   }
-	    		};
-	    		t.setCoord(formerPoint, lL);
-        		t.start();
-        	} else {
-        		mapController.animateTo(point);
-        	}
-        	formerPoint = lL;
-
-        }
-        mapOverlays.add(itemizedOverlay);
+		updateMap();
    
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -188,7 +135,6 @@ public class CourseStepActivity extends MapActivity{
 		myLocationOverlay.enableMyLocation();
 		mapOverlays.add(myLocationOverlay);
 		
-		Button b = (Button)findViewById(R.id.button1);
 	
 	}
 	
@@ -222,24 +168,9 @@ public class CourseStepActivity extends MapActivity{
 			currentPlacemark++;
 		}
 		
-		// Try to get the best localization provider
-		Criteria criteria = new Criteria();
-		criteria.setAccuracy(Criteria.ACCURACY_FINE);
-		String bestProvider = locationManager.getBestProvider(criteria, false);
-		
-		// TODO Emulator fix
-		bestProvider = LocationManager.GPS_PROVIDER;
-		
-		Location lastLocation = locationManager.getLastKnownLocation(bestProvider);
-		
-		// Display the map with the user at its center
-		if(lastLocation != null)
-		{
-			mapController.animateTo(new GeoPoint((int)(lastLocation.getLatitude() * 1e6), (int)(lastLocation.getLongitude() * 1e6)));
-			
-			// Display the user
-			displayUser(lastLocation);
-		}
+		myLocationOverlay = new MyLocationOverlay(this, mapView);
+		myLocationOverlay.enableMyLocation();
+		mapOverlays.add(myLocationOverlay);
 	}
 	
 	/**
@@ -290,6 +221,69 @@ public class CourseStepActivity extends MapActivity{
     	
     	return course.getPlacemarks();
     }
+    
+    
+    public void updateMap() {
+        mapOverlays = mapView.getOverlays();
+        drawable = this.getResources().getDrawable(R.drawable.maps_icon);
+        itemizedOverlay = new CustomItemizedOverlay(drawable, this);
+        itemizedOverlay_currentPoint = new CustomItemizedOverlay(drawable, this);
+        
+        mapOverlays.clear();
+        /***** load overlays ******/
+        
+        String[] formerPoint = null;
+        int i = 0;
+        
+        for(Placemark placemark: placemarks){
+        	
+        	String[] lL = placemark.getPoint().getCoordinates().split(",");
+        	int l = (new Double(Double.parseDouble(lL[1])* 1000000)).intValue();
+        	int L = (new Double(Double.parseDouble(lL[0])* 1000000)).intValue();
+        	Log.d(getLocalClassName(), String.valueOf(l) + " " + String.valueOf(L));
+        	GeoPoint point = new GeoPoint(l,L);
+        	if (i - currentPlacemark >=-1) {
+        		OverlayItem overlayItem = new OverlayItem(point, placemark.getName(),placemark.getDescription());
+        	
+	        	if(i==currentPlacemark){
+	        		Drawable d = this.getResources().getDrawable(R.drawable.maps_icon_current);
+	                itemizedOverlay_currentPoint = new CustomItemizedOverlay(d, this);
+	                itemizedOverlay_currentPoint.addOverlay(overlayItem);
+	                mapOverlays.add(itemizedOverlay_currentPoint);
+	        	} else {
+	            	itemizedOverlay.addOverlay(overlayItem);
+	        	}
+        	}
+        	i++;
+        	
+        	
+        	/***** load routes *****/
+        	if(formerPoint != null) {
+        		if (i - currentPlacemark >0){
+	        		roadConnectionThread t = new roadConnectionThread() {
+		    			   @Override
+		    			   public void run() {
+		    				   String url = RoadProvider.getUrl(fromLat, fromLon, toLat, toLon);
+		    				   InputStream is = getConnection(url);
+		    				   if (mRoads == null) {
+		    					   mRoads = new ArrayList<Road>();
+		    				   }
+		    				   mRoads.add(RoadProvider.getRoute(is));
+		    				   mHandler.sendEmptyMessage(mRoads.size() - 1);
+		    			   }
+		    		};
+		    		t.setCoord(formerPoint, lL);
+	        		t.start();
+        		}
+        	} else {
+        		mapController.animateTo(point);
+        	}
+        	formerPoint = lL;
+
+        }
+        mapOverlays.add(itemizedOverlay);
+    	
+    }
 	    
     public void updatePlacemark() {      	
     	Log.d("updateReceiver","Receiver Update");
@@ -300,7 +294,7 @@ public class CourseStepActivity extends MapActivity{
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             	
     	if(!placemarks.isEmpty()){
-    		
+    		updateMap();
 		    if(currentPlacemark<placemarks.size()){
 		    	//Present the new objective with its description
 		       	Placemark item = placemarks.get(currentPlacemark);
@@ -473,6 +467,18 @@ public class CourseStepActivity extends MapActivity{
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
+	}
+	
+	public void nextPlacemark(View view) {
+		currentPlacemark++;
+		updatePlacemark();
+	}
+	public void previousPlacemark(View view){
+		currentPlacemark--;
+		updatePlacemark();
+	}
+	public void pauseGame(View view) {
+		Log.d("pause", "pause");
 	}
   
 }
