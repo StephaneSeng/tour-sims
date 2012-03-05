@@ -72,7 +72,7 @@ public class CourseGameActivity extends Activity {
 	       
 	        public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
 	    // When clicked, show Course details
-	          Intent courseDetails = new Intent(getApplicationContext(),CourseDetailsActivity.class);
+	          Intent courseDetails = new Intent(getApplicationContext(),CourseStepActivity.class);
 	          courseDetails.putExtra(Course.ID_EXTRA, courses.get(position).getId());
 	          courseDetails.putExtra(Course.URL_EXTRA, courses.get(position).getUrl());
 	          startActivity(courseDetails);
