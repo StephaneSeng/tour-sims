@@ -63,7 +63,7 @@ public class HomeActivity extends Activity {
     	
     	settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0); 
     	    	
-    	if(settings.contains(CustomPreferences.COURSE_PREFERENCES_STARTED_URL)&&settings.getBoolean(ALREADY_ASKED_TO_RESUME, false)){
+    	if(settings.contains(CustomPreferences.COURSE_STARTED_URL)&&settings.getBoolean(ALREADY_ASKED_TO_RESUME, false)){
     		    		
 			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 			
@@ -74,8 +74,8 @@ public class HomeActivity extends Activity {
 				public void onClick(DialogInterface dialog, int which) {	
 						// TODO Auto-generated method stub
 				          Intent activity = new Intent(getApplicationContext(),CourseDetailsActivity.class);
-				          activity.putExtra(Course.URL_EXTRA, settings.getString(CustomPreferences.COURSE_PREFERENCES_STARTED_URL, null));
-				          activity.putExtra(Course.ID_EXTRA, settings.getInt(CustomPreferences.COURSE_PREFERENCES_STARTED_ID, 0));
+				          activity.putExtra(Course.URL_EXTRA, settings.getString(CustomPreferences.COURSE_STARTED_URL, null));
+				          activity.putExtra(Course.ID_EXTRA, settings.getInt(CustomPreferences.COURSE_STARTED_ID, 0));
 				          startActivity(activity);
 					}
 				});
@@ -85,9 +85,9 @@ public class HomeActivity extends Activity {
 				public void onClick(DialogInterface dialog, int which) {
 					// TODO Auto-generated method stub
 					SharedPreferences.Editor editor = settings.edit();
-					editor.remove(CustomPreferences.COURSE_PREFERENCES_STARTED_URL);
-					editor.remove(CustomPreferences.COURSE_PREFERENCES_STARTED_TIME_STARTED);
-					editor.remove(CustomPreferences.COURSE_PREFERENCES_STARTED_ID);
+					editor.remove(CustomPreferences.COURSE_STARTED_URL);
+					editor.remove(CustomPreferences.COURSE_STARTED_TIME_STARTED);
+					editor.remove(CustomPreferences.COURSE_STARTED_ID);
 					dialog.dismiss();
 				}
 			});

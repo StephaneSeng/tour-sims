@@ -365,9 +365,9 @@ public class CourseStepActivity extends MapActivity{
 		    	//End of the course 
 		    	SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);    	
 		    	SharedPreferences.Editor editor = settings.edit();
-				editor.remove(CustomPreferences.COURSE_PREFERENCES_STARTED_URL);
-				editor.remove(CustomPreferences.COURSE_PREFERENCES_STARTED_TIME_STARTED);
-				editor.remove(CustomPreferences.COURSE_PREFERENCES_STARTED_ID);		    	
+				editor.remove(CustomPreferences.COURSE_STARTED_URL);
+				editor.remove(CustomPreferences.COURSE_STARTED_TIME_STARTED);
+				editor.remove(CustomPreferences.COURSE_STARTED_ID);		    	
 		    	editor.commit();
 				
 		    	AlertDialog.Builder dialog = new AlertDialog.Builder(this);
