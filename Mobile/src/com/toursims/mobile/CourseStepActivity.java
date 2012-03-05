@@ -363,12 +363,13 @@ public class CourseStepActivity extends MapActivity{
 
 		    } else {
 		    	//End of the course 
-		    	SharedPreferences settings = getSharedPreferences(HomeActivity.PREF_FILE, 0);    	
+		    	SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);    	
 		    	SharedPreferences.Editor editor = settings.edit();
-				editor.remove(Course.PREFERENCES_STARTED_URL);
-				editor.remove(Course.PREFERENCES_STARTED_TIME_STARTED);
-				editor.remove(Course.PREFERENCES_STARTED_ID);		    	
-		    	
+				editor.remove(CustomPreferences.COURSE_PREFERENCES_STARTED_URL);
+				editor.remove(CustomPreferences.COURSE_PREFERENCES_STARTED_TIME_STARTED);
+				editor.remove(CustomPreferences.COURSE_PREFERENCES_STARTED_ID);		    	
+		    	editor.commit();
+				
 		    	AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 				
 				dialog.setTitle(R.string.course_finished_title);
@@ -394,7 +395,7 @@ public class CourseStepActivity extends MapActivity{
 		String packageName = am.getRunningTasks(1).get(0).topActivity.getPackageName();
 		String className = am.getRunningTasks(1).get(0).topActivity.getClassName();
 		
-		if(!className.equals(CourseDetailsActivity.class.getName())) {
+		if(!className.equals(CourseStepActivity.class.getName())) {
 			//send notification in not in foreground
 				NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 				Notification notification = new Notification(R.drawable.ic_launcher,placemarks.get(currentPlacemark).getName(), System.currentTimeMillis());
@@ -411,7 +412,7 @@ public class CourseStepActivity extends MapActivity{
 		} else {		
 				AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 				
-				if(type.equals(Course.TYPE_GAME)) {
+				if(placemarks.get(currentPlacemark).getQuestions()!=null) {
 					dialog.setTitle(placemarks.get(currentPlacemark).getName());
 					dialog.setMessage(placemarks.get(currentPlacemark).getGreetings());
 					dialog.setPositiveButton(R.string.game_play, new DialogInterface.OnClickListener() {
