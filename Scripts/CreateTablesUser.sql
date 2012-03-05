@@ -31,6 +31,32 @@ WITH (
 ALTER TABLE preferences
   OWNER TO postgres;
 
+-- Table: message
+
+-- DROP TABLE message;
+
+CREATE TABLE message
+(
+  message_id integer NOT NULL,
+  text character varying,
+  latitude double precision,
+  longitude double precision,
+  date date,
+  rdv_latitude double precision,
+  rdv_longitude double precision,
+  rdv_date date,
+  reply_message_id integer,
+  CONSTRAINT message_pk PRIMARY KEY (message_id ),
+  CONSTRAINT reply_message_id_fk FOREIGN KEY (reply_message_id)
+      REFERENCES message (message_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE message
+  OWNER TO postgres;
+  
 -- Table: "user"
 
 -- DROP TABLE "user";
@@ -98,4 +124,26 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE user_user
+  OWNER TO postgres;
+  
+-- Table: user_message
+
+-- DROP TABLE user_message;
+
+CREATE TABLE user_message
+(
+  user_id integer NOT NULL,
+  message_id integer NOT NULL,
+  CONSTRAINT user_message_pk PRIMARY KEY (user_id , message_id ),
+  CONSTRAINT message_id_fk FOREIGN KEY (message_id)
+      REFERENCES message (message_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT user_id_fk FOREIGN KEY (user_id)
+      REFERENCES "user" (user_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE user_message
   OWNER TO postgres;
