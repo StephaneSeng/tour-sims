@@ -13,6 +13,10 @@
         android:text="@string/hello"
         android:id="@+id/nameTextView" />
     
+    <View
+        android:layout_height="2dip"
+        android:layout_width="match_parent"
+        android:background="#FF909090" />
     
 	<TextView
          android:id="@+id/title"
@@ -20,11 +24,6 @@
     	 android:layout_height="wrap_content"
          android:textAppearance="?android:attr/textAppearanceLarge" />
           
-	<View
-        android:layout_height="2dip"
-        android:layout_width="match_parent"
-        android:background="#FF909090" />
-
      <Button
         android:id="@+id/btnCourseGame"
         android:layout_width="104dp"
