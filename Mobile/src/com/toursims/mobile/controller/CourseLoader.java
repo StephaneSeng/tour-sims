@@ -73,6 +73,7 @@ public class CourseLoader {
 		course.setName(kml1.getDocument().getName());
 		
 		try {
+			course.setUrl(address);
 			course.setCity(kml1.getDocument().getExtendedData().get(0).getValue());
 			course.setCoverPictureURL(kml1.getDocument().getExtendedData().get(1).getValue());
 			course.setDesc(kml1.getDocument().getExtendedData().get(2).getValue());

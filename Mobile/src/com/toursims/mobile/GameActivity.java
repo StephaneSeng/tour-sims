@@ -53,7 +53,7 @@ public class GameActivity extends Activity{
         Bundle bundle = getIntent().getExtras();
         String course_url = bundle.getString(Course.URL_EXTRA); 
     	currentPlacemark = bundle.getInt(Course.CURRENT_PLACEMARK);
-    	   	
+
     	course = CourseLoader.getInstance().parse(course_url);
     	
     	p = course.getPlacemarks().get(currentPlacemark);   	

@@ -283,8 +283,8 @@ public class CourseStepActivity extends MapActivity{
     protected List<Placemark> getPlaceMarks() {
         
     	Bundle bundle = getIntent().getExtras();
-    	String course_url = bundle.getString(Course.URL_EXTRA);    	
-    	    	
+    	String course_url = bundle.getString(Course.URL_EXTRA);
+    	
     	course = CourseLoader.getInstance().parse(course_url);
     	type = course.getType();
     	
