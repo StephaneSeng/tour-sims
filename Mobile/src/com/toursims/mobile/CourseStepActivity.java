@@ -53,6 +53,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -391,10 +392,12 @@ public class CourseStepActivity extends MapActivity{
 		String className = am.getRunningTasks(1).get(0).topActivity.getClassName();
 		
 		if(!className.equals(CourseStepActivity.class.getName())) {
-			//send notification in not in foreground
+			//send notification if not in foreground
 				NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 				Notification notification = new Notification(R.drawable.ic_launcher,placemarks.get(currentPlacemark).getName(), System.currentTimeMillis());
 				notification.flags |= Notification.FLAG_AUTO_CANCEL;
+				notification.defaults |= Notification.DEFAULT_SOUND;
+				notification.defaults |= Notification.DEFAULT_VIBRATE;
 				notification.number += 1;
 				
 				Intent i = new Intent(getBaseContext(),CourseStepActivity.class);
@@ -404,7 +407,9 @@ public class CourseStepActivity extends MapActivity{
 				PendingIntent activity = PendingIntent.getActivity(getBaseContext(), 0, i,0);
 				notification.setLatestEventInfo(getBaseContext(), placemarks.get(currentPlacemark).getName(),placemarks.get(currentPlacemark).getName(), activity);
 				notificationManager.notify(0, notification);
-		} else {		
+				
+		    	SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+		 } else {		
 				AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 				
 				if(placemarks.get(currentPlacemark).getQuestions()!=null) {
