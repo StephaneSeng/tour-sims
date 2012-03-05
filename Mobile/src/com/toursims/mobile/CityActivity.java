@@ -33,10 +33,10 @@ public class CityActivity extends Activity{
 	//	Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
 	//	r.play();
 		
-		MediaPlayer player = MediaPlayer.create(this,Settings.System.DEFAULT_RINGTONE_URI);
+		/*MediaPlayer player = MediaPlayer.create(this,Settings.System.DEFAULT_RINGTONE_URI);
 			try {
-				player.prepare();
-				player.start();
+			//	player.prepare();
+			//	player.start();
 			} catch (IllegalStateException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -44,7 +44,7 @@ public class CityActivity extends Activity{
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			
+			*/
 		
 		Intent intent = getIntent();
 	    if (Intent.ACTION_SEARCH.equals(intent.getAction())) {

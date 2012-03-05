@@ -1,6 +1,11 @@
 package com.toursims.mobile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.toursims.mobile.model.Course;
+import com.toursims.mobile.ui.HomeAdapter;
+import com.toursims.mobile.ui.HomeItem;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -9,7 +14,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class HomeActivity extends Activity {
@@ -28,14 +35,35 @@ public class HomeActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+               
+        List<HomeItem> items = new ArrayList<HomeItem>();
+        items.add(new HomeItem(new OnClickListener() {
+			
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				allCityActivityClick();
+			}
+		}, R.string.home_cities_all, R.drawable.ic_menu_compass));
+        items.add(new HomeItem(new OnClickListener() {
+			
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				poiClick();
+			}
+		}, R.string.home_poi, R.drawable.ic_menu_info_details));
         
-                
+	    HomeAdapter adapter = new HomeAdapter(this, items,getCacheDir().getAbsolutePath());
+	    ListView lv = (ListView) findViewById(R.id.lvListe);
+	    lv.setAdapter(adapter);   	
+        
       // Start the localization service
       //  ComponentName localizationComponentName = new ComponentName(LocalizationService.class.getPackage().getName(), LocalizationService.class.getName());
       //  ComponentName localizationComponentService = startService(new Intent().setComponent(localizationComponentName));
       //  if (localizationComponentService == null){
       //          Log.e(TAG, "Could not start service " + localizationComponentName.toString());
       //  }
+        
+        
     }
     
     @Override
@@ -115,12 +143,12 @@ public class HomeActivity extends Activity {
     	super.onDestroy();
     }
     
-    public void allCityActivityClick(View v){
+    public void allCityActivityClick(){
     	Intent courseGameList = new Intent(getApplicationContext(), CityActivity.class);
         startActivity(courseGameList);
     }
     
-    public void poiClick(View v){
+    public void poiClick(){
     	Intent POI = new Intent(getApplicationContext(),POIActivity.class);
 		startActivity(POI);
     }
