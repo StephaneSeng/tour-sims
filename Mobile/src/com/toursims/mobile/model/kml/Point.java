@@ -28,15 +28,14 @@ public class Point {
 	
 	public double getLongitude(){
         String[] lL = getCoordinates().split(",");
-    	double l = Double.parseDouble(lL[1]);	        	
-    	double L = Double.parseDouble(lL[0]);
-    	return L;
+    	longitude = Double.parseDouble(lL[0]);
+    	return longitude;
 	}
 	
 	public double getLatitude(){
         String[] lL = getCoordinates().split(",");
-    	double l = Double.parseDouble(lL[1]);	        	
-    	return l;
+    	latitude = Double.parseDouble(lL[1]);	        	
+    	return latitude;
 	}
 	
 	public void setLatitude(double latitude) {
@@ -46,4 +45,6 @@ public class Point {
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
+	
+	
 }

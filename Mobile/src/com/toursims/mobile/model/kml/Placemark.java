@@ -1,5 +1,4 @@
 package com.toursims.mobile.model.kml;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.simpleframework.xml.Element;
