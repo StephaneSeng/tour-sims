@@ -49,18 +49,15 @@
         android:layout_height="1dip"
         android:layout_width="match_parent"
         android:background="#073776" /> 
-    
-    <View 
-        android:layout_height="0dip"
-        android:layout_width="match_parent"
-        android:paddingBottom="10dip"/>
-   
+      
      <ListView
         	android:id="@+id/lvListe"
         	android:layout_width="match_parent"
-        	android:layout_height="wrap_content" />
+        	android:layout_height="wrap_content"
+      />
              
     <TextView
+        android:paddingTop="5dip"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="SOCIAL"
@@ -72,40 +69,12 @@
     <View
         android:layout_height="1dip"
         android:layout_width="match_parent"
-        android:background="#073776" />   
+        android:background="#073776" />
+        
+     <ListView
+        	android:id="@+id/lvListe2"
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:paddingTop="2dip" />
      
- <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/home_social_chat"
-        android:textSize="22dip"
-        android:clickable="true"
-        android:paddingBottom="5dip"
-        android:paddingTop="2dip"
-        android:textColor="#000000" />
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/home_social_contacts"
-        android:textSize="22dip"
-        android:clickable="true"
-        android:paddingBottom="5dip"
-        android:textColor="#000000" />
-    <TextView
-        android:id="@+id/googleLogin"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/home_social_profil"
-        android:textSize="22dip"
-        android:clickable="true"
-        android:paddingBottom="5dip"
-        android:textColor="#000000" />
-      
-    <TextView
-         android:id="@+id/title"
-         android:layout_width="wrap_content"
-    	 android:layout_height="wrap_content"
-         android:textAppearance="?android:attr/textAppearanceLarge"
-         android:textColor="#000000" />
-
 </LinearLayout>

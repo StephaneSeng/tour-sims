@@ -68,10 +68,12 @@ public class HomeAdapter extends BaseAdapter{
 		holder.image = (ImageView)convertView.findViewById(R.id.image);
 		holder.name = (TextView)convertView.findViewById(R.id.text);
 		holder.layout = (LinearLayout)convertView.findViewById(R.id.layout);
-		holder.name.setText(items.get(position).getText());
-		holder.image.setImageResource(items.get(position).getPictureURL());
+		
 		holder.layout.setOnClickListener(items.get(position).getFunction());
+		holder.name.setText(items.get(position).getText());
+		holder.image.setImageResource(items.get(position).getPictureURL());	
 		convertView.setTag(holder);
+		
 		
 		/*if(convertView == null) {
 			holder = new ViewHolder();
