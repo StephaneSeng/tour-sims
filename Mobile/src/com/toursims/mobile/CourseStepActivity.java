@@ -26,6 +26,7 @@ import com.toursims.mobile.model.kml.Placemark;
 import com.toursims.mobile.model.kml.Point;
 import com.toursims.mobile.model.places.Place;
 import com.toursims.mobile.model.places.Road;
+import com.toursims.mobile.ui.ToolBox;
 import com.toursims.mobile.ui.utils.CustomItemizedOverlay;
 import com.toursims.mobile.ui.utils.DirectionPathOverlay;
 import com.toursims.mobile.ui.utils.RoadProvider;
@@ -294,7 +295,7 @@ public class CourseStepActivity extends MapActivity{
 
 			updateMap();
     		if(currentPlacemark==-1){
-    			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+    			AlertDialog.Builder dialog = ToolBox.getDialog(this);
 
 				dialog.setTitle(course.getName());
 				dialog.setMessage(course.getPresentation());
@@ -313,7 +314,7 @@ public class CourseStepActivity extends MapActivity{
 		    	//Present the new objective with its description
 		       	Placemark item = placemarks.get(currentPlacemark);
 		    	
-		       	AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+		       	AlertDialog.Builder dialog = ToolBox.getDialog(this);
 
 				dialog.setTitle(item.getName());
 				dialog.setMessage(item.getDirection());
@@ -366,7 +367,7 @@ public class CourseStepActivity extends MapActivity{
 				editor.remove(CustomPreferences.COURSE_STARTED_ID);		    	
 		    	editor.commit();
 				
-		    	AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+		    	AlertDialog.Builder dialog = ToolBox.getDialog(this);
 				
 				dialog.setTitle(R.string.course_finished_title);
 				dialog.setMessage(course.getEnd());
@@ -410,7 +411,7 @@ public class CourseStepActivity extends MapActivity{
 				
 		    	SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
 		 } else {		
-				AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+				AlertDialog.Builder dialog = ToolBox.getDialog(this);
 				
 				if(placemarks.get(currentPlacemark).getQuestions()!=null) {
 					dialog.setTitle(placemarks.get(currentPlacemark).getName());

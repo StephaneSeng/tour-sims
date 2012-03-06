@@ -162,6 +162,5 @@ public class HomeActivity extends Activity {
     	Intent Social = new Intent(getApplicationContext(),SocialActivity.class);	
 		startActivity(Social);
     }
-    
 }
  
