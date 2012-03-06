@@ -11,12 +11,7 @@ import com.toursims.mobile.ui.CityAdapter;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Intent;
-import android.media.MediaPlayer;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -54,7 +49,6 @@ public class CityActivity extends Activity{
 	    
 	    cities = new ArrayList<City>();
 	  
-	    
 	    CourseBDD datasource;
 		try {
 			datasource = new CourseBDD(this);
