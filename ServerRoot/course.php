@@ -5,13 +5,18 @@ $connection = pg_connect("host=localhost port=5432 dbname=toursims user=postgres
 
 // Define and perform the SQL query
 switch ($_REQUEST['action']) {
-	case "get":
+	case "get_courses":
 		// Return a list of all the courses from a specified city
+		// Test: http://localhost:80/course.php?action=get_courses&city_id=1
 		$query = "
 		SELECT
+			c.course_id,
 			c.name,
+			c.description,
+			c.difficulty,
 			c.file,
-			r.rating
+			c.\"timestamp\",
+			AVG(r.rating)
 		FROM
 			course AS c
 				LEFT OUTER JOIN
@@ -19,7 +24,9 @@ switch ($_REQUEST['action']) {
 				ON
 					c.course_id = r.course_id
 		WHERE
-			c.city_id = ".$_REQUEST['city_id'].";
+			c.city_id = ".$_REQUEST['city_id']."
+		GROUP BY
+			c.course_id;
 		";
 		$result = pg_query($query) or die('Query failed: '.pg_last_error());
 		

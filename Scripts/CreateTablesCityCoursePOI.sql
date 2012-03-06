@@ -28,9 +28,9 @@ CREATE TABLE course
   description character varying,
   difficulty integer,
   file character varying,
+  "timestamp" timestamp with time zone,
   user_id integer,
   city_id integer,
-  "timestamp" timestamp with time zone,
   CONSTRAINT course_pk PRIMARY KEY (course_id ),
   CONSTRAINT city_id_fk FOREIGN KEY (city_id)
       REFERENCES city (city_id) MATCH SIMPLE
@@ -57,8 +57,8 @@ CREATE TABLE poi
   latitude double precision,
   longitude character varying,
   address character varying,
-  user_id integer,
   "timestamp" timestamp with time zone,
+  user_id integer,
   CONSTRAINT poi_pk PRIMARY KEY (poi_id ),
   CONSTRAINT user_id_fk FOREIGN KEY (user_id)
       REFERENCES "user" (user_id) MATCH SIMPLE
@@ -142,7 +142,7 @@ CREATE TABLE comment
 (
   comment_id serial NOT NULL,
   text character varying,
-  date date,
+  "timestamp" timestamp with time zone,
   user_id integer,
   course_id integer,
   city_id integer,

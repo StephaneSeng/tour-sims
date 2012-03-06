@@ -1,120 +1,97 @@
 package com.toursims.mobile;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.toursims.mobile.model.Course;
-import com.toursims.mobile.ui.HomeAdapter;
-import com.toursims.mobile.ui.HomeItem;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ListView;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class HomeActivity extends Activity {
 	
+	public static final String PREF_FILE = "toursims_pref_file";
 	public static final String ALREADY_ASKED_TO_RESUME = "already_asked_to_resume";
 		
 	/**
 	 * Android debugging tag
 	 */
-	@SuppressWarnings("unused")
 	private static final String TAG = HomeActivity.class.getName(); 
 	private static SharedPreferences settings;
 
+	
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        //----------------------------------------------------
-	    // HOME
-	    //----------------------------------------------------
-	           
-        List<HomeItem> items = new ArrayList<HomeItem>();
-                
-        items.add(new HomeItem(new OnClickListener() {
-			
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				allCityActivityClick();
-			}
-		}, R.string.home_cities_all, R.drawable.ic_menu_compass));
+        LinearLayout l = (LinearLayout) findViewById(R.id.layout);
+        Button btnCourseGame = (Button) findViewById(R.id.btnCourseGame);
+          
         
-        items.add(new HomeItem(new OnClickListener() {
-			
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				poiClick();
-			}
-		}, R.string.home_poi, R.drawable.ic_menu_info_details));
-        
-        settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
-        
-        if(settings.contains(CustomPreferences.COURSE_STARTED_URL)){
-	        items.add(new HomeItem(new OnClickListener() {
-				
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					goOnCourse();
-				}
-			}, R.string.home_goon_course, R.drawable.ic_menu_myplaces));
-        }
-        
-	    HomeAdapter adapter = new HomeAdapter(this, items,getCacheDir().getAbsolutePath());
-	    ListView lv = (ListView) findViewById(R.id.lvListe);
-	    lv.setAdapter(adapter);   	
-        
-	    //----------------------------------------------------
-	    // SOCIAL
-	    //----------------------------------------------------
-	    
-	    List<HomeItem> items2 = new ArrayList<HomeItem>();
-        
-	    items2.add(new HomeItem(new OnClickListener() {
-			
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				social(v);
-			}
-		}, R.string.home_social_chat, R.drawable.ic_menu_dialog));
-	    
-        items2.add(new HomeItem(new OnClickListener() {
-			
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-			}
-		}, R.string.home_social_contacts, R.drawable.ic_menu_allfriends));
+        //Listening to button event
+        btnCourseGame.setOnClickListener(new View.OnClickListener() {
  
+            public void onClick(View arg0) {
+                //Starting a new Intent
+                Intent courseGameList = new Intent(getApplicationContext(), CityActivity.class);
+                startActivity(courseGameList);
+            }
+        });
         
-        
-        items2.add(new HomeItem(new OnClickListener() {
+        Button btnPOI = (Button) findViewById(R.id.btnPOI);
+        // Listening to button POI
+        btnPOI.setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				googleLogin(v);
+				//Starting new Intent
+				Intent POI = new Intent(getApplicationContext(),POIActivity.class);
+				startActivity(POI);
 			}
-		}, R.string.home_social_profil, R.drawable.ic_menu_user));
+		});
+
+        Button btnSocial = (Button) findViewById(R.id.btnSocial);
+        // Listening to button POI
+        btnSocial.setOnClickListener(new View.OnClickListener() {
+			
+			public void onClick(View v) {
+				//Starting new Intent
+				Intent Social = new Intent(getApplicationContext(),SocialActivity.class);
+				//Intent Social = new Intent(getApplicationContext(),CityActivity.class);
+				
+				startActivity(Social);
+			}
+		});
         
-	    HomeAdapter adapter2 = new HomeAdapter(this, items2,getCacheDir().getAbsolutePath());
-	    ListView lv2 = (ListView) findViewById(R.id.lvListe2);
-	    lv2.setAdapter(adapter2);   	
         
-      // Start the localization service
-      //  ComponentName localizationComponentName = new ComponentName(LocalizationService.class.getPackage().getName(), LocalizationService.class.getName());
-      //  ComponentName localizationComponentService = startService(new Intent().setComponent(localizationComponentName));
-      //  if (localizationComponentService == null){
-      //          Log.e(TAG, "Could not start service " + localizationComponentName.toString());
-      //  }
+        Button btnGoogleLogin = (Button) findViewById(R.id.btnGoogleLogin);
+        // Listening to button POI
+        btnGoogleLogin.setOnClickListener(new View.OnClickListener() {
+			
+			public void onClick(View v) {
+				//Starting new Intent
+				Intent GoogleLogin = new Intent(getApplicationContext(), LoginActivity.class);
+				startActivityForResult(GoogleLogin, 0);
+			}
+		});
         
-        
+        // Start the localization service
+        ComponentName localizationComponentName = new ComponentName(LocalizationService.class.getPackage().getName(), LocalizationService.class.getName());
+        ComponentName localizationComponentService = startService(new Intent().setComponent(localizationComponentName));
+        if (localizationComponentService == null){
+                Log.e(TAG, "Could not start service " + localizationComponentName.toString());
+        }
     }
     
     @Override
@@ -122,24 +99,27 @@ public class HomeActivity extends Activity {
 		super.onResume();
 		
 		// User connection management
-		//TourSims tourSims = (TourSims)getApplicationContext();
-		//TextView nameTextView = (TextView)findViewById(R.id.nameTextView);
-		//TextView btnGoogleLogin = (TextView)findViewById(R.id.googleLogin);
-		/*
-		if (tourSims.getUserName().isEmpty()) {
+		TourSims tourSims = (TourSims)getApplicationContext();
+		TextView nameTextView = (TextView)findViewById(R.id.nameTextView);
+		Button btnGoogleLogin = (Button)findViewById(R.id.btnGoogleLogin);
+		
+		if (!tourSims.isUserLoggedIn()) {
 			// The user is not yet connected 
-	//		nameTextView.setText("Welcome, please login with your Google Account...");
+			nameTextView.setText("Welcome, please login with your Google Account...");
 			btnGoogleLogin.setVisibility(Button.VISIBLE);
 		} else {
-	//		nameTextView.setText("Welcome " + tourSims.getUserName() + " !");
+			nameTextView.setText("Welcome " + tourSims.getUserName() + " !");
 			btnGoogleLogin.setVisibility(Button.INVISIBLE);
 		}
-		*/
-        askGoOnCourse();
+		
+        restartCourse();
 	}
     
-    private void askGoOnCourse() {
-     	if(settings.contains(CustomPreferences.COURSE_STARTED_URL)&&settings.getBoolean(ALREADY_ASKED_TO_RESUME, false)){
+    private void restartCourse() {
+    	
+    	settings = getSharedPreferences(PREF_FILE, 0); 
+    	    	
+    	if(settings.contains(Course.PREFERENCES_STARTED_URL)&&settings.getBoolean(ALREADY_ASKED_TO_RESUME, false)){
     		    		
 			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 			
@@ -149,6 +129,10 @@ public class HomeActivity extends Activity {
 					
 				public void onClick(DialogInterface dialog, int which) {	
 						// TODO Auto-generated method stub
+				          Intent activity = new Intent(getApplicationContext(),CourseDetailsActivity.class);
+				          activity.putExtra(Course.URL_EXTRA, settings.getString(Course.PREFERENCES_STARTED_URL, null));
+				          activity.putExtra(Course.ID_EXTRA, settings.getInt(Course.PREFERENCES_STARTED_ID, 0));
+				          startActivity(activity);
 					}
 				});
 			
@@ -157,11 +141,9 @@ public class HomeActivity extends Activity {
 				public void onClick(DialogInterface dialog, int which) {
 					// TODO Auto-generated method stub
 					SharedPreferences.Editor editor = settings.edit();
-					
-					for (String item : CustomPreferences.COURSE_ALL) {
-						editor.remove(item);
-					}
-					
+					editor.remove(Course.PREFERENCES_STARTED_URL);
+					editor.remove(Course.PREFERENCES_STARTED_TIME_STARTED);
+					editor.remove(Course.PREFERENCES_STARTED_ID);
 					dialog.dismiss();
 				}
 			});
@@ -177,14 +159,8 @@ public class HomeActivity extends Activity {
 				}
 			});
 			dialog.show();
-    	}   	
-    }
-    
-    public void goOnCourse(){
-        Intent activity = new Intent(getApplicationContext(),CourseStepActivity.class);
-        activity.putExtra(Course.URL_EXTRA, settings.getString(CustomPreferences.COURSE_STARTED_URL, null));
-        activity.putExtra(Course.ID_EXTRA, settings.getInt(CustomPreferences.COURSE_STARTED_ID, 0));
-        startActivity(activity);    	
+    	} 
+    	
     }
     
     @Override
@@ -195,26 +171,5 @@ public class HomeActivity extends Activity {
 		editor.commit();
     	super.onDestroy();
     }
-    
-    public void allCityActivityClick(){
-    	Intent courseGameList = new Intent(getApplicationContext(), CityActivity.class);
-        startActivity(courseGameList);
-    }
-    
-    public void poiClick(){
-    	Intent POI = new Intent(getApplicationContext(),POIActivity.class);
-		startActivity(POI);
-    }
-    
-    public void googleLogin(View v){
-		Intent GoogleLogin = new Intent(getApplicationContext(), LoginActivity.class);
-		startActivityForResult(GoogleLogin, 0);	
-    }
-    
-    public void social(View v){
-    	Intent Social = new Intent(getApplicationContext(),SocialActivity.class);	
-		startActivity(Social);
-    }
-    
 }
  

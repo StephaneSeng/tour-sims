@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.toursims.mobile.controller.UserWrapper;
 import com.toursims.mobile.model.kml.Placemark;
 import com.toursims.mobile.model.kml.Point;
 
@@ -30,7 +31,7 @@ public class LocalizationService extends Service {
 	private static final String TAG = LocalizationService.class.getName();
 	private static final String PROXIMITY_INTENT = TAG+".PROXIMITY_INTENT";
 
-	private static final long UPDATE_INTERVAL = 5000;
+	private static final long UPDATE_INTERVAL = 10000;
 	private long minUpdateTime = 1 * 1 * 1000; // 30 seconds
 	private long maxUpdateTime = 1 * 5 * 1000; // 1 minute
 	private long minUpdateDistance  = 0; // 0 m
@@ -44,6 +45,8 @@ public class LocalizationService extends Service {
 	private static final long expiration = 600000;
 	
 	private static final float radius = 100f;
+	
+	private UserWrapper userWrapper = new UserWrapper();
 		
 	@Override
 	public void onCreate() {
@@ -55,16 +58,18 @@ public class LocalizationService extends Service {
 		
 		criteria = new Criteria();
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
-		bestProvider = locationManager.getBestProvider(criteria, false);
-		bestProvider = LocationManager.GPS_PROVIDER;
+		bestProvider = locationManager.getBestProvider(criteria, true);
+//		bestProvider = LocationManager.GPS_PROVIDER;
 		
 		Log.d(TAG, "Best current localization provider : " + bestProvider);
 		
 		localizationListener = new LocalizationListener();
 		lastUpdateTime = Calendar.getInstance();
 		
-		locationManager.requestLocationUpdates(bestProvider, 0, 0, localizationListener);
-		locationManager.requestLocationUpdates(bestProvider, minUpdateTime, minUpdateDistance, localizationListener);
+		if (!bestProvider.equals("null")) {
+			locationManager.requestLocationUpdates(bestProvider, 0, 0, localizationListener);
+//			locationManager.requestLocationUpdates(bestProvider, minUpdateTime, minUpdateDistance, localizationListener);
+		}
 		
 		localizationTask();		
 		Log.d(TAG, "The LocalizationService has been started");
@@ -110,7 +115,9 @@ public class LocalizationService extends Service {
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
-				localizationListener.onLocationChanged(locationManager.getLastKnownLocation(bestProvider));
+				if (!bestProvider.equals("null")) {
+					localizationListener.onLocationChanged(locationManager.getLastKnownLocation(bestProvider));
+				}
 				Intent intent=new Intent();
 				intent.setAction("TIMER");
 				sendBroadcast(intent);
@@ -143,26 +150,36 @@ public class LocalizationService extends Service {
 				lastLocation = location;
 				lastUpdateTime = Calendar.getInstance();
 				
+				// Create a checkin
+				TourSims tourSims = (TourSims)getApplicationContext();
+				if (tourSims.isUserLoggedIn()) {
+					Log.d(TAG, "Create a checkin");
+					userWrapper.CreateCheckin(location.getLatitude(), location.getLongitude(), tourSims.getUserId());
+				}
+				
 				Log.d(TAG, "New user position : (" + location.getLatitude() + ", " + location.getLongitude() + ")");	
 			}
 		}
 
 		public void onProviderDisabled(String provider) {
 			Log.d(TAG, "The GPS provider has been disabled");
-			bestProvider = locationManager.getBestProvider(criteria, false);
-			bestProvider = LocationManager.GPS_PROVIDER;
+			bestProvider = locationManager.getBestProvider(criteria, true);
+//			bestProvider = LocationManager.GPS_PROVIDER;
+			Log.d(TAG, "Best current localization provider : " + bestProvider);
 		}
 
 		public void onProviderEnabled(String provider) {
 			Log.d(TAG, "The GPS provider has been enabled");
-			bestProvider = locationManager.getBestProvider(criteria, false);
-			bestProvider = LocationManager.GPS_PROVIDER;
+			bestProvider = locationManager.getBestProvider(criteria, true);
+//			bestProvider = LocationManager.GPS_PROVIDER;
+			Log.d(TAG, "Best current localization provider : " + bestProvider);
 		}
 
 		public void onStatusChanged(String provider, int status, Bundle extras) {
 			Log.d(TAG, "The GPS provider status has changed to " + status);		
-			bestProvider = locationManager.getBestProvider(criteria, false);
-			bestProvider = LocationManager.GPS_PROVIDER;
+			bestProvider = locationManager.getBestProvider(criteria, true);
+//			bestProvider = LocationManager.GPS_PROVIDER;
+			Log.d(TAG, "Best current localization provider : " + bestProvider);
 		}
 		
 	}

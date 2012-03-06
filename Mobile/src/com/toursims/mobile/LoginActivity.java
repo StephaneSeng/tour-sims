@@ -17,6 +17,8 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.plus.Plus;
 import com.google.api.services.plus.model.Person;
+import com.toursims.mobile.controller.UserWrapper;
+import com.toursims.mobile.model.User;
 
 public class LoginActivity extends Activity {
 	
@@ -96,14 +98,20 @@ public class LoginActivity extends Activity {
 				        	System.out.println("Image URL: " + profile.getImage().getUrl());
 				        	System.out.println("Profile URL: " + profile.getUrl());
 				        	
+				        	// Call our own webservice for the authentication
+				        	UserWrapper userWrapper = new UserWrapper();
+				        	User user = userWrapper.AuthenticateUser(profile.getDisplayName(), profile.getImage().getUrl(), 1, profile.getId());
+				        	
 				        	// Update the user name in the application
 				        	TourSims tourSims = (TourSims)getApplicationContext();
 				        	tourSims.setUserName(profile.getDisplayName());
+				        	tourSims.setUserId(user.getUserId());
+				        	tourSims.setUserLoggedIn(true);
 				        	
 				        	finishActivity(0);
 						}
 					} catch (Exception e) {
-						Log.e(TAG, e.getMessage());
+//						Log.e(TAG, e.getMessage());
 						Log.e(TAG, e.toString());
 					}
 				}
