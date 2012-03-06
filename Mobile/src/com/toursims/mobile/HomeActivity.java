@@ -15,10 +15,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Adapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 public class HomeActivity extends Activity {
 	

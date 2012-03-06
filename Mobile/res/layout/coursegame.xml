@@ -14,7 +14,7 @@
     	<View
 	        android:layout_height="1dip"
 	        android:layout_width="match_parent"
-	        android:background="#073776" /> 
+	        android:background="@color/title" /> 
 	          
         <ListView
 			android:id="@+id/lvListe"
