@@ -24,6 +24,14 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:textColor">#073776</item>
     </style>
+    <style name="textTitleSection">
+        <item name="android:textSize">10dip</item>
+	    <item name="android:clickable">true</item>
+	    <item name="android:textColor">#073776</item>
+	    <item name="android:paddingBottom">2dip</item>
+	    <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
     <style name="course_LinearLayout_wrapper">
          <item name="android:paddingLeft">10dip</item>
          <item name="android:layout_width">fill_parent</item>

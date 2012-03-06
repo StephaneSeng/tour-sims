@@ -2,6 +2,7 @@ package com.toursims.mobile.ui;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -99,8 +100,8 @@ public class CityAdapter extends BaseAdapter {
 				 
 				FileOutputStream fos = new FileOutputStream(file);
 				fos.write(baf.toByteArray());
-				fos.close();			 
-			}  
+				fos.close();
+			}
 				
 			if(file.exists()){
 			    Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
