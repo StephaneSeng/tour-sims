@@ -54,6 +54,11 @@ public class CityAdapter extends BaseAdapter {
 		return position;
 	}
 
+	public void setCities(List<City> cities) {
+		this.cities = cities;
+	}
+	
+	
 	
 	private class ViewHolder {
 		ImageView image;

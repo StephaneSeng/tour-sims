@@ -72,7 +72,7 @@ public class CourseGameActivity extends Activity {
 	        	dialog = ProgressDialog.show(CourseGameActivity.this, "", 
 	                    "Loading. Please wait...", true);
 	            
-	    // When clicked, show Course details
+	          // When clicked, show Course details
 	          Intent courseDetails = new Intent(getApplicationContext(),CourseStepActivity.class);
 	          courseDetails.putExtra(Course.ID_EXTRA, courses.get(position).getId());
 	          courseDetails.putExtra(Course.URL_EXTRA, courses.get(position).getUrl());
