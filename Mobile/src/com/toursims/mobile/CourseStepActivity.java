@@ -208,7 +208,7 @@ public class CourseStepActivity extends MapActivity{
 	
 	private void decrementCurrentPlacemark() {
 		Placemark pl = placemarks.get(--currentPlacemark);
-		while (!pl.isRoutePlacemark())
+		while (pl.isRoutePlacemark())
 		{
 			pl = placemarks.get(--currentPlacemark);
 		}
@@ -284,6 +284,7 @@ public class CourseStepActivity extends MapActivity{
 		    		};
 		    		t.setCoord(formerPoint, lL);
 	        		t.start();
+	        		
         		}
         	} else {
         		//place user at the beginning of the course
