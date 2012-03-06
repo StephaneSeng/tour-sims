@@ -15,6 +15,7 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.toursims.mobile.controller.PlaceWrapper;
@@ -36,6 +37,7 @@ public class POIActivity extends MapActivity {
 	private List<Overlay> mapOverlays;
 	private Drawable drawable;
 	private CustomItemizedOverlay itemizedOverlay;
+	private MyLocationOverlay myLocationOverlay;
 	
 	/**
 	 * Called when the activity is first created
@@ -62,32 +64,36 @@ public class POIActivity extends MapActivity {
 	protected void onResume() {
 		super.onResume();
 		
-		// Get the current user position
-		LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+		myLocationOverlay = new MyLocationOverlay(this, mapView);
+		myLocationOverlay.enableMyLocation();
+		mapOverlays.add(myLocationOverlay);
 		
-		// Try to get the best localization provider
-		Criteria criteria = new Criteria();
-		criteria.setAccuracy(Criteria.ACCURACY_FINE);
-		String bestProvider = locationManager.getBestProvider(criteria, false);
-		
-		// TODO Emulator fix
-		bestProvider = LocationManager.GPS_PROVIDER;
-		
-		Location lastLocation = locationManager.getLastKnownLocation(bestProvider);
-		Log.d(TAG, "Test : " + lastLocation);
-		
-		// Call the SearchPointOfInterestPlaces method
-		PlaceWrapper placeWrapper = new PlaceWrapper();
-		List<Place> places = placeWrapper.SearchPointOfInterestPlaces(lastLocation.getLatitude(), lastLocation.getLongitude(), 100.0);
 		
 		// Display the map with the user at its center
-		mapController.animateTo(new GeoPoint((int)(lastLocation.getLatitude() * 1e6), (int)(lastLocation.getLongitude() * 1e6)));
+		mapController.animateTo(myLocationOverlay.getMyLocation());
 		
-		// Display the user
-		displayUser(lastLocation);
+		Location lastLocation = new Location("");
+		double latitude = myLocationOverlay.getMyLocation().getLatitudeE6() / 1E6;
+		double longitude = myLocationOverlay.getMyLocation().getLongitudeE6() / 1E6;
+
+		lastLocation.setLatitude(latitude);
+		lastLocation.setLongitude(longitude);
 		
-		// Display the points of interests
-		displayPointOfInterests(places);
+		
+		if(lastLocation !=null)
+		{
+			Log.d(TAG, "Test : " + lastLocation);
+			
+			// Call the SearchPointOfInterestPlaces method
+			PlaceWrapper placeWrapper = new PlaceWrapper();
+			List<Place> places = placeWrapper.SearchPointOfInterestPlaces(lastLocation.getLatitude(), lastLocation.getLongitude(), 100.0);
+			
+			
+
+			
+			// Display the points of interests
+			displayPointOfInterests(places);
+		}
 	}
 
 	/**
@@ -105,7 +111,7 @@ public class POIActivity extends MapActivity {
 		GeoPoint point = new GeoPoint((int)(location.getLatitude() * 1e6), (int)(location.getLongitude() * 1e6));
         OverlayItem overlayItem = new OverlayItem(point, "User Name", "Latitude : " + location.getLatitude() + ", Longitude : " + location.getLongitude());
         
-        drawable = this.getResources().getDrawable(R.drawable.androidmarkerred);
+        drawable = this.getResources().getDrawable(R.drawable.maps_icon);
         itemizedOverlay = new CustomItemizedOverlay(drawable, POIActivity.this);
         itemizedOverlay.addOverlay(overlayItem);
         mapOverlays.add(itemizedOverlay);
