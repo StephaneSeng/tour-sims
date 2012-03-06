@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -85,12 +86,12 @@ public class HomeActivity extends Activity {
 			}
 		});
         
-      // Start the localization service
-      //  ComponentName localizationComponentName = new ComponentName(LocalizationService.class.getPackage().getName(), LocalizationService.class.getName());
-      //  ComponentName localizationComponentService = startService(new Intent().setComponent(localizationComponentName));
-      //  if (localizationComponentService == null){
-      //          Log.e(TAG, "Could not start service " + localizationComponentName.toString());
-      //  }
+        // Start the localization service
+        ComponentName localizationComponentName = new ComponentName(LocalizationService.class.getPackage().getName(), LocalizationService.class.getName());
+        ComponentName localizationComponentService = startService(new Intent().setComponent(localizationComponentName));
+        if (localizationComponentService == null){
+                Log.e(TAG, "Could not start service " + localizationComponentName.toString());
+        }
     }
     
     @Override
@@ -102,7 +103,7 @@ public class HomeActivity extends Activity {
 		TextView nameTextView = (TextView)findViewById(R.id.nameTextView);
 		Button btnGoogleLogin = (Button)findViewById(R.id.btnGoogleLogin);
 		
-		if (tourSims.getUserName().isEmpty()) {
+		if (!tourSims.isUserLoggedIn()) {
 			// The user is not yet connected 
 			nameTextView.setText("Welcome, please login with your Google Account...");
 			btnGoogleLogin.setVisibility(Button.VISIBLE);
