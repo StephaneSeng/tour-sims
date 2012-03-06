@@ -70,7 +70,6 @@ public class POIActivity extends MapActivity {
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
 		String bestProvider = locationManager.getBestProvider(criteria, false);
 		
-		// TODO Emulator fix
 		bestProvider = LocationManager.GPS_PROVIDER;
 		
 		Location lastLocation = locationManager.getLastKnownLocation(bestProvider);
