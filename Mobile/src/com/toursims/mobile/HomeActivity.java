@@ -150,9 +150,11 @@ public class HomeActivity extends Activity {
 				public void onClick(DialogInterface dialog, int which) {
 					// TODO Auto-generated method stub
 					SharedPreferences.Editor editor = settings.edit();
-					editor.remove(CustomPreferences.COURSE_STARTED_URL);
-					editor.remove(CustomPreferences.COURSE_STARTED_TIME_STARTED);
-					editor.remove(CustomPreferences.COURSE_STARTED_ID);
+					
+					for (String item : CustomPreferences.COURSE_ALL) {
+						editor.remove(item);
+					}
+					
 					dialog.dismiss();
 				}
 			});

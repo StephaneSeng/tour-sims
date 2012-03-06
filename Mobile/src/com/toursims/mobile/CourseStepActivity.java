@@ -79,7 +79,7 @@ public class CourseStepActivity extends MapActivity{
 	private MyLocationOverlay myLocationOverlay;
 	private MapView mapView;
     private LocationManager locationManager;
-    private static int currentPlacemark = -1;
+    private static int currentPlacemark;
     private static BroadcastReceiver receiverLocalization;
 	private LocalizationService s;
 
@@ -87,11 +87,21 @@ public class CourseStepActivity extends MapActivity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+        currentPlacemark = settings.getInt(CustomPreferences.COURSE_CURRENT_PLACEMARK, -1);
 
+        if(currentPlacemark!=-1){
+        	//reprise du parcours
+        }
+        
+        
         Bundle bundle = getIntent().getExtras();       
         setContentView(R.layout.coursestep);
         
         placemarks = getPlaceMarks();
+        
+        
+        
         
         if(bundle.containsKey(Course.NEXT_PLACEMARK)){
         	if(currentPlacemark<placemarks.size()-1)
@@ -126,15 +136,12 @@ public class CourseStepActivity extends MapActivity{
 		// TODO Auto-generated method stub
 		super.onPause();
 		Log.d("TAG","Start Service");
-		
 		Intent i = new Intent(this, LocalizationService.class);
 		i.putExtra(Point.LATITUDE, placemarks.get(currentPlacemark).getPoint().getLatitude());
 		i.putExtra(Point.LONGITUDE, placemarks.get(currentPlacemark).getPoint().getLatitude());
 		i.putExtra(Placemark.NAME, placemarks.get(currentPlacemark).getName());
-
 		startService(i);
-	}
-	
+	}	
     
 	@Override
 	protected void onResume() {
@@ -187,7 +194,9 @@ public class CourseStepActivity extends MapActivity{
 		{
 			pl = placemarks.get(++currentPlacemark);
 		}
-				
+        SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt(CustomPreferences.COURSE_CURRENT_PLACEMARK, currentPlacemark);				
 	}
 	
 	private void decrementCurrentPlacemark() {
@@ -382,12 +391,15 @@ public class CourseStepActivity extends MapActivity{
 		    } else {
 		    	//End of the course 
 		    	SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);    	
-		    	SharedPreferences.Editor editor = settings.edit();
-				editor.remove(CustomPreferences.COURSE_STARTED_URL);
-				editor.remove(CustomPreferences.COURSE_STARTED_TIME_STARTED);
-				editor.remove(CustomPreferences.COURSE_STARTED_ID);		    	
-		    	editor.commit();
 				
+		    	SharedPreferences.Editor editor = settings.edit();
+				
+				for (String item : CustomPreferences.COURSE_ALL) {
+					editor.remove(item);
+				}
+				
+				editor.commit();
+
 		    	AlertDialog.Builder dialog = ToolBox.getDialog(this);
 				
 				dialog.setTitle(R.string.course_finished_title);
@@ -454,7 +466,6 @@ public class CourseStepActivity extends MapActivity{
 					dialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 						
 						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
 							currentPlacemark++;
 					        updatePlacemark();
 					        dialog.dismiss();
