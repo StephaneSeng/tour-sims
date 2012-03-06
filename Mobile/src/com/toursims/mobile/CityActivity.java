@@ -12,10 +12,8 @@ import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -26,6 +24,23 @@ public class CityActivity extends Activity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.city);
 		
+	//	Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+	//	Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+	//	r.play();
+		
+		/*MediaPlayer player = MediaPlayer.create(this,Settings.System.DEFAULT_RINGTONE_URI);
+			try {
+			//	player.prepare();
+			//	player.start();
+			} catch (IllegalStateException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			*/
+		
 		Intent intent = getIntent();
 	    if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 	      String query = intent.getStringExtra(SearchManager.QUERY);
@@ -34,7 +49,6 @@ public class CityActivity extends Activity{
 	    
 	    cities = new ArrayList<City>();
 	  
-	    
 	    CourseBDD datasource;
 		try {
 			datasource = new CourseBDD(this);

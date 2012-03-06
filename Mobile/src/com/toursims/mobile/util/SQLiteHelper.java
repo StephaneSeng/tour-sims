@@ -1,7 +1,5 @@
 package com.toursims.mobile.util;
 
-import java.io.InputStream;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;

@@ -12,9 +12,6 @@ public class Course {
 	public static final String ID_EXTRA = "course_id";
 	public static final String NEXT_PLACEMARK = "course_next_placemark";
 	public static final String CURRENT_PLACEMARK = "placemark";
-	public static final String PREFERENCES_STARTED_URL = "course_url_for_preferences";
-	public static final String PREFERENCES_STARTED_TIME_STARTED = "course_started_time_for_preferences";
-	public static final String PREFERENCES_STARTED_ID = "course_id_for_preferences";
 	
 	private Integer id;
 	private String city; 

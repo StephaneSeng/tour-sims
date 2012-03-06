@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<resources>
+    <style name="LinearLayout">        
+        <item name="android:paddingLeft">20dip</item>
+        <item name="android:paddingRight">10dip</item>
+        <item name="android:paddingTop">10dip</item>
+        <item name="android:background">@color/background</item>
+        <item name="android:layout_width">fill_parent</item>
+    	<item name="android:layout_height">fill_parent</item>
+     	<item name="android:orientation">vertical</item>
+    </style>
+    <style name="textList">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:textSize">20dip</item>
+        <item name="android:paddingLeft">10dip</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@color/text</item>
+    </style>
+    <style name="textTitle">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">30dip</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@color/title</item>
+    </style>
+    <style name="textTitleSection">
+        <item name="android:textSize">10dip</item>
+	    <item name="android:clickable">true</item>
+	    <item name="android:textColor">@color/title</item>
+	    <item name="android:paddingBottom">2dip</item>
+	    <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="course_LinearLayout_wrapper">
+         <item name="android:paddingLeft">10dip</item>
+         <item name="android:layout_width">fill_parent</item>
+         <item name="android:orientation">vertical</item>
+         <item name="android:layout_height">fill_parent</item>
+         <item name="android:gravity">center</item>
+    </style>
+    <style name="course_LinearLayout_line1">
+         <item name="android:layout_width">fill_parent</item>
+         <item name="android:orientation">horizontal</item>
+         <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="course_LinearLayout_line1_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">15dip</item>
+        <item name="android:textColor">@color/title</item>
+    </style> 
+    <style name="course_LinearLayout_line2">
+    	<item name="android:layout_width">fill_parent</item>
+    	<item name="android:layout_height">wrap_content</item>
+    	<item name="android:textSize">12dip</item>
+		<item name="android:textColor">@color/text</item>
+		<item name="android:paddingLeft">2dip</item>
+    </style>
+</resources>

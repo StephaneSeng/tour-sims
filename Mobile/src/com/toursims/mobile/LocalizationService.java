@@ -74,10 +74,7 @@ public class LocalizationService extends Service {
 		localizationTask();		
 		Log.d(TAG, "The LocalizationService has been started");
 		
-
-		
-		
-	}
+}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {

@@ -8,7 +8,7 @@ import android.graphics.drawable.Drawable;
 
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.OverlayItem;
-import com.toursims.mobile.model.kml.Placemark;
+import com.toursims.mobile.ui.ToolBox;
 
 public class CustomItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>(); 
@@ -39,7 +39,7 @@ public class CustomItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 		OverlayItem item = mOverlays.get(index);
 		
 		if (!item.getTitle().isEmpty()) {
-			AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
+			AlertDialog.Builder dialog = ToolBox.getDialogOK(mContext);
 			dialog.setTitle(item.getTitle());
 			dialog.setMessage(item.getSnippet());
 			dialog.show();

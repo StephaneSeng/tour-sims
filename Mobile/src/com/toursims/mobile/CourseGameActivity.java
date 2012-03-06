@@ -5,14 +5,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import com.toursims.mobile.controller.CourseBDD;
-import com.toursims.mobile.controller.CourseLoader;
 import com.toursims.mobile.model.Course;
 import com.toursims.mobile.ui.CourseAdapter;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
@@ -23,6 +22,15 @@ import android.widget.ListView;
 public class CourseGameActivity extends Activity {
 		
 	private static List<Course> courses = new ArrayList<Course>();
+	private ProgressDialog dialog;
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if(dialog!=null){
+			dialog.dismiss();
+		}
+	}
 	
 	public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -48,29 +56,22 @@ public class CourseGameActivity extends Activity {
 		e.printStackTrace();
 	}
 	
-/*	Course c1 = CourseLoader.getInstance().parse("http://www.x00b.com/tour.kml");
-	datasource.insertCourse(c1);
-	c1.setId(datasource.getCourseIdWithURL("http://www.x00b.com/tour.kml"));
-	datasource.insertPlacemarks(c1);
-	
-	Course c2 = CourseLoader.getInstance().parse("http://www.x00b.com/tour2.kml");
-	datasource.insertCourse(c2);
-	c2.setId(datasource.getCourseIdWithURL("http://www.x00b.com/tour2.kml"));
-	datasource.insertPlacemarks(c2);
-	
-	Course c3 = CourseLoader.getInstance().parse("http://www.x00b.com/tour3.kml");
-	datasource.insertCourse(c3);
-	c3.setId(datasource.getCourseIdWithURL("http://www.x00b.com/tour3.kml"));
-	datasource.insertPlacemarks(c3);*/
+//	Course c1 = CourseLoader.getInstance().parse("http://www.x00b.com/tour.kml");
+//	datasource.insertCourse(c1);
+//	c1.setId(datasource.getCourseIdWithURL("http://www.x00b.com/tour.kml"));
+//	datasource.insertPlacemarks(c1);
 		
 				
 	if(courses.size()>0) {
 	    CourseAdapter adapter = new CourseAdapter(this, courses,getCacheDir().getAbsolutePath());
-	    
 	    lv.setAdapter(adapter);   
 	    lv.setOnItemClickListener(new OnItemClickListener() {
 	       
 	        public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+	            
+	        	dialog = ProgressDialog.show(CourseGameActivity.this, "", 
+	                    "Loading. Please wait...", true);
+	            
 	    // When clicked, show Course details
 	          Intent courseDetails = new Intent(getApplicationContext(),CourseStepActivity.class);
 	          courseDetails.putExtra(Course.ID_EXTRA, courses.get(position).getId());
@@ -78,14 +79,15 @@ public class CourseGameActivity extends Activity {
 	          startActivity(courseDetails);
 	          
 	          //Put that a course is started
-	          SharedPreferences settings = getSharedPreferences(HomeActivity.PREF_FILE, 0);
+	          SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+	          CustomPreferences.removeCourseStarted(settings);
+
 	          SharedPreferences.Editor editor = settings.edit();
-	          editor.putString(Course.PREFERENCES_STARTED_URL, courses.get(position).getUrl());
-	          editor.putInt(Course.PREFERENCES_STARTED_ID, courses.get(position).getId());
+	          editor.putString(CustomPreferences.COURSE_STARTED_URL, courses.get(position).getUrl());
+	          editor.putInt(CustomPreferences.COURSE_STARTED_ID, courses.get(position).getId());
 	          Calendar c = Calendar.getInstance(); 
 	          int seconds = c.get(Calendar.SECOND);
-	          editor.putInt(Course.PREFERENCES_STARTED_TIME_STARTED, seconds);
-	          // Commit the edits!
+	          editor.putInt(CustomPreferences.COURSE_STARTED_TIME_STARTED, seconds);
 	          editor.commit();
 	    }
 		});

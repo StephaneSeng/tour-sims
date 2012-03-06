@@ -1,56 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical"
+    style="@style/LinearLayout"
     android:id="@+id/layout"
-    android:background="@drawable/ic_launcher"
     >
-
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+       
+  <!--  android:background="@drawable/ic_launcher"-->
+  <LinearLayout 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingBottom="20dip"
+   >
+   <ImageView 
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:src="@drawable/ic_launcher"/>
+     <TextView
+		style="@style/textTitle"
         android:text="@string/hello"
-        android:id="@+id/nameTextView" />
-    
+        android:id="@+id/nameTextView"
+        android:paddingLeft="10dip"
+         />    
+  </LinearLayout>
+    <TextView
+		style="@style/textTitleSection"
+        android:text="@string/home_toursim"
+ 	/>
     <View
-        android:layout_height="2dip"
+        android:layout_height="1dip"
         android:layout_width="match_parent"
-        android:background="#FF909090" />
-    
-	<TextView
-         android:id="@+id/title"
-         android:layout_width="wrap_content"
-    	 android:layout_height="wrap_content"
-         android:textAppearance="?android:attr/textAppearanceLarge" />
-          
-     <Button
-        android:id="@+id/btnCourseGame"
-        android:layout_width="104dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="40dp"
-        android:text="Course/Game" />
-
-     <Button
-         android:id="@+id/btnPOI"
-         android:layout_width="104dp"
-         android:layout_height="wrap_content"
-         android:layout_gravity="center"
-         android:text="POI" />
-
-     <Button
-         android:id="@+id/btnSocial"
-         android:layout_width="104dp"
-         android:layout_height="wrap_content"
-         android:layout_gravity="center"
-         android:text="Social" />
+        android:background="@color/title" />   
+     <ListView
+        	android:id="@+id/lvListe"
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:focusable="false"
+        	android:focusableInTouchMode="false"
+      />
+             
+    <TextView
+        android:paddingTop="5dip"
+   		style="@style/textTitleSection"
+        android:text="@string/home_social"
+        android:clickable="true"
+	/>
+        
+    <View
+        android:layout_height="1dip"
+        android:layout_width="match_parent"
+        android:background="@color/title" />
+        
+     <ListView
+        	android:id="@+id/lvListe2"
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:paddingTop="2dip"
+        	android:focusable="false"
+        	android:focusableInTouchMode="false" />
      
-     <Button
-         android:id="@+id/btnGoogleLogin"
-         android:layout_width="104dp"
-         android:layout_height="wrap_content"
-         android:layout_gravity="center"
-         android:text="Google Login" />
-
 </LinearLayout>
