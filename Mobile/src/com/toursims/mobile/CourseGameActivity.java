@@ -9,6 +9,7 @@ import com.toursims.mobile.controller.CourseLoader;
 import com.toursims.mobile.model.Course;
 import com.toursims.mobile.ui.CourseAdapter;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -23,6 +24,14 @@ import android.widget.ListView;
 public class CourseGameActivity extends Activity {
 		
 	private static List<Course> courses = new ArrayList<Course>();
+	private ProgressDialog dialog;
+	
+	@Override
+	protected void onPause() {
+		
+		super.onPause();
+		dialog.dismiss();
+	}
 	
 	public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -71,6 +80,10 @@ public class CourseGameActivity extends Activity {
 	    lv.setOnItemClickListener(new OnItemClickListener() {
 	       
 	        public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+	            
+	        	dialog = ProgressDialog.show(CourseGameActivity.this, "", 
+	                    "Loading. Please wait...", true);
+	            
 	    // When clicked, show Course details
 	          Intent courseDetails = new Intent(getApplicationContext(),CourseStepActivity.class);
 	          courseDetails.putExtra(Course.ID_EXTRA, courses.get(position).getId());

@@ -42,6 +42,7 @@ import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -102,6 +103,7 @@ public class CourseStepActivity extends MapActivity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+
         Bundle bundle = getIntent().getExtras();       
         setContentView(R.layout.coursestep);
         
@@ -109,7 +111,7 @@ public class CourseStepActivity extends MapActivity{
         
         if(bundle.containsKey(Course.NEXT_PLACEMARK)){
         	if(currentPlacemark<placemarks.size()-1)
-        	currentPlacemark += 1;
+        		incrementCurrentPlacemark();
         }
                 
         mapView = (MapView) findViewById(R.id.map);
@@ -166,7 +168,7 @@ public class CourseStepActivity extends MapActivity{
 		Bundle b = getIntent().getExtras();
 		
 		if(b.getBoolean(Course.NEXT_PLACEMARK)){
-			currentPlacemark++;
+			incrementCurrentPlacemark();
 		}
 		
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
@@ -211,6 +213,26 @@ public class CourseStepActivity extends MapActivity{
 		  }
 		  return is;
     }
+	
+	
+	private void incrementCurrentPlacemark() {
+		Log.d(TAG, "valeur= " + currentPlacemark);
+		Placemark pl = placemarks.get(++currentPlacemark);
+		while (pl.isRoutePlacemark())
+		{
+			pl = placemarks.get(++currentPlacemark);
+		}
+				
+	}
+	
+	private void decrementCurrentPlacemark() {
+		Placemark pl = placemarks.get(--currentPlacemark);
+		while (!pl.isRoutePlacemark())
+		{
+			pl = placemarks.get(--currentPlacemark);
+		}
+				
+	}
 	    
     protected List<Placemark> getPlaceMarks() {
         
@@ -228,7 +250,7 @@ public class CourseStepActivity extends MapActivity{
         mapOverlays = mapView.getOverlays();
         drawable = this.getResources().getDrawable(R.drawable.maps_icon);
         itemizedOverlay = new CustomItemizedOverlay(drawable, this);
-        itemizedOverlay_currentPoint = new CustomItemizedOverlay(drawable, this);
+        //itemizedOverlay_currentPoint = new CustomItemizedOverlay(drawable, this);
         
         mapOverlays.clear();
         /***** load overlays ******/
@@ -243,6 +265,7 @@ public class CourseStepActivity extends MapActivity{
         	int L = (new Double(Double.parseDouble(lL[0])* 1000000)).intValue();
         	Log.d(getLocalClassName(), String.valueOf(l) + " " + String.valueOf(L));
         	GeoPoint point = new GeoPoint(l,L);
+        	
         	if (i - currentPlacemark >=-1) {
         		OverlayItem overlayItem = new OverlayItem(point, placemark.getName(),placemark.getDescription());
         	
@@ -251,7 +274,7 @@ public class CourseStepActivity extends MapActivity{
 	                itemizedOverlay_currentPoint = new CustomItemizedOverlay(d, this);
 	                itemizedOverlay_currentPoint.addOverlay(overlayItem);
 	                mapOverlays.add(itemizedOverlay_currentPoint);
-	        	} else {
+	        	} else if(!placemark.isRoutePlacemark()){
 	            	itemizedOverlay.addOverlay(overlayItem);
 	        	}
         	}
@@ -277,6 +300,7 @@ public class CourseStepActivity extends MapActivity{
 	        		t.start();
         		}
         	} else {
+        		//place user at the beginning of the course
         		mapController.animateTo(point);
         	}
         	formerPoint = lL;
@@ -312,7 +336,7 @@ public class CourseStepActivity extends MapActivity{
 						});
 				dialog.show();
     			
-    			currentPlacemark++;
+				incrementCurrentPlacemark();
     		} else if(currentPlacemark<placemarks.size()){
 		    	//Present the new objective with its description
 		       	Placemark item = placemarks.get(currentPlacemark);
@@ -491,12 +515,16 @@ public class CourseStepActivity extends MapActivity{
 	}
 	
 	public void nextPlacemark(View view) {
-		currentPlacemark++;
-		updatePlacemark();
+		if(currentPlacemark<placemarks.size()-1){
+			incrementCurrentPlacemark();
+			updatePlacemark();
+		}
 	}
 	public void previousPlacemark(View view){
-		currentPlacemark--;
-		updatePlacemark();
+		if(currentPlacemark>0){
+			decrementCurrentPlacemark();
+			updatePlacemark();
+		}
 	}
 	public void pauseGame(View view) {
 		Log.d("pause", "pause");
