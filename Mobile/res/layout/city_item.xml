@@ -14,12 +14,8 @@
                  />
             	          
  		<TextView 
- 		    	android:layout_width="fill_parent"
-               	android:gravity="center_vertical"
-               	android:paddingLeft="10dip"
-                android:layout_height="60dip"
+ 		    	style="@style/textList"
                 android:id="@+id/cityName"
-                android:textSize="25dip"
                 />
                         
 </LinearLayout>             

@@ -3,6 +3,8 @@
     <string name="hello">Tour\'SIMS</string>
     <string name="app_name">Tour\'SIMS</string>
     
+    <string name="city">Villes</string>
+    
     <string name="home_toursim">Tourisme</string>
     <string name="home_cities_all">Toutes les villes</string>
     <string name="home_courses">Parcours</string>

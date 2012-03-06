@@ -1,10 +1,12 @@
 package com.toursims.mobile.ui;
 
+import android.content.Intent;
 import android.view.View.OnClickListener;
 
 public class HomeItem {
 
 	private OnClickListener function;
+	private Intent intent;
 	private int text;
 	private int pictureURL;
 	
@@ -43,5 +45,17 @@ public class HomeItem {
 		this.pictureURL = pictureURL;
 	}
 	
+	public HomeItem(Intent i,int text, int pictureURL) {
+		super();
+		this.intent = i;
+		this.text = text;
+		this.pictureURL = pictureURL;
+	}	
 	
+	public Intent getIntent() {
+		return intent;
+	}
+	public void setIntent(Intent intent) {
+		this.intent = intent;
+	}
 }

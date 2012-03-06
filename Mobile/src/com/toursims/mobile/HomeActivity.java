@@ -15,6 +15,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -35,8 +36,13 @@ public class HomeActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-               
+        
+        //----------------------------------------------------
+	    // HOME
+	    //----------------------------------------------------
+	           
         List<HomeItem> items = new ArrayList<HomeItem>();
+                
         items.add(new HomeItem(new OnClickListener() {
 			
 			public void onClick(View v) {
@@ -44,6 +50,7 @@ public class HomeActivity extends Activity {
 				allCityActivityClick();
 			}
 		}, R.string.home_cities_all, R.drawable.ic_menu_compass));
+        
         items.add(new HomeItem(new OnClickListener() {
 			
 			public void onClick(View v) {
@@ -55,6 +62,39 @@ public class HomeActivity extends Activity {
 	    HomeAdapter adapter = new HomeAdapter(this, items,getCacheDir().getAbsolutePath());
 	    ListView lv = (ListView) findViewById(R.id.lvListe);
 	    lv.setAdapter(adapter);   	
+        
+	    //----------------------------------------------------
+	    // SOCIAL
+	    //----------------------------------------------------
+	    
+	    List<HomeItem> items2 = new ArrayList<HomeItem>();
+        
+	    items2.add(new HomeItem(new OnClickListener() {
+			
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				social(v);
+			}
+		}, R.string.home_social_chat, R.drawable.ic_menu_dialog));
+	    
+        items2.add(new HomeItem(new OnClickListener() {
+			
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+			}
+		}, R.string.home_social_contacts, R.drawable.ic_menu_allfriends));
+        
+        items2.add(new HomeItem(new OnClickListener() {
+			
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				googleLogin(v);
+			}
+		}, R.string.home_social_profil, R.drawable.ic_menu_user));
+        
+	    HomeAdapter adapter2 = new HomeAdapter(this, items2,getCacheDir().getAbsolutePath());
+	    ListView lv2 = (ListView) findViewById(R.id.lvListe2);
+	    lv2.setAdapter(adapter2);   	
         
       // Start the localization service
       //  ComponentName localizationComponentName = new ComponentName(LocalizationService.class.getPackage().getName(), LocalizationService.class.getName());
@@ -71,10 +111,10 @@ public class HomeActivity extends Activity {
 		super.onResume();
 		
 		// User connection management
-		TourSims tourSims = (TourSims)getApplicationContext();
+		//TourSims tourSims = (TourSims)getApplicationContext();
 		//TextView nameTextView = (TextView)findViewById(R.id.nameTextView);
-		TextView btnGoogleLogin = (TextView)findViewById(R.id.googleLogin);
-		
+		//TextView btnGoogleLogin = (TextView)findViewById(R.id.googleLogin);
+		/*
 		if (tourSims.getUserName().isEmpty()) {
 			// The user is not yet connected 
 	//		nameTextView.setText("Welcome, please login with your Google Account...");
@@ -83,7 +123,7 @@ public class HomeActivity extends Activity {
 	//		nameTextView.setText("Welcome " + tourSims.getUserName() + " !");
 			btnGoogleLogin.setVisibility(Button.INVISIBLE);
 		}
-		
+		*/
         restartCourse();
 	}
     

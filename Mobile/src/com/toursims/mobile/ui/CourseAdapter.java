@@ -124,11 +124,13 @@ public class CourseAdapter extends BaseAdapter {
 			
 			} catch (MalformedURLException e) {
 			  e.printStackTrace();
+			  holder.image.setImageResource(R.drawable.ic_menu_myplaces);
 			} catch (IOException e) {
 			  e.printStackTrace();
+			  holder.image.setImageResource(R.drawable.ic_menu_myplaces);
 			} catch (NullPointerException e) {
 			  e.printStackTrace();
-			  holder.image.setBackgroundColor(Color.BLACK);
+			  holder.image.setImageResource(R.drawable.ic_menu_myplaces);
 			}
 		
 	return convertView;

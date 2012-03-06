@@ -1,23 +1,8 @@
 package com.toursims.mobile.ui;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.List;
-
-import org.apache.http.util.ByteArrayBuffer;
-
 import com.toursims.mobile.R;
-
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,10 +53,12 @@ public class HomeAdapter extends BaseAdapter{
 		holder.image = (ImageView)convertView.findViewById(R.id.image);
 		holder.name = (TextView)convertView.findViewById(R.id.text);
 		holder.layout = (LinearLayout)convertView.findViewById(R.id.layout);
-		holder.name.setText(items.get(position).getText());
-		holder.image.setImageResource(items.get(position).getPictureURL());
+		
 		holder.layout.setOnClickListener(items.get(position).getFunction());
+		holder.name.setText(items.get(position).getText());
+		holder.image.setImageResource(items.get(position).getPictureURL());	
 		convertView.setTag(holder);
+		
 		
 		/*if(convertView == null) {
 			holder = new ViewHolder();
