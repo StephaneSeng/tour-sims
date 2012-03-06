@@ -56,6 +56,18 @@ public class HomeActivity extends Activity {
 			}
 		}, R.string.home_poi, R.drawable.ic_menu_info_details));
         
+        settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+        
+        if(settings.contains(CustomPreferences.COURSE_STARTED_URL)){
+	        items.add(new HomeItem(new OnClickListener() {
+				
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					goOnCourse();
+				}
+			}, R.string.home_goon_course, R.drawable.ic_menu_myplaces));
+        }
+        
 	    HomeAdapter adapter = new HomeAdapter(this, items,getCacheDir().getAbsolutePath());
 	    ListView lv = (ListView) findViewById(R.id.lvListe);
 	    lv.setAdapter(adapter);   	
@@ -80,6 +92,8 @@ public class HomeActivity extends Activity {
 				// TODO Auto-generated method stub
 			}
 		}, R.string.home_social_contacts, R.drawable.ic_menu_allfriends));
+ 
+        
         
         items2.add(new HomeItem(new OnClickListener() {
 			
@@ -121,14 +135,11 @@ public class HomeActivity extends Activity {
 			btnGoogleLogin.setVisibility(Button.INVISIBLE);
 		}
 		*/
-        restartCourse();
+        askGoOnCourse();
 	}
     
-    private void restartCourse() {
-    	
-    	settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0); 
-    	    	
-    	if(settings.contains(CustomPreferences.COURSE_STARTED_URL)&&settings.getBoolean(ALREADY_ASKED_TO_RESUME, false)){
+    private void askGoOnCourse() {
+     	if(settings.contains(CustomPreferences.COURSE_STARTED_URL)&&settings.getBoolean(ALREADY_ASKED_TO_RESUME, false)){
     		    		
 			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 			
@@ -138,10 +149,6 @@ public class HomeActivity extends Activity {
 					
 				public void onClick(DialogInterface dialog, int which) {	
 						// TODO Auto-generated method stub
-				          Intent activity = new Intent(getApplicationContext(),CourseDetailsActivity.class);
-				          activity.putExtra(Course.URL_EXTRA, settings.getString(CustomPreferences.COURSE_STARTED_URL, null));
-				          activity.putExtra(Course.ID_EXTRA, settings.getInt(CustomPreferences.COURSE_STARTED_ID, 0));
-				          startActivity(activity);
 					}
 				});
 			
@@ -173,6 +180,13 @@ public class HomeActivity extends Activity {
     	}   	
     }
     
+    public void goOnCourse(){
+        Intent activity = new Intent(getApplicationContext(),CourseStepActivity.class);
+        activity.putExtra(Course.URL_EXTRA, settings.getString(CustomPreferences.COURSE_STARTED_URL, null));
+        activity.putExtra(Course.ID_EXTRA, settings.getInt(CustomPreferences.COURSE_STARTED_ID, 0));
+        startActivity(activity);    	
+    }
+    
     @Override
     protected void onDestroy() {
     	// TODO Auto-generated method stub
@@ -201,5 +215,6 @@ public class HomeActivity extends Activity {
     	Intent Social = new Intent(getApplicationContext(),SocialActivity.class);	
 		startActivity(Social);
     }
+    
 }
  

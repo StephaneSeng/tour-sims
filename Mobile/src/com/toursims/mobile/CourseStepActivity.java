@@ -88,12 +88,7 @@ public class CourseStepActivity extends MapActivity{
         super.onCreate(savedInstanceState);
         
         SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
-        currentPlacemark = settings.getInt(CustomPreferences.COURSE_CURRENT_PLACEMARK, -1);
-
-        if(currentPlacemark!=-1){
-        	//reprise du parcours
-        }
-        
+        currentPlacemark = settings.getInt(CustomPreferences.COURSE_CURRENT_PLACEMARK, -1);       
         
         Bundle bundle = getIntent().getExtras();       
         setContentView(R.layout.coursestep);
@@ -196,7 +191,8 @@ public class CourseStepActivity extends MapActivity{
 		}
         SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putInt(CustomPreferences.COURSE_CURRENT_PLACEMARK, currentPlacemark);				
+        editor.putInt(CustomPreferences.COURSE_CURRENT_PLACEMARK, currentPlacemark);
+        editor.commit();
 	}
 	
 	private void decrementCurrentPlacemark() {
@@ -390,16 +386,9 @@ public class CourseStepActivity extends MapActivity{
 
 		    } else {
 		    	//End of the course 
-		    	SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);    	
+		    	SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+		    	CustomPreferences.removeCourseStarted(settings);
 				
-		    	SharedPreferences.Editor editor = settings.edit();
-				
-				for (String item : CustomPreferences.COURSE_ALL) {
-					editor.remove(item);
-				}
-				
-				editor.commit();
-
 		    	AlertDialog.Builder dialog = ToolBox.getDialog(this);
 				
 				dialog.setTitle(R.string.course_finished_title);

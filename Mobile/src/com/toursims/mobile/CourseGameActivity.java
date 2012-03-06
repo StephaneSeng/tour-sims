@@ -80,13 +80,14 @@ public class CourseGameActivity extends Activity {
 	          
 	          //Put that a course is started
 	          SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+	          CustomPreferences.removeCourseStarted(settings);
+
 	          SharedPreferences.Editor editor = settings.edit();
 	          editor.putString(CustomPreferences.COURSE_STARTED_URL, courses.get(position).getUrl());
 	          editor.putInt(CustomPreferences.COURSE_STARTED_ID, courses.get(position).getId());
 	          Calendar c = Calendar.getInstance(); 
 	          int seconds = c.get(Calendar.SECOND);
 	          editor.putInt(CustomPreferences.COURSE_STARTED_TIME_STARTED, seconds);
-	          // Commit the edits!
 	          editor.commit();
 	    }
 		});

@@ -1,5 +1,7 @@
 package com.toursims.mobile;
 
+import android.content.SharedPreferences;
+
 public class CustomPreferences {
 	public static final String PREF_FILE = "toursims_pref_file";
 	
@@ -14,5 +16,14 @@ public class CustomPreferences {
 	public static final boolean SOUND_ALERT = true;
 	
 	public static final int VIBRATOR_LENGTH = 500;
+	
+	public static void removeCourseStarted(SharedPreferences settings){
+    	SharedPreferences.Editor editor = settings.edit();
+		
+		for (String item : CustomPreferences.COURSE_ALL) {
+			editor.remove(item);
+		}
+		editor.commit();
+	}
 
 }
