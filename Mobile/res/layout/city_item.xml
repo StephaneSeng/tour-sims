@@ -4,18 +4,20 @@
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:layout_height="60dip"
-        android:layout_gravity="center_horizontal"> 
+        android:layout_gravity="center_horizontal"
+        android:focusable="false"> 
              
        <ImageView 
             	android:layout_width="55dip"
                 android:layout_height="60dip"
                 android:id="@+id/cityImage"
-                android:clickable="false"
+                android:focusable="false"
                  />
             	          
  		<TextView 
  		    	style="@style/textList"
                 android:id="@+id/cityName"
+                android:focusable="false"
                 />
                         
 </LinearLayout>             

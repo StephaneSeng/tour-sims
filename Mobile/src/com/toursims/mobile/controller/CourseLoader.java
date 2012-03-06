@@ -26,50 +26,23 @@ public class CourseLoader {
 
 		Kml kml1 = new Kml(); 		  
 	   	HttpURLConnection urlConnection= null;
+	   	Course course = new Course();
 	   	
 		try {
-			URL url = null;
-			
-			   	try {
-			   		url = new URL(address);
-			   	} catch (Exception e) {
-			   		e.printStackTrace();
-		   }
-			   	
-		   try {
-			   urlConnection=(HttpURLConnection)url.openConnection();
-		   } catch (Exception e) {
-		   	e.printStackTrace();
-		   }
-		   
-		   urlConnection.setRequestMethod("GET");
-		   urlConnection.setDoOutput(true);
-		   urlConnection.setDoInput(true);
-		   
-		   try {
-			   urlConnection.connect();
-		   } catch (Exception e) {
+			URL url = new URL(address);
+			urlConnection=(HttpURLConnection)url.openConnection();
+			urlConnection.setRequestMethod("GET");
+			urlConnection.setDoOutput(true);
+			urlConnection.setDoInput(true);
+			urlConnection.connect();
+			InputStream is = urlConnection.getInputStream();
+			Serializer serializer = new Persister();
+			kml1 = serializer.read(Kml.class, is, false);
+			course.copyFromDocument(kml1.getDocument(), address);
+		}  catch (Exception e) {
 		   		e.printStackTrace();
-		   }
+		}
 		   
-		   InputStream is = urlConnection.getInputStream();
-		   Serializer serializer = new Persister();
-
-	   		
-		   try {
-		   		kml1 = serializer.read(Kml.class, is, false);
-		   } catch (Exception e) {
-		   		e.printStackTrace();
-		   }
-		   
-		   
-			} catch (Exception e) {
-		   		e.printStackTrace();
-			} 
-		
-		Course course = new Course();
-		course.copyFromDocument(kml1.getDocument(), address);
-		
 		return course;
 		}
 }

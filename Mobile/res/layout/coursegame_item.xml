@@ -17,16 +17,16 @@
                         <TextView                            	
                          	style="@style/course_LinearLayout_line1_text"
                             android:id="@+id/courseName"
-                            android:layout_weight="0.9"
+                            android:gravity="center_horizontal|left"
+                            android:layout_weight="1"
                         />
                         <RatingBar
                             style="?android:attr/ratingBarStyleSmall"       
                             android:layout_width="wrap_content"
     						android:layout_height="wrap_content"
-    						android:layout_weight="1"
-    						android:gravity="right|center"
+    						android:gravity="center_horizontal|right"
    							android:isIndicator="true"
-    						android:numStars="5"
+    						android:numStars="3"
     						android:stepSize="0.5"
     						android:id="@+id/courseRating"
                             />

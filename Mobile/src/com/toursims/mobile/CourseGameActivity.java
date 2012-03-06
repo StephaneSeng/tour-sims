@@ -26,9 +26,10 @@ public class CourseGameActivity extends Activity {
 	
 	@Override
 	protected void onPause() {
-		
 		super.onPause();
-		dialog.dismiss();
+		if(dialog!=null){
+			dialog.dismiss();
+		}
 	}
 	
 	public void onCreate(Bundle savedInstanceState) {
