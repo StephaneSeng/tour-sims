@@ -6,9 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.List;
-import java.util.ListIterator;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -64,6 +62,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.SlidingDrawer;
 import android.widget.Toast;
 import android.location.Criteria;
@@ -84,6 +83,7 @@ public class CourseStepActivity extends MapActivity{
 
 	private static LocalizationService serviceLocalization;
 	private static List<Placemark> placemarks;
+	private static List<GeoPoint> bounds;
 	private static Course course;
 	private static String type;	
 	private MapController mapController;
@@ -118,9 +118,10 @@ public class CourseStepActivity extends MapActivity{
 		mapView.setBuiltInZoomControls(true);
 		//mapView.setStreetView(true);
 		mapController = mapView.getController();
-		mapController.setZoom(14); // Zoom 1 is world view
+		//mapController.setZoom(14); // Zoom 1 is world view
 		
 		updateMap();
+		zoomInBounds();
    
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -132,11 +133,9 @@ public class CourseStepActivity extends MapActivity{
         );
         
         updatePlacemark();
-
-		myLocationOverlay = new MyLocationOverlay(this, mapView);
-		myLocationOverlay.enableMyLocation();
-		mapOverlays.add(myLocationOverlay);	
 	}
+	
+
 	
 	@Override
 	protected void onPause() {
@@ -168,9 +167,7 @@ public class CourseStepActivity extends MapActivity{
 			incrementCurrentPlacemark();
 		}
 		
-		myLocationOverlay = new MyLocationOverlay(this, mapView);
-		myLocationOverlay.enableMyLocation();
-		mapOverlays.add(myLocationOverlay);
+
 	}
 	
 	/**
@@ -262,6 +259,11 @@ public class CourseStepActivity extends MapActivity{
         	int L = (new Double(Double.parseDouble(lL[0])* 1000000)).intValue();
         	Log.d(getLocalClassName(), String.valueOf(l) + " " + String.valueOf(L));
         	GeoPoint point = new GeoPoint(l,L);
+        	if(bounds == null)
+        	{
+        		bounds = new ArrayList<GeoPoint>();
+        	}
+        	bounds.add(point);
         	
         	if (i - currentPlacemark >=-1) {
         		OverlayItem overlayItem = new OverlayItem(point, placemark.getName(),placemark.getDescription());
@@ -304,8 +306,42 @@ public class CourseStepActivity extends MapActivity{
 
         }
         mapOverlays.add(itemizedOverlay);
+        
+		myLocationOverlay = new MyLocationOverlay(this, mapView);
+		myLocationOverlay.enableMyLocation();
+		mapOverlays.add(myLocationOverlay);
     	
+//		int latFinSpan = (new Double(Double.parseDouble(placemarks.get(placemarks.size()-1).getPoint().getCoordinates().split(",")[1])* 1000000)).intValue();
+//		int latdebSpan=	(new Double(Double.parseDouble(placemarks.get(0).getPoint().getCoordinates().split(",")[1])* 1000000)).intValue();
+//		int lonFinSpan = (new Double(Double.parseDouble(placemarks.get(placemarks.size()-1).getPoint().getCoordinates().split(",")[0])* 1000000)).intValue();
+//		int londebspan=	(new Double(Double.parseDouble(placemarks.get(0).getPoint().getCoordinates().split(",")[0])* 1000000)).intValue();
+//		mapController.zoomToSpan(Math.abs(latFinSpan-latdebSpan)*2, Math.abs(lonFinSpan-londebspan)*2);
+//		GeoPoint target = new GeoPoint(Math.round((latFinSpan+latdebSpan)/2), Math.round((lonFinSpan+londebspan)/2));
+//		mapController.animateTo(target);
+		
     }
+    
+	 private void zoomInBounds() {
+
+		    int minLat = Integer.MAX_VALUE;
+		    int minLong = Integer.MAX_VALUE;
+		    int maxLat = Integer.MIN_VALUE;
+		    int maxLong = Integer.MIN_VALUE;
+
+		    for (GeoPoint point : bounds) {
+		        minLat = Math.min(point.getLatitudeE6(), minLat);
+		        minLong = Math.min(point.getLongitudeE6(), minLong);
+		        maxLat = Math.max(point.getLatitudeE6(), maxLat);
+		        maxLong = Math.max(point.getLongitudeE6(), maxLong);
+		    }
+
+		    mapController.zoomToSpan(
+		                       Math.abs(minLat - maxLat), Math.abs(minLong - maxLong));
+		    mapController.animateTo(new GeoPoint((maxLat + minLat) / 2,
+		        (maxLong + minLong) / 2));
+		    
+		    bounds.clear();
+		}
 	    
     public void updatePlacemark() {      	
     	Log.d("updateReceiver","Receiver Update");
@@ -338,18 +374,7 @@ public class CourseStepActivity extends MapActivity{
 		    	//Present the new objective with its description
 		       	Placemark item = placemarks.get(currentPlacemark);
 		    	
-		       	AlertDialog.Builder dialog = ToolBox.getDialog(this);
-
-				dialog.setTitle(item.getName());
-				dialog.setMessage(item.getDirection());
-				dialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-							
-						public void onClick(DialogInterface dialog, int which) {
-											// TODO Auto-generated method stub
-									dialog.dismiss();
-							}
-						});
-				dialog.show();
+		       	showHelp(getCurrentFocus());
 					
 		     	receiverLocalization = new BroadcastReceiver() {			
 					@Override
@@ -530,6 +555,20 @@ public class CourseStepActivity extends MapActivity{
 	}
 	public void pauseGame(View view) {
 		Log.d("pause", "pause");
+	}
+	public void showHelp(View view) {
+		AlertDialog.Builder dialog = ToolBox.getDialog(this);
+
+		dialog.setTitle(placemarks.get(currentPlacemark).getName());
+		dialog.setMessage(placemarks.get(currentPlacemark).getDirection());
+		dialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+					
+				public void onClick(DialogInterface dialog, int which) {
+									// TODO Auto-generated method stub
+							dialog.dismiss();
+					}
+				});
+		dialog.show();
 	}
   
 }
