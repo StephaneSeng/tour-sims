@@ -170,19 +170,6 @@ public class CourseStepActivity extends MapActivity{
 
 	}
 	
-	/**
-	 * Display the user on the MapView
-	 */
-	protected void displayUser(Location location) {
-		GeoPoint point = new GeoPoint((int)(location.getLatitude() * 1e6), (int)(location.getLongitude() * 1e6));
-        OverlayItem overlayItem = new OverlayItem(point, "User Name", "Latitude : " + location.getLatitude() + ", Longitude : " + location.getLongitude());
-        
-        drawable = this.getResources().getDrawable(R.drawable.androidmarkerred);
-        CustomItemizedOverlay itemizedOverlay2 = new CustomItemizedOverlay(drawable, CourseStepActivity.this);
-        itemizedOverlay2.addOverlay(overlayItem);
-        mapOverlays.add(itemizedOverlay2);
-	}
-	
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 		   MapOverlay mapOverlay = new MapOverlay(mRoads.get(msg.what), mapView);
@@ -300,7 +287,7 @@ public class CourseStepActivity extends MapActivity{
         		}
         	} else {
         		//place user at the beginning of the course
-        		mapController.animateTo(point);
+        		//mapController.animateTo(point);
         	}
         	formerPoint = lL;
 
