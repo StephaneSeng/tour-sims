@@ -26,6 +26,7 @@ import com.toursims.mobile.model.kml.Placemark;
 import com.toursims.mobile.model.kml.Point;
 import com.toursims.mobile.model.places.Place;
 import com.toursims.mobile.model.places.Road;
+import com.toursims.mobile.ui.ToolBox;
 import com.toursims.mobile.ui.utils.CustomItemizedOverlay;
 import com.toursims.mobile.ui.utils.DirectionPathOverlay;
 import com.toursims.mobile.ui.utils.RoadProvider;
@@ -54,6 +55,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -97,8 +99,6 @@ public class CourseStepActivity extends MapActivity{
     private static BroadcastReceiver receiverLocalization;
 	private LocalizationService s;
 
-
-    
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,7 +121,6 @@ public class CourseStepActivity extends MapActivity{
 		mapController.setZoom(14); // Zoom 1 is world view
 		
 		updateMap();
-
    
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -136,9 +135,7 @@ public class CourseStepActivity extends MapActivity{
 
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		myLocationOverlay.enableMyLocation();
-		mapOverlays.add(myLocationOverlay);
-		
-	
+		mapOverlays.add(myLocationOverlay);	
 	}
 	
 	@Override
@@ -322,7 +319,7 @@ public class CourseStepActivity extends MapActivity{
 
 			updateMap();
     		if(currentPlacemark==-1){
-    			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+    			AlertDialog.Builder dialog = ToolBox.getDialog(this);
 
 				dialog.setTitle(course.getName());
 				dialog.setMessage(course.getPresentation());
@@ -341,7 +338,7 @@ public class CourseStepActivity extends MapActivity{
 		    	//Present the new objective with its description
 		       	Placemark item = placemarks.get(currentPlacemark);
 		    	
-		       	AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+		       	AlertDialog.Builder dialog = ToolBox.getDialog(this);
 
 				dialog.setTitle(item.getName());
 				dialog.setMessage(item.getDirection());
@@ -387,13 +384,14 @@ public class CourseStepActivity extends MapActivity{
 
 		    } else {
 		    	//End of the course 
-		    	SharedPreferences settings = getSharedPreferences(HomeActivity.PREF_FILE, 0);    	
+		    	SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);    	
 		    	SharedPreferences.Editor editor = settings.edit();
-				editor.remove(Course.PREFERENCES_STARTED_URL);
-				editor.remove(Course.PREFERENCES_STARTED_TIME_STARTED);
-				editor.remove(Course.PREFERENCES_STARTED_ID);		    	
-		    	
-		    	AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+				editor.remove(CustomPreferences.COURSE_STARTED_URL);
+				editor.remove(CustomPreferences.COURSE_STARTED_TIME_STARTED);
+				editor.remove(CustomPreferences.COURSE_STARTED_ID);		    	
+		    	editor.commit();
+				
+		    	AlertDialog.Builder dialog = ToolBox.getDialog(this);
 				
 				dialog.setTitle(R.string.course_finished_title);
 				dialog.setMessage(course.getEnd());
@@ -418,11 +416,13 @@ public class CourseStepActivity extends MapActivity{
 		String packageName = am.getRunningTasks(1).get(0).topActivity.getPackageName();
 		String className = am.getRunningTasks(1).get(0).topActivity.getClassName();
 		
-		if(!className.equals(CourseDetailsActivity.class.getName())) {
-			//send notification in not in foreground
+		if(!className.equals(CourseStepActivity.class.getName())) {
+			//send notification if not in foreground
 				NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 				Notification notification = new Notification(R.drawable.ic_launcher,placemarks.get(currentPlacemark).getName(), System.currentTimeMillis());
 				notification.flags |= Notification.FLAG_AUTO_CANCEL;
+				notification.defaults |= Notification.DEFAULT_SOUND;
+				notification.defaults |= Notification.DEFAULT_VIBRATE;
 				notification.number += 1;
 				
 				Intent i = new Intent(getBaseContext(),CourseStepActivity.class);
@@ -432,10 +432,12 @@ public class CourseStepActivity extends MapActivity{
 				PendingIntent activity = PendingIntent.getActivity(getBaseContext(), 0, i,0);
 				notification.setLatestEventInfo(getBaseContext(), placemarks.get(currentPlacemark).getName(),placemarks.get(currentPlacemark).getName(), activity);
 				notificationManager.notify(0, notification);
-		} else {		
-				AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 				
-				if(type.equals(Course.TYPE_GAME)) {
+		    	SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+		 } else {		
+				AlertDialog.Builder dialog = ToolBox.getDialog(this);
+				
+				if(placemarks.get(currentPlacemark).getQuestions()!=null) {
 					dialog.setTitle(placemarks.get(currentPlacemark).getName());
 					dialog.setMessage(placemarks.get(currentPlacemark).getGreetings());
 					dialog.setPositiveButton(R.string.game_play, new DialogInterface.OnClickListener() {

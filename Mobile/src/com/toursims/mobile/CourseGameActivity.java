@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import com.toursims.mobile.controller.CourseBDD;
-import com.toursims.mobile.controller.CourseLoader;
 import com.toursims.mobile.model.Course;
 import com.toursims.mobile.ui.CourseAdapter;
 import android.app.Activity;
@@ -13,7 +12,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
@@ -91,13 +89,13 @@ public class CourseGameActivity extends Activity {
 	          startActivity(courseDetails);
 	          
 	          //Put that a course is started
-	          SharedPreferences settings = getSharedPreferences(HomeActivity.PREF_FILE, 0);
+	          SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
 	          SharedPreferences.Editor editor = settings.edit();
-	          editor.putString(Course.PREFERENCES_STARTED_URL, courses.get(position).getUrl());
-	          editor.putInt(Course.PREFERENCES_STARTED_ID, courses.get(position).getId());
+	          editor.putString(CustomPreferences.COURSE_STARTED_URL, courses.get(position).getUrl());
+	          editor.putInt(CustomPreferences.COURSE_STARTED_ID, courses.get(position).getId());
 	          Calendar c = Calendar.getInstance(); 
 	          int seconds = c.get(Calendar.SECOND);
-	          editor.putInt(Course.PREFERENCES_STARTED_TIME_STARTED, seconds);
+	          editor.putInt(CustomPreferences.COURSE_STARTED_TIME_STARTED, seconds);
 	          // Commit the edits!
 	          editor.commit();
 	    }
