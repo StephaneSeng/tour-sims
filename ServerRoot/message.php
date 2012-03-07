@@ -22,7 +22,9 @@ switch ($_REQUEST['action']) {
 			m.\"timestamp\",
 			m.reply_message_id,
 			uw.user_id AS writer_id,
-			uw.name AS writer_name
+			uw.name AS writer_name,
+			uw.avatar AS writer_avatar,
+			rmc.reply_message_count
 		FROM
 			\"user\" AS u,
 			user_message AS um,
@@ -37,7 +39,13 @@ switch ($_REQUEST['action']) {
 			GROUP BY
 				m.reply_message_id) AS mm,
 			\"user\" AS uw,
-			user_message AS umw
+			user_message AS umw,
+			(SELECT
+				COUNT(*) + 1 AS reply_message_count
+			FROM
+				message AS m
+			WHERE
+				m.reply_message_id = m.reply_message_id) AS rmc
 		WHERE
 			u.user_id = um.user_id
 			AND um.message_id = m.message_id
@@ -62,7 +70,9 @@ switch ($_REQUEST['action']) {
 			m.\"timestamp\",
 			m.reply_message_id,
 			uw.user_id AS writer_id,
-			uw.name AS writer_name
+			uw.name AS writer_name,
+			uw.avatar AS writer_avatar,
+			1 AS reply_message_count
 		FROM
 			\"user\" AS u,
 			user_message AS um,
@@ -119,6 +129,66 @@ switch ($_REQUEST['action']) {
 			";
 			$result = pg_query($query) or die('Query failed: '.pg_last_error());
 		}
+	
+		break;
+	case "get_reply_messages":
+		// Select all the messages from one given thread
+		// Test : http://localhost/message.php?action=get_reply_messages&root_message_id=1
+		$query = "
+		-- Select all the messages from one given thread
+		SELECT
+			0 AS user_id,
+			'0' AS name,
+			0 AS avatar,
+			m.message_id,
+			m.text,
+			m.latitude,
+			m.longitude,
+			m.\"timestamp\",
+			m.reply_message_id,
+			uw.user_id AS writer_id,
+			uw.name AS writer_name,
+			uw.avatar AS writer_avatar,
+			0 AS reply_message_count
+		FROM
+			message AS m,
+			\"user\" AS uw,
+			user_message AS umw
+		WHERE
+			m.reply_message_id = ".$_REQUEST['root_message_id']."
+			AND umw.message_id = m.message_id
+			AND umw.user_id = uw.user_id
+			AND umw.is_writer = TRUE
+
+		UNION
+
+		SELECT
+			0 AS user_id,
+			'0' AS name,
+			0 AS avatar,
+			m.message_id,
+			m.text,
+			m.latitude,
+			m.longitude,
+			m.\"timestamp\",
+			m.reply_message_id,
+			uw.user_id AS writer_id,
+			uw.name AS writer_name,
+			uw.avatar AS writer_avatar,
+			0 AS reply_message_count
+		FROM
+			message AS m,
+			\"user\" AS uw,
+			user_message AS umw
+		WHERE
+			m.message_id = ".$_REQUEST['root_message_id']."
+			AND umw.message_id = m.message_id
+			AND umw.user_id = uw.user_id
+			AND umw.is_writer = TRUE
+
+		ORDER BY \"timestamp\" DESC;
+		";
+		$result = pg_query($query) or die('Query failed: '.pg_last_error());
 	
 		break;
 	default:

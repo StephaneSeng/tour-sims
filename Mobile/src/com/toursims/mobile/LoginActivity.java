@@ -104,8 +104,7 @@ public class LoginActivity extends Activity {
 				        	
 				        	// Update the user name in the application
 				        	TourSims tourSims = (TourSims)getApplicationContext();
-				        	tourSims.setUserName(profile.getDisplayName());
-				        	tourSims.setUserId(user.getUserId());
+				        	tourSims.setUser(user);
 				        	tourSims.setUserLoggedIn(true);
 				        	
 				        	finishActivity(0);

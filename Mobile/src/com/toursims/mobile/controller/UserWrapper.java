@@ -11,7 +11,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIUtils;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.params.ConnManagerPNames;
 import org.apache.http.conn.params.ConnPerRouteBean;
@@ -133,6 +132,92 @@ public class UserWrapper {
 		}
 		
 		return user;
+	}
+	
+	/**
+	 * Launch a SOAP request to the User webservice
+	 * Retreive the shared informations about the current user
+	 * @param user_id The id of the user to work with
+	 */
+	public User GetProfile(int user_id) {
+		// Return variable
+		User user = null;
+		
+		// Build the SOAP request
+		StringBuffer request = new StringBuffer(SERVER_ROOT + "/user.php?");
+		request.append("action=" + "get_profile");
+		request.append("&user_id=" + user_id);
+
+		Log.d(TAG, "Launching a User request : " + request);
+		HttpGet httpGet = new HttpGet(request.toString());
+		HttpResponse httpResponse;
+		
+		try {
+			httpResponse = httpClient.execute(httpGet);
+			
+			// JSON reconstruction
+			InputStream inputStream = httpResponse.getEntity().getContent();
+			byte[] buffer = new byte[1024];
+		    int length;
+		    StringBuilder builder = new StringBuilder();
+		    while ((length = inputStream.read(buffer)) > 0) {
+		            builder.append(new String(buffer, 0, length));
+		    }
+		    String json = builder.toString();
+		    
+		    Log.d(TAG, "JSON recieved : " + json);
+		    
+		    // Read the User informations
+		    user = jsonResponseParserUser(json).get(0);
+		} catch (Exception e) {
+			Log.e(TAG, e.getMessage());
+			Log.e(TAG, e.toString());
+		}
+		
+		return user;
+	}
+	
+	/**
+	 * Launch a SOAP request to the User webservice
+	 * List all the contacts linked to the specified user
+	 * @param user_id The id of the user to work with
+	 */
+	public List<User> GetContacts(int user_id) {
+		// Return variable
+		List<User> users = null;
+		
+		// Build the SOAP request
+		StringBuffer request = new StringBuffer(SERVER_ROOT + "/user.php?");
+		request.append("action=" + "get_contacts");
+		request.append("&user_id=" + user_id);
+
+		Log.d(TAG, "Launching a User request : " + request);
+		HttpGet httpGet = new HttpGet(request.toString());
+		HttpResponse httpResponse;
+		
+		try {
+			httpResponse = httpClient.execute(httpGet);
+			
+			// JSON reconstruction
+			InputStream inputStream = httpResponse.getEntity().getContent();
+			byte[] buffer = new byte[1024];
+		    int length;
+		    StringBuilder builder = new StringBuilder();
+		    while ((length = inputStream.read(buffer)) > 0) {
+		            builder.append(new String(buffer, 0, length));
+		    }
+		    String json = builder.toString();
+		    
+		    Log.d(TAG, "JSON recieved : " + json);
+		    
+		    // Read the User informations
+		    users = jsonResponseParserUser(json);
+		} catch (Exception e) {
+			Log.e(TAG, e.getMessage());
+			Log.e(TAG, e.toString());
+		}
+		
+		return users;
 	}
 	
 	/**

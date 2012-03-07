@@ -11,8 +11,10 @@
     <string name="home_courses_all">Tous les parcours</string>
     <string name="home_poi">Points d\'intérêts</string>
     <string name="home_social">SOCIAL</string>
+    <string name="home_social_map">Carte sociale</string>
     <string name="home_social_chat">Chat</string>
-    <string name="home_social_profil">Google Login</string>
+    <string name="home_social_profile">Mon profil</string>
+    <string name="home_social_login">Google Login</string>
     <string name="home_social_contacts">Contacts</string>
     <string name="home_goon_course">Reprendre le parcours</string>    
     

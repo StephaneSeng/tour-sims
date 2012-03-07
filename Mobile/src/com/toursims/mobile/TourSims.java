@@ -2,20 +2,17 @@ package com.toursims.mobile;
 
 import android.app.Application;
 
+import com.toursims.mobile.model.User;
+
 /**
  * Android application containing variables shared between the activities
  */
 public class TourSims extends Application {
 
 	/**
-	 * User name
+	 * The current logged in user
 	 */
-	private String userName;
-	
-	/**
-	 * User ID
-	 */
-	private int userId;
+	private User user;
 	
 	/**
 	 * State variable
@@ -23,20 +20,12 @@ public class TourSims extends Application {
 	 */
 	private boolean userLoggedIn = false;
 
-	public String getUserName() {
-		return userName;
+	public User getUser() {
+		return user;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	public int getUserId() {
-		return userId;
-	}
-
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public boolean isUserLoggedIn() {
@@ -46,5 +35,5 @@ public class TourSims extends Application {
 	public void setUserLoggedIn(boolean userLoggedIn) {
 		this.userLoggedIn = userLoggedIn;
 	}
-	
+
 }

@@ -1,12 +1,7 @@
 package com.toursims.mobile;
 
-import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import com.toursims.mobile.controller.UserWrapper;
-import com.toursims.mobile.model.kml.Placemark;
-import com.toursims.mobile.model.kml.Point;
 
 import android.app.PendingIntent;
 import android.app.Service;
@@ -23,6 +18,10 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.toursims.mobile.controller.UserWrapper;
+import com.toursims.mobile.model.kml.Placemark;
+import com.toursims.mobile.model.kml.Point;
+
 public class LocalizationService extends Service {
 	
 	private final IBinder mBinder = new MyBinder();
@@ -32,15 +31,15 @@ public class LocalizationService extends Service {
 	private static final String PROXIMITY_INTENT = TAG+".PROXIMITY_INTENT";
 
 	private static final long UPDATE_INTERVAL = 10000;
-	private long minUpdateTime = 1 * 1 * 1000; // 30 seconds
-	private long maxUpdateTime = 1 * 5 * 1000; // 1 minute
-	private long minUpdateDistance  = 0; // 0 m
+//	private long minUpdateTime = 1 * 1 * 1000; // 30 seconds
+//	private long maxUpdateTime = 1 * 5 * 1000; // 1 minute
+//	private long minUpdateDistance  = 0; // 0 m
 	private LocationManager locationManager;
 	private Criteria criteria;
 	private String bestProvider;
 	private LocalizationListener localizationListener;
-	private Location lastLocation;
-	private Calendar lastUpdateTime;
+//	private Location lastLocation;
+//	private Calendar lastUpdateTime;
 	private PendingIntent pendingIntentForProximityAlert = null;
 	private static final long expiration = 600000;
 	
@@ -64,7 +63,7 @@ public class LocalizationService extends Service {
 		Log.d(TAG, "Best current localization provider : " + bestProvider);
 		
 		localizationListener = new LocalizationListener();
-		lastUpdateTime = Calendar.getInstance();
+//		lastUpdateTime = Calendar.getInstance();
 		
 		if (!bestProvider.equals("null")) {
 			locationManager.requestLocationUpdates(bestProvider, 0, 0, localizationListener);
@@ -147,14 +146,14 @@ public class LocalizationService extends Service {
 			
 			if (location != null) {
 				// Update the current user location
-				lastLocation = location;
-				lastUpdateTime = Calendar.getInstance();
+//				lastLocation = location;
+//				lastUpdateTime = Calendar.getInstance();
 				
 				// Create a checkin
 				TourSims tourSims = (TourSims)getApplicationContext();
 				if (tourSims.isUserLoggedIn()) {
 					Log.d(TAG, "Create a checkin");
-					userWrapper.CreateCheckin(location.getLatitude(), location.getLongitude(), tourSims.getUserId());
+					userWrapper.CreateCheckin(location.getLatitude(), location.getLongitude(), tourSims.getUser().getUserId());
 				}
 				
 				Log.d(TAG, "New user position : (" + location.getLatitude() + ", " + location.getLongitude() + ")");	
