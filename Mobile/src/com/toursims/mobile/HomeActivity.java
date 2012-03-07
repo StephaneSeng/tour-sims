@@ -184,7 +184,7 @@ public class HomeActivity extends Activity {
     private void popUpRestart(){
     	settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0); 
     	
-    	if(settings.contains(CustomPreferences.COURSE_STARTED_URL)&&settings.getBoolean(ALREADY_ASKED_TO_RESUME, true)){
+    	if(settings.contains(CustomPreferences.COURSE_STARTED_URL)&&!settings.getBoolean(ALREADY_ASKED_TO_RESUME, true)){
     		    		
 			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 			
