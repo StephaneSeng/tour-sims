@@ -32,6 +32,7 @@ public class CityActivity extends Activity{
 	private ListView lv;
 	private List<City> cities2;
 	private boolean firstClick = false;
+	private OnItemClickListener listener;
 	
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -58,7 +59,7 @@ public class CityActivity extends Activity{
 	    lv.setTextFilterEnabled(true);
 	    lv.setAdapter(adapter);
 
-	    lv.setOnItemClickListener(new OnItemClickListener() {
+	    listener = new OnItemClickListener() {
 	        
 	        public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
 	    // When clicked, show Course details
@@ -67,7 +68,10 @@ public class CityActivity extends Activity{
 	          startActivity(courseDetails);
 	        }
 	    	
-	    	});
+	    	};
+	    
+	    
+	    lv.setOnItemClickListener(listener);
 	    
 	    searchText.addTextChangedListener(new TextWatcher() {
 			
@@ -94,17 +98,13 @@ public class CityActivity extends Activity{
 			    if (event.getAction()==KeyEvent.ACTION_DOWN&&keyCode==KeyEvent.KEYCODE_ENTER){
 			    	closeKeyboard();
 			    }
-			    if (!firstClick){
-
-			    }
-			    firstClick = true;
 			    return false;
 			}
 		});
 	}
 	
 	private void filter(CharSequence s) {
-		List<City> cities2 = new ArrayList<City>();
+		cities2 = new ArrayList<City>();
 		for(City c:cities){
 			
 			String cityName = Normalizer.normalize(c.getName().toLowerCase(), Normalizer.Form.NFD);
@@ -115,7 +115,19 @@ public class CityActivity extends Activity{
 			}
 		}
 		adapter.setCities(cities2);
-		lv.setAdapter(adapter);		
+		lv.setAdapter(adapter);
+		listener = new OnItemClickListener() {
+	        
+	        public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+	    // When clicked, show Course details
+	          Intent courseDetails = new Intent(getApplicationContext(),CourseGameActivity.class);
+	          courseDetails.putExtra("CITY", cities2.get(position).getName());
+	          startActivity(courseDetails);
+	        }
+	    	
+	    	};
+		
+	    lv.setOnItemClickListener(listener);
 	}
 	
 	private void closeKeyboard() {
