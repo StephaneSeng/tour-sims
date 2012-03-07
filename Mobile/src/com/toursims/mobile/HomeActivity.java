@@ -36,6 +36,9 @@ public class HomeActivity extends Activity {
 //	@SuppressWarnings("unused")
 	private static final String TAG = HomeActivity.class.getName(); 
 	private static SharedPreferences settings;
+	private static List<HomeItem> items = new ArrayList<HomeItem>();
+	private static HomeAdapter adapter;
+	private static ListView lv;
 	
 	/**
 	 * Application context
@@ -60,7 +63,7 @@ public class HomeActivity extends Activity {
 	    // HOME
 	    //----------------------------------------------------
 	           
-        List<HomeItem> items = new ArrayList<HomeItem>();
+        
                 
         items.add(new HomeItem(new OnClickListener() {
 			
@@ -73,6 +76,7 @@ public class HomeActivity extends Activity {
         items.add(new HomeItem(new OnClickListener() {
 			
 			public void onClick(View v) {
+				
 				// TODO Auto-generated method stub
 				poiClick();
 			}
@@ -87,8 +91,8 @@ public class HomeActivity extends Activity {
     		}, R.string.home_goon_course, R.drawable.ic_menu_myplaces));
         }
         
-	    HomeAdapter adapter = new HomeAdapter(this, items,getCacheDir().getAbsolutePath());
-	    ListView lv = (ListView) findViewById(R.id.lvListe);
+	    adapter = new HomeAdapter(this, items,getCacheDir().getAbsolutePath());
+	    lv = (ListView) findViewById(R.id.lvListe);
 	    lv.setAdapter(adapter);
 	    ToolBox.setListViewHeightBasedOnChildren(lv);
 
@@ -199,6 +203,9 @@ public class HomeActivity extends Activity {
 						editor.remove(item);
 					}
 					
+					items.remove(items.size()-1);
+					adapter.setItems(items);
+					lv.setAdapter(adapter);
 					dialog.dismiss();
 				}
 			});

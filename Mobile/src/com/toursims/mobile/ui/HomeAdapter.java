@@ -111,4 +111,12 @@ public class HomeAdapter extends BaseAdapter{
 	return convertView;
 
 	}
+	
+	public List<HomeItem> getItems() {
+		return items;
+	}
+	
+	public void setItems(List<HomeItem> items) {
+		this.items = items;
+	}
 }

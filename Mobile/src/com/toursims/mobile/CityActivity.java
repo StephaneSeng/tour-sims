@@ -30,6 +30,7 @@ public class CityActivity extends Activity{
 	private static EditText searchText;
 	private CityAdapter adapter;
 	private ListView lv;
+	private List<City> cities2;
 	private boolean firstClick = false;
 	
 	public void onCreate(Bundle savedInstanceState){
@@ -48,6 +49,8 @@ public class CityActivity extends Activity{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		cities2 = cities;
 			    
 		searchText = (EditText) findViewById(R.id.searchText);
 		adapter = new CityAdapter(this, cities,getCacheDir().getAbsolutePath());
@@ -60,7 +63,7 @@ public class CityActivity extends Activity{
 	        public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
 	    // When clicked, show Course details
 	          Intent courseDetails = new Intent(getApplicationContext(),CourseGameActivity.class);
-	          courseDetails.putExtra("CITY", cities.get(position).getName());
+	          courseDetails.putExtra("CITY", cities2.get(position).getName());
 	          startActivity(courseDetails);
 	        }
 	    	
@@ -120,14 +123,4 @@ public class CityActivity extends Activity{
 		imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
 	}
 
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		firstClick = false;
-	}
-	
-	private void updateText(int keyCode){
-    	searchText.setText((char)keyCode);
-	}
 }
