@@ -25,14 +25,14 @@
 	          
         <ListView
 			android:id="@+id/lvListe"
-			android:layout_width="match_parent"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"/>
    
         <TextView
                 android:id="@+id/noCourse"
             	style="@style/textList" />
         
-         <TextView  
+<!--     <TextView  
            android:id="@+id/list_complex_title"  
        	   android:layout_width="fill_parent"  
            android:layout_height="wrap_content"  
@@ -42,7 +42,7 @@
           android:id="@+id/list_complex_caption"  
           android:layout_width="fill_parent"  
           android:layout_height="wrap_content"  
-          android:textAppearance="?android:attr/textAppearanceSmall"/>
+          android:textAppearance="?android:attr/textAppearanceSmall"/>-->
                 
 </LinearLayout>
     

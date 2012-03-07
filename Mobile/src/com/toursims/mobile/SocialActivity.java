@@ -22,15 +22,6 @@ import com.toursims.mobile.model.Checkin;
 import com.toursims.mobile.ui.utils.CustomItemizedOverlay;
 
 
-public class SocialActivity extends Activity{
-	
-	@Override
-	public void onCreate(Bundle savedInstantState){
-		super.onCreate(savedInstantState);
-		setContentView(R.layout.social);
-	}
-
-
 public class SocialActivity extends MapActivity {
 	
 	/**
@@ -139,5 +130,5 @@ public class SocialActivity extends MapActivity {
 	        itemizedOverlay.addOverlay(overlayItem);
 	        mapOverlays.add(itemizedOverlay);
 		}
-	}
-	
+	}	
+}

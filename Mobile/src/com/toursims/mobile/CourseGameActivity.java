@@ -44,6 +44,7 @@ public class CourseGameActivity extends Activity {
 		}
 	}
 	
+	/*
 	public final static String ITEM_TITLE = "title";  
 	public final static String ITEM_CAPTION = "caption";
 	LecteurFlux objLectFlux = new LecteurFlux();
@@ -53,34 +54,35 @@ public class CourseGameActivity extends Activity {
 		         item.put(ITEM_CAPTION, caption);  
 		         return item;  
 		     } 
-
+	*/
 	
 	public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.coursegame);
     
+    /*
     List<Map<String,?>> security = new LinkedList<Map<String,?>>();  
     security.add(createItem("titre 1 ", "sous titre du titre1"));  
     security.add(createItem("titre 2", "Sous titre du titre 2"));  
-    security.add(createItem("Titre 3", "sous titre du titre 3 un peu lon pour avoir un retour ¨¤ la ligne"));  
+    security.add(createItem("Titre 3", "sous titre du titre 3 un peu lon pour avoir un retour ï¿½ï¿½ la ligne"));  
 
     // creation de nom objet de type ListSeparer 
     ListSeparer adapter = new ListSeparer(this);  
 
-        // ajoute d'un objet adapter nom de la cat¨¦gorie Array Test avec deux items first item et item two
+        // ajoute d'un objet adapter nom de la catï¿½ï¿½gorie Array Test avec deux items first item et item two
     adapter.addSection("Array test", new ArrayAdapter<String>(this, R.layout.coursegame, new String[] { "First item", "item two" }));  
 
         //ajout d'un autre adapter avec entete plux complex et des items sur deux lignes
     adapter.addSection("Plus complex", new SimpleAdapter(this, security, R.layout.coursegame,  
         new String[] { ITEM_TITLE, ITEM_CAPTION }, new int[] { R.id.list_complex_title, R.id.list_complex_caption }));  
-
+	
 
 
     ListSeparer adapter1 = objLectFlux.liste_course_periode(this);
     ListView list = new ListView(this);  
     list.setAdapter(adapter1);  
     this.setContentView(list); 
-
+*/
     
     // Action on default table row
     ListView lv = (ListView) findViewById(R.id.lvListe);
