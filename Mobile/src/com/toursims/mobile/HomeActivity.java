@@ -3,10 +3,6 @@ package com.toursims.mobile;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.toursims.mobile.model.Course;
-import com.toursims.mobile.ui.HomeAdapter;
-import com.toursims.mobile.ui.HomeItem;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
@@ -17,7 +13,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import com.toursims.mobile.model.Course;
+import com.toursims.mobile.model.User;
+import com.toursims.mobile.ui.HomeAdapter;
+import com.toursims.mobile.ui.HomeItem;
 
 public class HomeActivity extends Activity {
 	
@@ -26,15 +29,23 @@ public class HomeActivity extends Activity {
 	/**
 	 * Android debugging tag
 	 */
-	@SuppressWarnings("unused")
+//	@SuppressWarnings("unused")
 	private static final String TAG = HomeActivity.class.getName(); 
 	private static SharedPreferences settings;
+	
+	/**
+	 * Application context
+	 */
+	TourSims tourSims;
 
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
+        // Application context initialisation
+        tourSims = (TourSims) getApplication();
         
         //----------------------------------------------------
 	    // HOME
@@ -71,15 +82,21 @@ public class HomeActivity extends Activity {
 	    items2.add(new HomeItem(new OnClickListener() {
 			
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				social(v);
+			}
+		}, R.string.home_social_map, R.drawable.ic_menu_globe));
+	    
+	    items2.add(new HomeItem(new OnClickListener() {
+			
+			public void onClick(View v) {
+				chatClick(v);
 			}
 		}, R.string.home_social_chat, R.drawable.ic_menu_dialog));
 	    
         items2.add(new HomeItem(new OnClickListener() {
 			
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
+				contactsClick(v);
 			}
 		}, R.string.home_social_contacts, R.drawable.ic_menu_allfriends));
         
@@ -87,9 +104,17 @@ public class HomeActivity extends Activity {
 			
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				googleLogin(v);
+				profileClick(v);
 			}
-		}, R.string.home_social_profil, R.drawable.ic_menu_user));
+		}, R.string.home_social_profile, R.drawable.ic_menu_user));
+        
+        items2.add(new HomeItem(new OnClickListener() {
+			
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				googleLoginClick(v);
+			}
+		}, R.string.home_social_login, R.drawable.ic_menu_user));
         
 	    HomeAdapter adapter2 = new HomeAdapter(this, items2,getCacheDir().getAbsolutePath());
 	    ListView lv2 = (ListView) findViewById(R.id.lvListe2);
@@ -101,7 +126,6 @@ public class HomeActivity extends Activity {
                 Log.e(TAG, "Could not start service " + localizationComponentName.toString());
         }
         
-        
     }
     
     @Override
@@ -109,19 +133,20 @@ public class HomeActivity extends Activity {
 		super.onResume();
 		
 		// User connection management
-		//TourSims tourSims = (TourSims)getApplicationContext();
-		//TextView nameTextView = (TextView)findViewById(R.id.nameTextView);
-		//TextView btnGoogleLogin = (TextView)findViewById(R.id.googleLogin);
-		/*
-		if (tourSims.getUserName().isEmpty()) {
+//		TextView nameTextView = (TextView)findViewById(R.id.nameTextView);
+//		TextView btnGoogleLogin = (TextView)findViewById(R.id.googleLogin);
+		
+		if (!tourSims.isUserLoggedIn()) {
 			// The user is not yet connected 
-	//		nameTextView.setText("Welcome, please login with your Google Account...");
-			btnGoogleLogin.setVisibility(Button.VISIBLE);
+//			nameTextView.setText("Welcome, please login with your Google Account...");
 		} else {
-	//		nameTextView.setText("Welcome " + tourSims.getUserName() + " !");
-			btnGoogleLogin.setVisibility(Button.INVISIBLE);
+//			nameTextView.setText("Welcome " + tourSims.getUserName() + " !");
+			TextView textView = (TextView) findViewById(R.id.home_user_name);
+			ImageView imageView = (ImageView) findViewById(R.id.home_avatar);
+			textView.setText(tourSims.getUser().getName());
+			imageView.setImageBitmap(tourSims.getUser().getAvatarBitmap());
 		}
-		*/
+		
         restartCourse();
 	}
     
@@ -193,7 +218,23 @@ public class HomeActivity extends Activity {
 		startActivity(POI);
     }
     
-    public void googleLogin(View v){
+    public void chatClick(View v){
+		Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+		startActivity(intent);	
+    }
+    
+    public void contactsClick(View v){
+		Intent intent = new Intent(getApplicationContext(), ContactActivity.class);
+		startActivity(intent);	
+    }
+    
+    public void profileClick(View v){
+		Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+		intent.putExtra(User.USER_ID_EXTRA, tourSims.getUser().getUserId());
+		startActivity(intent);	
+    }
+    
+    public void googleLoginClick(View v){
 		Intent GoogleLogin = new Intent(getApplicationContext(), LoginActivity.class);
 		startActivityForResult(GoogleLogin, 0);	
     }

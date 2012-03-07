@@ -48,6 +48,10 @@
      
         <service android:name=".LocalizationService"></service>
         <activity android:name=".LoginActivity"></activity>
+        <activity android:name="ProfileActivity"></activity>
+        <activity android:name=".ContactActivity"></activity>
+        <activity android:name="ChatActivity"></activity>
+        <activity android:name="ChatMessageActivity"></activity>
     </application>
 
 </manifest>

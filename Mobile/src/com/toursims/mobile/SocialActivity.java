@@ -16,10 +16,13 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
-import com.google.android.maps.OverlayItem;
 import com.toursims.mobile.controller.UserWrapper;
 import com.toursims.mobile.model.Checkin;
-import com.toursims.mobile.ui.utils.CustomItemizedOverlay;
+import com.toursims.mobile.model.User;
+import com.toursims.mobile.ui.utils.CheckinOverlay;
+import com.toursims.mobile.ui.utils.CheckinOverlayItem;
+import com.toursims.mobile.ui.utils.UserOverlay;
+import com.toursims.mobile.ui.utils.UserOverlayItem;
 
 public class SocialActivity extends MapActivity {
 	
@@ -35,7 +38,6 @@ public class SocialActivity extends MapActivity {
 	private MapController mapController;
 	private List<Overlay> mapOverlays;
 	private Drawable drawable;
-	private CustomItemizedOverlay itemizedOverlay;
 	
 	/**
 	 * Called when the activity is first created
@@ -52,7 +54,7 @@ public class SocialActivity extends MapActivity {
         
         // Set the MapView properties
         mapView.setBuiltInZoomControls(true);
-        mapController.setZoom(13); // Zoom 1 is world view
+        mapController.setZoom(1); // Zoom 1 is world view
     }
 	
 	/**
@@ -76,7 +78,7 @@ public class SocialActivity extends MapActivity {
 		// Call the SearchCheckins method
 		UserWrapper userWrapper = new UserWrapper();
 		TourSims tourSims = (TourSims)getApplicationContext();
-		List<Checkin> checkins = userWrapper.SearchCheckins(lastLocation.getLatitude(), lastLocation.getLongitude(), tourSims.getUserId());
+		List<Checkin> checkins = userWrapper.SearchCheckins(lastLocation.getLatitude(), lastLocation.getLongitude(), tourSims.getUser().getUserId());
 		
 		// Display the map with the user at its center
 		mapController.animateTo(new GeoPoint((int)(lastLocation.getLatitude() * 1e6), (int)(lastLocation.getLongitude() * 1e6)));
@@ -101,12 +103,14 @@ public class SocialActivity extends MapActivity {
 	 */
 	protected void displayUser(Location location) {
 		GeoPoint point = new GeoPoint((int)(location.getLatitude() * 1e6), (int)(location.getLongitude() * 1e6));
-        OverlayItem overlayItem = new OverlayItem(point, "User Name", "Latitude : " + location.getLatitude() + ", Longitude : " + location.getLongitude());
+		TourSims tourSims = (TourSims)getApplicationContext();
+		User user = tourSims.getUser();
+        UserOverlayItem userOverlayItem = new UserOverlayItem(point, "", "Latitude : " + location.getLatitude() + ", Longitude : " + location.getLongitude(), user);
         
         drawable = this.getResources().getDrawable(R.drawable.androidmarkerred);
-        itemizedOverlay = new CustomItemizedOverlay(drawable, SocialActivity.this);
-        itemizedOverlay.addOverlay(overlayItem);
-        mapOverlays.add(itemizedOverlay);
+        UserOverlay userOverlay = new UserOverlay(drawable, SocialActivity.this);
+        userOverlay.addOverlay(userOverlayItem);
+        mapOverlays.add(userOverlay);
 	}
 	
 	/**
@@ -117,17 +121,17 @@ public class SocialActivity extends MapActivity {
 		Iterator<Checkin> i = checkins.iterator();
 		Checkin checkin;
 		GeoPoint point;
-		OverlayItem overlayItem;
+		CheckinOverlayItem checkinOverlayItem;
 		
 		while (i.hasNext()) {
 			checkin = i.next();
 			point = new GeoPoint((int)(checkin.getLatitude() * 1e6), (int)(checkin.getLongitude() * 1e6));
-	        overlayItem = new OverlayItem(point, checkin.getName(), "Latitude : " + checkin.getLatitude() + ", Longitude : " + checkin.getLongitude());
+	        checkinOverlayItem = new CheckinOverlayItem(point, checkin);
 	        
 	        drawable = this.getResources().getDrawable(R.drawable.androidmarker);
-	        itemizedOverlay = new CustomItemizedOverlay(drawable, SocialActivity.this);
-	        itemizedOverlay.addOverlay(overlayItem);
-	        mapOverlays.add(itemizedOverlay);
+	        CheckinOverlay checkinOverlay = new CheckinOverlay(drawable, SocialActivity.this);
+	        checkinOverlay.addOverlay(checkinOverlayItem);
+	        mapOverlays.add(checkinOverlay);
 		}
 	}
 	
