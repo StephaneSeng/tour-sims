@@ -24,6 +24,8 @@ public class Course {
 	private String type;
 	private String end;
 	private String presentation;
+	private long timestamp;
+	private String author;
 	
 	public static final String TYPE_COURSE = "course";
 	public static final String TYPE_GAME = "game";
@@ -150,4 +152,21 @@ public class Course {
 		setEnd(item.getEnd());
 		setPresentation(item.getPresentation());
 	}
+	
+	public String getAuthor() {
+		return author;
+	}
+	
+	public long getTimestamp() {
+		return timestamp;
+	}
+	
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
+	}
+	
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+	
 }

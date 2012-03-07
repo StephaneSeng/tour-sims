@@ -19,7 +19,7 @@
     </style>
     <style name="textTitle">
         <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:textSize">30dip</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:textColor">@color/title</item>
@@ -56,5 +56,15 @@
     	<item name="android:textSize">12dip</item>
 		<item name="android:textColor">@color/text</item>
 		<item name="android:paddingLeft">2dip</item>
+    </style>
+    <style name="editTextSearch">
+        <item name="android:hint">@string/search</item>
+	    <item name="android:background">@color/jaune</item>
+		<item name="android:textColor">@color/title</item>
+	    <item name="android:singleLine">true</item>
+	    <item name="android:layout_width">fill_parent</item>
+	    <item name="android:layout_height">fill_parent</item>
+	    <item name="android:paddingTop">5dip</item>
+	    <item name="android:paddingBottom">5dip</item>
     </style>
 </resources>

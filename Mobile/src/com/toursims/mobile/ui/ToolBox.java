@@ -1,5 +1,14 @@
 package com.toursims.mobile.ui;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+
+import org.apache.http.util.ByteArrayBuffer;
+
 import com.toursims.mobile.R;
 
 import android.app.AlertDialog;
@@ -32,6 +41,38 @@ public class ToolBox {
 		return dialog;
 	}
 	
+	public static String cacheFile(String fileURL, String cachePath) {
+		try {
+			String fileName = cachePath + fileURL.replaceAll("[.|/|:]", "_");			
+			File file = new File(fileName);
+			
+			if(!file.exists()){
+				URL url = new URL(fileURL); 
+				URLConnection ucon = url.openConnection();
+				 
+				InputStream is = ucon.getInputStream();
+				BufferedInputStream bis = new BufferedInputStream(is);
+				 
+				ByteArrayBuffer baf = new ByteArrayBuffer(50);
+				int current = 0;
+				while ((current = bis.read()) != -1) {
+					baf.append((byte) current);
+				}
+				 
+				/* Convert the Bytes read to a String. */
+				FileOutputStream fos = new FileOutputStream(file);
+				fos.write(baf.toByteArray());
+				fos.close();			 
+			} 
+			if(file.exists()){
+				return file.getAbsolutePath();
+			} else {
+				return null;
+			}			
+		} catch (Exception e) {
+		  return null;
+		}
+}
 	public static void setListViewHeightBasedOnChildren(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null) {

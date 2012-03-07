@@ -6,21 +6,9 @@
         android:text="@string/city"
         android:id="@+id/nameTextView"
 	/>
-    <LinearLayout 
-        android:background="#E8D212"
-        android:layout_width="fill_parent"
-       	android:layout_height="25dip">
-	    <EditText
-	    	android:id="@+id/searchText"
-	        android:hint="@string/search"
-	        android:background="#E8D212"
-	        android:textColor="@color/title"
-	        android:singleLine="true"
-	        android:layout_width="0dip"
-	        android:layout_weight="1"
-	        android:layout_height="fill_parent"
-	        android:drawableRight="@drawable/ic_search_category_default"/>
-    </LinearLayout>
+    
+    <include layout="@layout/search"/>
+    
     <ListView
         android:cacheColorHint="@android:color/transparent" 
         android:id="@+id/lvListe"

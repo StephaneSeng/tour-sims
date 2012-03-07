@@ -21,6 +21,12 @@ public class Document {
 	private Style Style;
 	
 	@Element(required=false)
+	private String author;
+	
+	@Element(required=false)
+	private long timestamp;
+	
+	@Element(required=false)
 	private String end;
 
 	@Element(required=false)
@@ -89,5 +95,29 @@ public class Document {
 			return presentation;
 		}
 		return presentation;
+	}
+	
+	public String getAuthor() {
+		return author;
+	}
+	
+	public List<Placemark> getPlacemark() {
+		return Placemark;
+	}
+	
+	public long getTimestamp() {
+		return timestamp;
+	}
+	
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+	
+	public void setPlacemark(List<Placemark> placemark) {
+		Placemark = placemark;
+	}
+	
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
 	}
 }

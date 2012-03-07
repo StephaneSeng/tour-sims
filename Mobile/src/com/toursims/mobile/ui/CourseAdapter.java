@@ -1,16 +1,6 @@
 package com.toursims.mobile.ui;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.List;
-
-import org.apache.http.util.ByteArrayBuffer;
 
 import com.toursims.mobile.R;
 import com.toursims.mobile.model.Course;
@@ -69,7 +59,6 @@ public class CourseAdapter extends BaseAdapter {
 
 		ViewHolder holder;
 		
-		
 		if(convertView == null) {
 			holder = new ViewHolder();
 			convertView = inflater.inflate(R.layout.coursegame_item, null);
@@ -88,53 +77,27 @@ public class CourseAdapter extends BaseAdapter {
 		float r = (float) rating;
 		
 		holder.name.setText(courses.get(position).getName());
-		holder.description.setText(courses.get(position).getDesc());
+		
+		if(courses.get(position).getAuthor()!=null){
+			holder.description.setText(courses.get(position).getAuthor());
+		} else {
+			holder.description.setText(R.string.unknown_author);
+		}
+		
 		holder.rating.setRating((float) r);
+	
 		holder.image.setBackgroundColor(Color.WHITE);
 		
-		try {
-			String fileURL = courses.get(position).getCoverPictureURL();
-			String fileName = cachePath + fileURL.replaceAll("[.|/|:]", "_");
+		String fileURL = courses.get(position).getCoverPictureURL();
+		String fileName = ToolBox.cacheFile(fileURL, cachePath);
 			
-			File file = new File(fileName);
-			
-			if(!file.exists()){
-				URL url = new URL(fileURL); 
-				                        /* Open a connection to that URL. */
-				URLConnection ucon = url.openConnection();
-				 
-				InputStream is = ucon.getInputStream();
-				BufferedInputStream bis = new BufferedInputStream(is);
-				 
-				ByteArrayBuffer baf = new ByteArrayBuffer(50);
-				int current = 0;
-				while ((current = bis.read()) != -1) {
-					baf.append((byte) current);
-				}
-				 
-				/* Convert the Bytes read to a String. */
-				FileOutputStream fos = new FileOutputStream(file);
-				fos.write(baf.toByteArray());
-				fos.close();			 
-			} 
-			if(file.exists()){
-			    Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-			    holder.image.setImageBitmap(myBitmap);
-			}
-			
-			} catch (MalformedURLException e) {
-			  e.printStackTrace();
-			  holder.image.setImageResource(R.drawable.ic_menu_myplaces);
-			} catch (IOException e) {
-			  e.printStackTrace();
-			  holder.image.setImageResource(R.drawable.ic_menu_myplaces);
-			} catch (NullPointerException e) {
-			  e.printStackTrace();
-			  holder.image.setImageResource(R.drawable.ic_menu_myplaces);
-			}
+		if(fileName!=null){
+			Bitmap myBitmap = BitmapFactory.decodeFile(fileName);
+		    holder.image.setImageBitmap(myBitmap);
+		} else {
+			holder.image.setImageResource(R.drawable.ic_menu_myplaces);
+		}
 		
 	return convertView;
-
 	}
-	
 }

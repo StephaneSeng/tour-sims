@@ -139,8 +139,8 @@ public class CourseStepActivity extends MapActivity{
 	protected void onResume() {
 		super.onResume();
 		
-		Log.d("TAG","Stop service");
-		stopService(new Intent(this, LocalizationService.class));
+		//Log.d("TAG","Stop service");
+		//stopService(new Intent(this, LocalizationService.class));
 
 		locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 		
@@ -336,7 +336,6 @@ public class CourseStepActivity extends MapActivity{
 				dialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 							
 						public void onClick(DialogInterface dialog, int which) {
-											// TODO Auto-generated method stub
 									updatePlacemark();
 									dialog.dismiss();
 							}

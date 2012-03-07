@@ -9,6 +9,8 @@
         	android:id="@+id/title"
             style="@style/textTitle"/>
         
+        <include layout="@layout/search"/>
+        
         <TextView
 	    	style="@style/textTitleSection"
 	        android:text="@string/course"

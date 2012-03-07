@@ -49,5 +49,6 @@
     <string name="course">Parcours</string>
     
     <string name="search">Recherche</string>
+    <string name="unknown_author">Inconnu</string>
 
 </resources>

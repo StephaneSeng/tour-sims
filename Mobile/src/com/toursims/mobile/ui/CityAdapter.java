@@ -1,14 +1,6 @@
 package com.toursims.mobile.ui;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.List;
-
-import org.apache.http.util.ByteArrayBuffer;
 
 import com.toursims.mobile.R;
 import com.toursims.mobile.model.City;
@@ -80,39 +72,15 @@ public class CityAdapter extends BaseAdapter {
 		holder.name.setText(cities.get(position).getName());
 		holder.image.setBackgroundColor(Color.WHITE);
 		
-		try {
-			String fileURL = cities.get(position).getCoverPictureURL();
-			String fileName = cachePath + fileURL.replaceAll("[.|/|:]", "_");
+		String fileURL = cities.get(position).getCoverPictureURL();
+		String fileName = ToolBox.cacheFile(fileURL, cachePath);
 			
-			File file = new File(fileName);
-			
-			if(!file.exists()){
-				URL url = new URL(fileURL); 				                       
-				URLConnection ucon = url.openConnection();
-				 
-				InputStream is = ucon.getInputStream();
-				BufferedInputStream bis = new BufferedInputStream(is);
-				 
-				ByteArrayBuffer baf = new ByteArrayBuffer(50);
-				int current = 0;
-				while ((current = bis.read()) != -1) {
-					baf.append((byte) current);
-				}
-				 
-				FileOutputStream fos = new FileOutputStream(file);
-				fos.write(baf.toByteArray());
-				fos.close();
-			}
-			
-			if(file.exists()){
-					Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-					holder.image.setImageBitmap(myBitmap);
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
+		if(fileName!=null){
+			Bitmap myBitmap = BitmapFactory.decodeFile(fileName);
+		    holder.image.setImageBitmap(myBitmap);
+		} else {
 			holder.image.setImageResource(R.drawable.ic_menu_globe);
-		} 
+		}
 		
 	return convertView;
 

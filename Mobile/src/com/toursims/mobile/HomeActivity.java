@@ -1,6 +1,8 @@
 package com.toursims.mobile;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import com.toursims.mobile.model.Course;
@@ -39,6 +41,7 @@ public class HomeActivity extends Activity {
 	private static List<HomeItem> items = new ArrayList<HomeItem>();
 	private static HomeAdapter adapter;
 	private static ListView lv;
+	private static ImageView recImage;
 	
 	/**
 	 * Application context
@@ -50,6 +53,8 @@ public class HomeActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
+        ImageView recImage = (ImageView)findViewById(R.id.recImage);
         
     	settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0); 
 		SharedPreferences.Editor editor = settings.edit();
@@ -167,10 +172,10 @@ public class HomeActivity extends Activity {
 //			nameTextView.setText("Welcome, please login with your Google Account...");
 		} else {
 //			nameTextView.setText("Welcome " + tourSims.getUserName() + " !");
-			TextView textView = (TextView) findViewById(R.id.home_user_name);
-			ImageView imageView = (ImageView) findViewById(R.id.home_avatar);
-			textView.setText(tourSims.getUser().getName());
-			imageView.setImageBitmap(tourSims.getUser().getAvatarBitmap());
+//			TextView textView = (TextView) findViewById(R.id.home_user_name);
+//			ImageView imageView = (ImageView) findViewById(R.id.home_avatar);
+//			textView.setText(tourSims.getUser().getName());
+//			imageView.setImageBitmap(tourSims.getUser().getAvatarBitmap());
 		}
 		
         popUpRestart();
@@ -275,6 +280,30 @@ public class HomeActivity extends Activity {
     public void social(View v){
     	Intent Social = new Intent(getApplicationContext(),SocialActivity.class);	
 		startActivity(Social);
+    }
+    
+    public void rec(View v){
+    	settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+		SharedPreferences.Editor editor = settings.edit();
+		
+		if(settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1)==-1){
+			Calendar c = Calendar.getInstance();
+			Long l = c.getTimeInMillis();
+			editor.putLong(CustomPreferences.RECORDING_RIGHT_NOW,l);
+		} else {
+			editor.remove(CustomPreferences.RECORDING_RIGHT_NOW);
+		}
+		editor.commit();
+		recImage();
+    }
+    
+    private void recImage() {
+    	settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+    	if(settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1)==-1){
+    		recImage.setImageResource(R.drawable.ic_media_play);
+    	} else {
+    		recImage.setImageResource(R.drawable.ic_media_pause);
+    	}
     }
 }
  

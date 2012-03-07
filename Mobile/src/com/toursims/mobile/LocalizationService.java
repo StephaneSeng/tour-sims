@@ -1,7 +1,13 @@
 package com.toursims.mobile;
 
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import org.apache.http.util.ByteArrayBuffer;
 
 import android.app.PendingIntent;
 import android.app.Service;
@@ -9,6 +15,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -38,10 +45,13 @@ public class LocalizationService extends Service {
 	private Criteria criteria;
 	private String bestProvider;
 	private LocalizationListener localizationListener;
-//	private Location lastLocation;
-//	private Calendar lastUpdateTime;
+	private Location currentLocation;
+	private Location lastLocation;
 	private PendingIntent pendingIntentForProximityAlert = null;
 	private static final long expiration = 600000;
+	private Calendar c;
+	private SharedPreferences settings;
+
 	
 	private static final float radius = 100f;
 	
@@ -50,6 +60,8 @@ public class LocalizationService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		
+		c = Calendar.getInstance();
 			
 		Log.d(TAG, "The LocalizationService is starting...");
 		
@@ -117,9 +129,6 @@ public class LocalizationService extends Service {
 				if (!bestProvider.equals("null")) {
 					localizationListener.onLocationChanged(locationManager.getLastKnownLocation(bestProvider));
 				}
-				Intent intent=new Intent();
-				intent.setAction("TIMER");
-				sendBroadcast(intent);
 			}
 		}, 0, UPDATE_INTERVAL);
 		Log.d(getClass().getSimpleName(), "Timer started.");
@@ -143,11 +152,15 @@ public class LocalizationService extends Service {
 		public void onLocationChanged(Location location) {
 		//	Log.d(TAG, "The GPS location will be updated");
 			Log.d(TAG, "New location : " + location);
+
 			
 			if (location != null) {
-				// Update the current user location
-//				lastLocation = location;
-//				lastUpdateTime = Calendar.getInstance();
+				
+				//SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+				//if(settings.getBoolean(CustomPreferences.RECORDING_RIGHT_NOW, false)) {
+				//	
+				//}
+				recordLocation(location);
 				
 				// Create a checkin
 				TourSims tourSims = (TourSims)getApplicationContext();
@@ -200,5 +213,27 @@ public class LocalizationService extends Service {
 		timer.cancel();		
 		Log.d(TAG, "The LocalizationService has be destroyed");
 	}	
+	
+	public void recordLocation(Location location){	
+		
+		Long startedTime = settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1);
+		
+		if(startedTime!=-1){
+			try{
+				StringBuffer s = new StringBuffer();
+				s.append(location.getTime()+",");
+				s.append(location.getLatitude()+",");
+				s.append(location.getLongitude());
+				
+				FileWriter fstream = new FileWriter(getCacheDir()+"records/"+startedTime.toString());
+				BufferedWriter out = new BufferedWriter(fstream);
+				out.write(s.toString());				
+			} catch (Exception e) {
+			
+			}
+	//		fos.write();
+	//		fos.close();
+		}
+	}
 	
 }
