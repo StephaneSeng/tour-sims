@@ -95,9 +95,6 @@ public class CourseStepActivity extends MapActivity{
         
         placemarks = getPlaceMarks();
         
-        
-        
-        
         if(bundle.containsKey(Course.NEXT_PLACEMARK)){
         	if(currentPlacemark<placemarks.size()-1)
         		incrementCurrentPlacemark();
@@ -371,9 +368,7 @@ public class CourseStepActivity extends MapActivity{
 	            String[] lL = placemarks.get(currentPlacemark).getPoint().getCoordinates().split(",");
 	        	double l = Double.parseDouble(lL[1]);	        	
 	        	double L = Double.parseDouble(lL[0]);
-	        		        	
-	        	Log.d(TAG,"latl"+l+"latPl"+placemarks.get(currentPlacemark).getPoint().getLatitude());
-	            
+	        		        	            
 	            locationManager.addProximityAlert(
 	            		placemarks.get(currentPlacemark).getPoint().getLatitude(), // the latitude of the central point of the alert region
 	            		placemarks.get(currentPlacemark).getPoint().getLongitude(), // the longitude of the central point of the alert region
@@ -415,7 +410,7 @@ public class CourseStepActivity extends MapActivity{
 		String className = am.getRunningTasks(1).get(0).topActivity.getClassName();
 		
 		if(!className.equals(CourseStepActivity.class.getName())) {
-			//send notification if not in foreground
+				//send notification if not in foreground
 				NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 				Notification notification = new Notification(R.drawable.ic_launcher,placemarks.get(currentPlacemark).getName(), System.currentTimeMillis());
 				notification.flags |= Notification.FLAG_AUTO_CANCEL;

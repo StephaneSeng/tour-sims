@@ -48,6 +48,11 @@ public class HomeActivity extends Activity {
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
+    	settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0); 
+		SharedPreferences.Editor editor = settings.edit();
+		editor.remove(ALREADY_ASKED_TO_RESUME);
+		editor.commit();
+        
         // Application context initialisation
         tourSims = (TourSims) getApplication();
         
@@ -72,6 +77,15 @@ public class HomeActivity extends Activity {
 				poiClick();
 			}
 		}, R.string.home_poi, R.drawable.ic_menu_info_details));
+        
+        if(settings.contains(CustomPreferences.COURSE_STARTED_URL)){
+            items.add(new HomeItem(new OnClickListener() {
+    			public void onClick(View v) {
+    				// TODO Auto-generated method stub
+    				restartCourse();
+    			}
+    		}, R.string.home_goon_course, R.drawable.ic_menu_myplaces));
+        }
         
 	    HomeAdapter adapter = new HomeAdapter(this, items,getCacheDir().getAbsolutePath());
 	    ListView lv = (ListView) findViewById(R.id.lvListe);
@@ -155,14 +169,13 @@ public class HomeActivity extends Activity {
 			imageView.setImageBitmap(tourSims.getUser().getAvatarBitmap());
 		}
 		
-        restartCourse();
+        popUpRestart();
 	}
     
-    private void restartCourse() {
-    	
+    private void popUpRestart(){
     	settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0); 
-    	    	
-    	if(settings.contains(CustomPreferences.COURSE_STARTED_URL)&&settings.getBoolean(ALREADY_ASKED_TO_RESUME, false)){
+    	
+    	if(settings.contains(CustomPreferences.COURSE_STARTED_URL)&&settings.getBoolean(ALREADY_ASKED_TO_RESUME, true)){
     		    		
 			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 			
@@ -172,10 +185,7 @@ public class HomeActivity extends Activity {
 					
 				public void onClick(DialogInterface dialog, int which) {	
 						// TODO Auto-generated method stub
-				          Intent activity = new Intent(getApplicationContext(),CourseDetailsActivity.class);
-				          activity.putExtra(Course.URL_EXTRA, settings.getString(CustomPreferences.COURSE_STARTED_URL, null));
-				          activity.putExtra(Course.ID_EXTRA, settings.getInt(CustomPreferences.COURSE_STARTED_ID, 0));
-				          startActivity(activity);
+				          restartCourse();
 					}
 				});
 			
@@ -205,6 +215,13 @@ public class HomeActivity extends Activity {
 			});
 			dialog.show();
     	}   	
+    }
+    
+    private void restartCourse() {
+    	Intent activity = new Intent(getApplicationContext(),CourseStepActivity.class);
+        activity.putExtra(Course.URL_EXTRA, settings.getString(CustomPreferences.COURSE_STARTED_URL, null));
+        activity.putExtra(Course.ID_EXTRA, settings.getInt(CustomPreferences.COURSE_STARTED_ID, 0));
+        startActivity(activity);
     }
     
     @Override
