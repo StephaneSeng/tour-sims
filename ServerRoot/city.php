@@ -5,14 +5,18 @@ $connection = pg_connect("host=localhost port=5432 dbname=toursims user=postgres
 
 // Define and perform the SQL query
 switch ($_REQUEST['action']) {
-	case "get":
+	case "get_cities":
 		// List all the cities known in the database
 		// The results are ordered by their names
+		// Test: http://localhost:80/city.php?action=get_cities
 		$query = "
 		SELECT
-			c.name AS name,
-			m.text AS image,
-			c.city_id
+			c.city_id,
+			c.name,
+			c.description,
+			c.latitude,
+			c.longitude,
+			m.text AS image
 		FROM
 			city AS c
 				LEFT OUTER JOIN
@@ -35,12 +39,17 @@ switch ($_REQUEST['action']) {
 		$result = pg_query($query) or die('Query failed: '.pg_last_error());
 		
 		break;
-	case "_get":
+	case "_get_cities":
 		// List all the cities known in the database ordered by their distance with the specified position
 		// Distance forumla from: http://zcentric.com/2010/03/11/calculate-distance-in-mysql-with-latitude-and-longitude/
+		// Test: http://localhost:80/city.php?action=_get_cities&latitude=45.7597&longitude=4.8422
 		$query = "
 		SELECT
-			c.name AS name,
+			c.city_id,
+			c.name,
+			c.description,
+			c.latitude,
+			c.longitude,
 			m.text AS image,
 			((ACOS(SIN(".$_REQUEST['latitude']."*PI()/180)*SIN(latitude*PI()/180) + COS(".$_REQUEST['latitude']."*PI()/180)*COS(latitude*PI()/180)*COS((".$_REQUEST['longitude']."-longitude)*PI()/180))*180/PI())*60*1.1515) AS distance
 		FROM

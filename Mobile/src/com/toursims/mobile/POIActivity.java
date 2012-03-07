@@ -10,11 +10,13 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.toursims.mobile.controller.PlaceWrapper;
@@ -36,6 +38,7 @@ public class POIActivity extends MapActivity {
 	private List<Overlay> mapOverlays;
 	private Drawable drawable;
 	private CustomItemizedOverlay itemizedOverlay;
+	private MyLocationOverlay myLocationOverlay;
 	
 	/**
 	 * Called when the activity is first created
@@ -52,7 +55,7 @@ public class POIActivity extends MapActivity {
         
         // Set the MapView properties
         mapView.setBuiltInZoomControls(true);
-        mapController.setZoom(13); // Zoom 1 is world view
+        mapController.setZoom(14); // Zoom 1 is world view
     }
 	
 	/**
@@ -62,6 +65,25 @@ public class POIActivity extends MapActivity {
 	protected void onResume() {
 		super.onResume();
 		
+		myLocationOverlay = new MyLocationOverlay(this, mapView);
+		myLocationOverlay.enableMyLocation();
+		mapOverlays.add(myLocationOverlay);
+		// Display the map with the user at its center
+		if(myLocationOverlay.getMyLocation() != null){
+			mapController.animateTo(myLocationOverlay.getMyLocation());
+		}
+		update(null);
+	}
+
+	/**
+	 * Method to override with the MapActivity class
+	 */
+	@Override
+	protected boolean isRouteDisplayed() {
+		return false;
+	}
+	
+	public void update(View view){
 		// Get the current user position
 		LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 		
@@ -74,42 +96,22 @@ public class POIActivity extends MapActivity {
 		bestProvider = LocationManager.GPS_PROVIDER;
 		
 		Location lastLocation = locationManager.getLastKnownLocation(bestProvider);
-		Log.d(TAG, "Test : " + lastLocation);
-		
-		// Call the SearchPointOfInterestPlaces method
-		PlaceWrapper placeWrapper = new PlaceWrapper();
-		List<Place> places = placeWrapper.SearchPointOfInterestPlaces(lastLocation.getLatitude(), lastLocation.getLongitude(), 100.0);
-		
-		// Display the map with the user at its center
-		mapController.animateTo(new GeoPoint((int)(lastLocation.getLatitude() * 1e6), (int)(lastLocation.getLongitude() * 1e6)));
-		
-		// Display the user
-		displayUser(lastLocation);
-		
-		// Display the points of interests
-		displayPointOfInterests(places);
-	}
+		if(lastLocation !=null)
+		{
+			Log.d(TAG, "Test : " + lastLocation);
+			if(myLocationOverlay.getMyLocation() == null) {
+				mapController.animateTo(new GeoPoint((int)(lastLocation.getLatitude()*1E6), (int)(lastLocation.getLongitude()*1E6)));
+			}
+			
+			// Call the SearchPointOfInterestPlaces method
+			PlaceWrapper placeWrapper = new PlaceWrapper();
+			List<Place> places = placeWrapper.SearchPointOfInterestPlaces(lastLocation.getLatitude(), lastLocation.getLongitude(), 100.0);
 
-	/**
-	 * Method to override with the MapActivity class
-	 */
-	@Override
-	protected boolean isRouteDisplayed() {
-		return false;
+			// Display the points of interests
+			displayPointOfInterests(places);
+		}
 	}
 	
-	/**
-	 * Display the user on the MapView
-	 */
-	protected void displayUser(Location location) {
-		GeoPoint point = new GeoPoint((int)(location.getLatitude() * 1e6), (int)(location.getLongitude() * 1e6));
-        OverlayItem overlayItem = new OverlayItem(point, "User Name", "Latitude : " + location.getLatitude() + ", Longitude : " + location.getLongitude());
-        
-        drawable = this.getResources().getDrawable(R.drawable.androidmarkerred);
-        itemizedOverlay = new CustomItemizedOverlay(drawable, POIActivity.this);
-        itemizedOverlay.addOverlay(overlayItem);
-        mapOverlays.add(itemizedOverlay);
-	}
 	
 	/**
 	 * Display the specified points of interests on the MapView
@@ -126,7 +128,7 @@ public class POIActivity extends MapActivity {
 			point = new GeoPoint((int)(place.getLatitude() * 1e6), (int)(place.getLongitude() * 1e6));
 	        overlayItem = new OverlayItem(point, place.getName(), "Latitude : " + place.getLatitude() + ", Longitude : " + place.getLongitude());
 	        
-	        drawable = this.getResources().getDrawable(R.drawable.androidmarker);
+	        drawable = this.getResources().getDrawable(R.drawable.maps_icon);
 	        itemizedOverlay = new CustomItemizedOverlay(drawable, POIActivity.this);
 	        itemizedOverlay.addOverlay(overlayItem);
 	        mapOverlays.add(itemizedOverlay);

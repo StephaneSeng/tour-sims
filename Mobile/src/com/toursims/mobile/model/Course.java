@@ -3,8 +3,7 @@ package com.toursims.mobile.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.R.bool;
-
+import com.toursims.mobile.model.kml.Document;
 import com.toursims.mobile.model.kml.Placemark;
 
 public class Course {
@@ -13,9 +12,6 @@ public class Course {
 	public static final String ID_EXTRA = "course_id";
 	public static final String NEXT_PLACEMARK = "course_next_placemark";
 	public static final String CURRENT_PLACEMARK = "placemark";
-	public static final String PREFERENCES_STARTED_URL = "course_url_for_preferences";
-	public static final String PREFERENCES_STARTED_TIME_STARTED = "course_started_time_for_preferences";
-	public static final String PREFERENCES_STARTED_ID = "course_id_for_preferences";
 	
 	private Integer id;
 	private String city; 
@@ -26,6 +22,8 @@ public class Course {
 	private String url;
 	private String name;
 	private String type;
+	private String end;
+	private String presentation;
 	
 	public static final String TYPE_COURSE = "course";
 	public static final String TYPE_GAME = "game";
@@ -111,5 +109,45 @@ public class Course {
 	
 	public String getType() {
 		return type;
+	}
+	
+	public String getEnd() {
+		if(end==null){
+			return name;
+		}
+		return end;
+	}
+	
+	public void setEnd(String end) {
+		this.end = end;
+	}
+	
+	public String getPresentation() {
+		if(presentation==null){
+			return presentation;
+		}
+		return presentation;
+	}
+	
+	public void setPresentation(String presentation) {
+		this.presentation = presentation;
+	}
+	
+	public void copyFromDocument(Document item,String address){
+		setName(item.getName());
+		try {
+			setUrl(address);
+			setCity(item.getExtendedData().get(0).getValue());
+			setCoverPictureURL(item.getExtendedData().get(1).getValue());
+			setDesc(item.getExtendedData().get(2).getValue());
+			setRating(Double.valueOf(item.getExtendedData().get(3).getValue()));
+			setLength(Double.valueOf(item.getExtendedData().get(4).getValue()));
+			setType(item.getExtendedData().get(5).getValue());
+		} catch (IndexOutOfBoundsException e) {
+			setType(Course.TYPE_COURSE);
+		}	
+		setPlacemarks(item.getPlacemarks());
+		setEnd(item.getEnd());
+		setPresentation(item.getPresentation());
 	}
 }

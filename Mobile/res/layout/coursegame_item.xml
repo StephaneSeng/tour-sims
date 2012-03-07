@@ -12,39 +12,29 @@
                 android:clickable="false"
                  />
             	
-    	<LinearLayout
-    	    	xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="265dip"
-                android:orientation="vertical"
-                android:layout_height="wrap_content"
-                >           
-                <LinearLayout
-                        xmlns:android="http://schemas.android.com/apk/res/android"
-                        android:layout_width="265dip"
-                        android:orientation="horizontal"
-                        android:layout_height="wrap_content"
-                       > 
-                        <TextView android:layout_width="190dip"
-                            	android:paddingTop="2dip"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/courseName"
-                                android:textSize="15dip"
-                                />
+    	<LinearLayout style="@style/course_LinearLayout_wrapper">           
+                <LinearLayout style="@style/course_LinearLayout_line1"> 
+                        <TextView                            	
+                         	style="@style/course_LinearLayout_line1_text"
+                            android:id="@+id/courseName"
+                            android:gravity="center_horizontal|left"
+                            android:layout_weight="1"
+                        />
                         <RatingBar
-                            android:id="@+id/courseRating"
-                            style="?android:attr/ratingBarStyleSmall"
+                            style="?android:attr/ratingBarStyleSmall"       
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="right"
-                            android:isIndicator="true"
-                            android:numStars="5"
-                            android:stepSize="0.1" />
+    						android:layout_height="wrap_content"
+    						android:gravity="center_horizontal|right"
+   							android:isIndicator="true"
+    						android:numStars="3"
+    						android:stepSize="0.5"
+    						android:id="@+id/courseRating"
+                            />
                 </LinearLayout>
                 
-	            <TextView android:layout_width="fill_parent"
-	                android:layout_height="wrap_content"
+	            <TextView 
+	                style="@style/course_LinearLayout_line2"
 	                android:id="@+id/courseDetails"
-	                android:textSize="12dip"
 	                />
 </LinearLayout>             
 </LinearLayout>             

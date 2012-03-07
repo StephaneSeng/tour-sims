@@ -5,11 +5,11 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 
 public class Document {
-	// Le tag ElementList permet de définir une liste d'éléments
-	// Ensuite on a des attributs: entry permet de définir à quelle élément fait référence la liste,
-    // inline permet créer une liste avec des éléments qui ne sont pas exclusivement entre balises.
-    // C'est à dire que ces éléments sont mêlés avec d'autre éléments entre les mêmes balises.
-    // l'attribut required quant à lui permet de définir si l'élément est obligatoire ou pas
+	// Le tag ElementList permet de dï¿½finir une liste d'ï¿½lï¿½ments
+	// Ensuite on a des attributs: entry permet de dï¿½finir ï¿½ quelle ï¿½lï¿½ment fait rï¿½fï¿½rence la liste,
+    // inline permet crï¿½er une liste avec des ï¿½lï¿½ments qui ne sont pas exclusivement entre balises.
+    // C'est ï¿½ dire que ces ï¿½lï¿½ments sont mï¿½lï¿½s avec d'autre ï¿½lï¿½ments entre les mï¿½mes balises.
+    // l'attribut required quant ï¿½ lui permet de dï¿½finir si l'ï¿½lï¿½ment est obligatoire ou pas
 	
 	@ElementList(entry="Placemark",inline=true,required=false)
 	private List<Placemark> Placemark;
@@ -19,14 +19,20 @@ public class Document {
 
 	@Element(required=false)
 	private Style Style;
+	
+	@Element(required=false)
+	private String end;
 
-	// L'attribut data permet de signaler que l'élément contient une section ( <!--[CDATA[ )
+	@Element(required=false)
+	private String presentation;
+
+	// L'attribut data permet de signaler que l'ï¿½lï¿½ment contient une section ( <!--[CDATA[ )
 	@Element(data=true,required=false)
 	private String Snippet;
 	
 	@ElementList(entry="Data",required=false)
 	private List<Data> ExtendedData;
-	
+		
 	public List<Data> getExtendedData() {
 		return ExtendedData;
 	}
@@ -65,5 +71,23 @@ public class Document {
 
 	public void setPlacemarks(List<Placemark> placemarks) {
 		this.Placemark = placemarks;
+	}
+	
+	public String getEnd() {
+		if(end==null){
+			return name;
+		}
+		return end;
+	}
+	
+	public void setEnd(String end) {
+		this.end = end;
+	}
+	
+	public String getPresentation() {
+		if(presentation==null){
+			return presentation;
+		}
+		return presentation;
 	}
 }

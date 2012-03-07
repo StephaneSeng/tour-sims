@@ -34,11 +34,9 @@ public class CityAdapter extends BaseAdapter {
 	String cachePath;
 	
 	public CityAdapter(Context context,List<City> cities,String cachePath) {
-
 		inflater = LayoutInflater.from(context);
 		this.cities = cities;
 		this.cachePath = cachePath;
-
 	}
 	
 	public int getCount() {
@@ -56,6 +54,11 @@ public class CityAdapter extends BaseAdapter {
 		return position;
 	}
 
+	public void setCities(List<City> cities) {
+		this.cities = cities;
+	}
+	
+	
 	
 	private class ViewHolder {
 		ImageView image;
@@ -65,7 +68,6 @@ public class CityAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 
 		ViewHolder holder;
-		
 		
 		if(convertView == null) {
 			holder = new ViewHolder();
@@ -88,7 +90,7 @@ public class CityAdapter extends BaseAdapter {
 			File file = new File(fileName);
 			
 			if(!file.exists()){
-				URL url = new URL(fileURL); 				                        /* Open a connection to that URL. */
+				URL url = new URL(fileURL); 				                       
 				URLConnection ucon = url.openConnection();
 				 
 				InputStream is = ucon.getInputStream();
@@ -100,11 +102,10 @@ public class CityAdapter extends BaseAdapter {
 					baf.append((byte) current);
 				}
 				 
-				/* Convert the Bytes read to a String. */
 				FileOutputStream fos = new FileOutputStream(file);
 				fos.write(baf.toByteArray());
-				fos.close();			 
-			}  
+				fos.close();
+			}
 				
 			if(file.exists()){
 			    Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
@@ -113,8 +114,10 @@ public class CityAdapter extends BaseAdapter {
 			
 			} catch (MalformedURLException e) {
 			  e.printStackTrace();
+			  holder.image.setImageResource(R.drawable.ic_menu_globe);
 			} catch (IOException e) {
 			  e.printStackTrace();
+			  holder.image.setImageResource(R.drawable.ic_menu_globe);
 			}
 		
 	return convertView;

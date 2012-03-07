@@ -61,6 +61,9 @@ public class Placemark {
 	@ElementList(entry="Question",required=false)
 	private List<Question> Questions;
 	
+	@Element(required=false)
+	private String routePlacemark = "false";
+	
 	public List<Data> getExtendedData() {
 		return ExtendedData;
 	}
@@ -185,4 +188,14 @@ public class Placemark {
 		this.clueTitle = clueTitle;
 	}
 	
+	public boolean isRoutePlacemark() {
+		return routePlacemark.equals("true");
+	}
+	public String getRoutePlacemark() {
+		return routePlacemark;
+	}
+	
+	public void setRoutePlacemark(String routePlacemark) {
+		this.routePlacemark = routePlacemark;
+	}
 }

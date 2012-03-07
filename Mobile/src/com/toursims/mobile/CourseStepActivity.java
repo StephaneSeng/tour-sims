@@ -6,9 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.List;
-import java.util.ListIterator;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -17,20 +15,15 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
-import com.toursims.mobile.LocalizationService.MyBinder;
-import com.toursims.mobile.controller.CourseBDD;
 import com.toursims.mobile.controller.CourseLoader;
-import com.toursims.mobile.controller.PlaceWrapper;
 import com.toursims.mobile.model.Course;
 import com.toursims.mobile.model.kml.Placemark;
 import com.toursims.mobile.model.kml.Point;
-import com.toursims.mobile.model.places.Place;
 import com.toursims.mobile.model.places.Road;
+import com.toursims.mobile.ui.ToolBox;
 import com.toursims.mobile.ui.utils.CustomItemizedOverlay;
-import com.toursims.mobile.ui.utils.DirectionPathOverlay;
 import com.toursims.mobile.ui.utils.RoadProvider;
 
-import android.R.integer;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -38,7 +31,6 @@ import android.graphics.drawable.Drawable;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -47,7 +39,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -58,11 +49,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.SlidingDrawer;
-import android.widget.Toast;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -76,11 +62,12 @@ public class CourseStepActivity extends MapActivity{
 	private static final String PROXIMITY_RECEIVER = LocalizationService.class.getName()+".PROXIMITY_RECEIVER";
 	private static final long MINIMUM_DISTANCECHANGE_FOR_UPDATE = 1; // in Meters
 	private static final long MINIMUM_TIME_BETWEEN_UPDATE = 3000; // in Milliseconds
-    private static final long POINT_RADIUS = 1000; // in Meters
+    private static final long POINT_RADIUS = 25; // in Meters
     private static final long PROX_ALERT_EXPIRATION = -1;    
 
 	private static LocalizationService serviceLocalization;
 	private static List<Placemark> placemarks;
+	private static List<GeoPoint> bounds;
 	private static Course course;
 	private static String type;	
 	private MapController mapController;
@@ -92,86 +79,38 @@ public class CourseStepActivity extends MapActivity{
 	private MyLocationOverlay myLocationOverlay;
 	private MapView mapView;
     private LocationManager locationManager;
-    private static int currentPlacemark = 0;
+    private static int currentPlacemark;
     private static BroadcastReceiver receiverLocalization;
 	private LocalizationService s;
 
-
-    
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+        currentPlacemark = settings.getInt(CustomPreferences.COURSE_CURRENT_PLACEMARK, -1);       
         
         Bundle bundle = getIntent().getExtras();       
         setContentView(R.layout.coursestep);
         
         placemarks = getPlaceMarks();
         
+        
+        
+        
         if(bundle.containsKey(Course.NEXT_PLACEMARK)){
         	if(currentPlacemark<placemarks.size()-1)
-        	currentPlacemark += 1;
+        		incrementCurrentPlacemark();
         }
                 
         mapView = (MapView) findViewById(R.id.map);
 		mapView.setBuiltInZoomControls(true);
 		//mapView.setStreetView(true);
 		mapController = mapView.getController();
-		mapController.setZoom(14); // Zoom 1 is world view
+		//mapController.setZoom(14); // Zoom 1 is world view
 		
-        mapOverlays = mapView.getOverlays();
-        drawable = this.getResources().getDrawable(R.drawable.maps_icon);
-        itemizedOverlay = new CustomItemizedOverlay(drawable, this);
-        itemizedOverlay_currentPoint = new CustomItemizedOverlay(drawable, this);
-        
-        
-        /***** load overlays ******/
-        
-        String[] formerPoint = null;
-        int i = 0;
-        
-        for(Placemark placemark: placemarks){
-        	String[] lL = placemark.getPoint().getCoordinates().split(",");
-        	int l = (new Double(Double.parseDouble(lL[1])* 1000000)).intValue();
-        	int L = (new Double(Double.parseDouble(lL[0])* 1000000)).intValue();
-        	Log.d(getLocalClassName(), String.valueOf(l) + " " + String.valueOf(L));
-        	GeoPoint point = new GeoPoint(l,L);
-        	OverlayItem overlayItem = new OverlayItem(point, placemark.getName(),placemark.getDescription());
-        	
-        	if(i==currentPlacemark){
-        		Drawable d = this.getResources().getDrawable(R.drawable.maps_icon_current);
-                itemizedOverlay_currentPoint = new CustomItemizedOverlay(d, this);
-                itemizedOverlay_currentPoint.addOverlay(overlayItem);
-                mapOverlays.add(itemizedOverlay_currentPoint);
-        	} else {
-            	itemizedOverlay.addOverlay(overlayItem);
-        	}
- 
-        	i++;
-        	
-        	
-        	/***** load routes *****/
-        	if(formerPoint != null) {
-        		roadConnectionThread t = new roadConnectionThread() {
-	    			   @Override
-	    			   public void run() {
-	    				   String url = RoadProvider.getUrl(fromLat, fromLon, toLat, toLon);
-	    				   InputStream is = getConnection(url);
-	    				   if (mRoads == null) {
-	    					   mRoads = new ArrayList<Road>();
-	    				   }
-	    				   mRoads.add(RoadProvider.getRoute(is));
-	    				   mHandler.sendEmptyMessage(mRoads.size() - 1);
-	    			   }
-	    		};
-	    		t.setCoord(formerPoint, lL);
-        		t.start();
-        	} else {
-        		mapController.animateTo(point);
-        	}
-        	formerPoint = lL;
-
-        }
-        mapOverlays.add(itemizedOverlay);
+		updateMap();
+		zoomInBounds();
    
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -183,29 +122,21 @@ public class CourseStepActivity extends MapActivity{
         );
         
         updatePlacemark();
-
-		myLocationOverlay = new MyLocationOverlay(this, mapView);
-		myLocationOverlay.enableMyLocation();
-		mapOverlays.add(myLocationOverlay);
-		
-		Button b = (Button)findViewById(R.id.button1);
-	
 	}
+	
+
 	
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
 		Log.d("TAG","Start Service");
-		
 		Intent i = new Intent(this, LocalizationService.class);
 		i.putExtra(Point.LATITUDE, placemarks.get(currentPlacemark).getPoint().getLatitude());
 		i.putExtra(Point.LONGITUDE, placemarks.get(currentPlacemark).getPoint().getLatitude());
 		i.putExtra(Placemark.NAME, placemarks.get(currentPlacemark).getName());
-
 		startService(i);
-	}
-	
+	}	
     
 	@Override
 	protected void onResume() {
@@ -219,40 +150,10 @@ public class CourseStepActivity extends MapActivity{
 		Bundle b = getIntent().getExtras();
 		
 		if(b.getBoolean(Course.NEXT_PLACEMARK)){
-			currentPlacemark++;
+			incrementCurrentPlacemark();
 		}
 		
-		// Try to get the best localization provider
-		Criteria criteria = new Criteria();
-		criteria.setAccuracy(Criteria.ACCURACY_FINE);
-		String bestProvider = locationManager.getBestProvider(criteria, false);
-		
-		// TODO Emulator fix
-		bestProvider = LocationManager.GPS_PROVIDER;
-		
-		Location lastLocation = locationManager.getLastKnownLocation(bestProvider);
-		
-		// Display the map with the user at its center
-		if(lastLocation != null)
-		{
-			mapController.animateTo(new GeoPoint((int)(lastLocation.getLatitude() * 1e6), (int)(lastLocation.getLongitude() * 1e6)));
-			
-			// Display the user
-			displayUser(lastLocation);
-		}
-	}
-	
-	/**
-	 * Display the user on the MapView
-	 */
-	protected void displayUser(Location location) {
-		GeoPoint point = new GeoPoint((int)(location.getLatitude() * 1e6), (int)(location.getLongitude() * 1e6));
-        OverlayItem overlayItem = new OverlayItem(point, "User Name", "Latitude : " + location.getLatitude() + ", Longitude : " + location.getLongitude());
-        
-        drawable = this.getResources().getDrawable(R.drawable.androidmarkerred);
-        CustomItemizedOverlay itemizedOverlay2 = new CustomItemizedOverlay(drawable, CourseStepActivity.this);
-        itemizedOverlay2.addOverlay(overlayItem);
-        mapOverlays.add(itemizedOverlay2);
+
 	}
 	
 	Handler mHandler = new Handler() {
@@ -279,6 +180,29 @@ public class CourseStepActivity extends MapActivity{
 		  }
 		  return is;
     }
+	
+	
+	private void incrementCurrentPlacemark() {
+		Log.d(TAG, "valeur= " + currentPlacemark);
+		Placemark pl = placemarks.get(++currentPlacemark);
+		while (pl.isRoutePlacemark())
+		{
+			pl = placemarks.get(++currentPlacemark);
+		}
+        SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt(CustomPreferences.COURSE_CURRENT_PLACEMARK, currentPlacemark);
+        editor.commit();
+	}
+	
+	private void decrementCurrentPlacemark() {
+		Placemark pl = placemarks.get(--currentPlacemark);
+		while (pl.isRoutePlacemark())
+		{
+			pl = placemarks.get(--currentPlacemark);
+		}
+				
+	}
 	    
     protected List<Placemark> getPlaceMarks() {
         
@@ -290,6 +214,111 @@ public class CourseStepActivity extends MapActivity{
     	
     	return course.getPlacemarks();
     }
+    
+    
+    public void updateMap() {
+        mapOverlays = mapView.getOverlays();
+        drawable = this.getResources().getDrawable(R.drawable.maps_icon);
+        itemizedOverlay = new CustomItemizedOverlay(drawable, this);
+        //itemizedOverlay_currentPoint = new CustomItemizedOverlay(drawable, this);
+        
+        mapOverlays.clear();
+        /***** load overlays ******/
+        
+        String[] formerPoint = null;
+        int i = 0;
+        
+        for(Placemark placemark: placemarks){
+        	
+        	String[] lL = placemark.getPoint().getCoordinates().split(",");
+        	int l = (new Double(Double.parseDouble(lL[1])* 1000000)).intValue();
+        	int L = (new Double(Double.parseDouble(lL[0])* 1000000)).intValue();
+        	Log.d(getLocalClassName(), String.valueOf(l) + " " + String.valueOf(L));
+        	GeoPoint point = new GeoPoint(l,L);
+        	if(bounds == null)
+        	{
+        		bounds = new ArrayList<GeoPoint>();
+        	}
+        	bounds.add(point);
+        	
+        	if (i - currentPlacemark >=-1) {
+        		OverlayItem overlayItem = new OverlayItem(point, placemark.getName(),placemark.getDescription());
+        	
+	        	if(i==currentPlacemark){
+	        		Drawable d = this.getResources().getDrawable(R.drawable.maps_icon_current);
+	                itemizedOverlay_currentPoint = new CustomItemizedOverlay(d, this);
+	                itemizedOverlay_currentPoint.addOverlay(overlayItem);
+	                mapOverlays.add(itemizedOverlay_currentPoint);
+	        	} else if(!placemark.isRoutePlacemark()){
+	            	itemizedOverlay.addOverlay(overlayItem);
+	        	}
+        	}
+        	i++;
+        	
+        	
+        	/***** load routes *****/
+        	if(formerPoint != null) {
+        		if (i - currentPlacemark >0){
+	        		roadConnectionThread t = new roadConnectionThread() {
+		    			   @Override
+		    			   public void run() {
+		    				   String url = RoadProvider.getUrl(fromLat, fromLon, toLat, toLon);
+		    				   InputStream is = getConnection(url);
+		    				   if (mRoads == null) {
+		    					   mRoads = new ArrayList<Road>();
+		    				   }
+		    				   mRoads.add(RoadProvider.getRoute(is));
+		    				   mHandler.sendEmptyMessage(mRoads.size() - 1);
+		    			   }
+		    		};
+		    		t.setCoord(formerPoint, lL);
+	        		t.start();
+	        		
+        		}
+        	} else {
+        		//place user at the beginning of the course
+        		//mapController.animateTo(point);
+        	}
+        	formerPoint = lL;
+
+        }
+        mapOverlays.add(itemizedOverlay);
+        
+		myLocationOverlay = new MyLocationOverlay(this, mapView);
+		myLocationOverlay.enableMyLocation();
+		mapOverlays.add(myLocationOverlay);
+    	
+//		int latFinSpan = (new Double(Double.parseDouble(placemarks.get(placemarks.size()-1).getPoint().getCoordinates().split(",")[1])* 1000000)).intValue();
+//		int latdebSpan=	(new Double(Double.parseDouble(placemarks.get(0).getPoint().getCoordinates().split(",")[1])* 1000000)).intValue();
+//		int lonFinSpan = (new Double(Double.parseDouble(placemarks.get(placemarks.size()-1).getPoint().getCoordinates().split(",")[0])* 1000000)).intValue();
+//		int londebspan=	(new Double(Double.parseDouble(placemarks.get(0).getPoint().getCoordinates().split(",")[0])* 1000000)).intValue();
+//		mapController.zoomToSpan(Math.abs(latFinSpan-latdebSpan)*2, Math.abs(lonFinSpan-londebspan)*2);
+//		GeoPoint target = new GeoPoint(Math.round((latFinSpan+latdebSpan)/2), Math.round((lonFinSpan+londebspan)/2));
+//		mapController.animateTo(target);
+		
+    }
+    
+	 private void zoomInBounds() {
+
+		    int minLat = Integer.MAX_VALUE;
+		    int minLong = Integer.MAX_VALUE;
+		    int maxLat = Integer.MIN_VALUE;
+		    int maxLong = Integer.MIN_VALUE;
+
+		    for (GeoPoint point : bounds) {
+		        minLat = Math.min(point.getLatitudeE6(), minLat);
+		        minLong = Math.min(point.getLongitudeE6(), minLong);
+		        maxLat = Math.max(point.getLatitudeE6(), maxLat);
+		        maxLong = Math.max(point.getLongitudeE6(), maxLong);
+		    }
+
+		    mapController.zoomToSpan(
+		                       Math.abs(minLat - maxLat), Math.abs(minLong - maxLong));
+		    mapController.animateTo(new GeoPoint((maxLat + minLat) / 2,
+		        (maxLong + minLong) / 2));
+		    
+		    bounds.clear();
+		}
 	    
     public void updatePlacemark() {      	
     	Log.d("updateReceiver","Receiver Update");
@@ -300,23 +329,29 @@ public class CourseStepActivity extends MapActivity{
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             	
     	if(!placemarks.isEmpty()){
-    		
-		    if(currentPlacemark<placemarks.size()){
-		    	//Present the new objective with its description
-		       	Placemark item = placemarks.get(currentPlacemark);
-		    	
-		       	AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 
-				dialog.setTitle(item.getName());
-				dialog.setMessage(item.getDirection());
+			updateMap();
+    		if(currentPlacemark==-1){
+    			AlertDialog.Builder dialog = ToolBox.getDialog(this);
+
+				dialog.setTitle(course.getName());
+				dialog.setMessage(course.getPresentation());
 				dialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 							
 						public void onClick(DialogInterface dialog, int which) {
 											// TODO Auto-generated method stub
+									updatePlacemark();
 									dialog.dismiss();
 							}
 						});
 				dialog.show();
+    			
+				incrementCurrentPlacemark();
+    		} else if(currentPlacemark<placemarks.size()){
+		    	//Present the new objective with its description
+		       	Placemark item = placemarks.get(currentPlacemark);
+		    	
+		       	showHelp(getCurrentFocus());
 					
 		     	receiverLocalization = new BroadcastReceiver() {			
 					@Override
@@ -351,16 +386,13 @@ public class CourseStepActivity extends MapActivity{
 
 		    } else {
 		    	//End of the course 
-		    	SharedPreferences settings = getSharedPreferences(HomeActivity.PREF_FILE, 0);    	
-		    	SharedPreferences.Editor editor = settings.edit();
-				editor.remove(Course.PREFERENCES_STARTED_URL);
-				editor.remove(Course.PREFERENCES_STARTED_TIME_STARTED);
-				editor.remove(Course.PREFERENCES_STARTED_ID);		    	
-		    	
-		    	AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+		    	SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+		    	CustomPreferences.removeCourseStarted(settings);
+				
+		    	AlertDialog.Builder dialog = ToolBox.getDialog(this);
 				
 				dialog.setTitle(R.string.course_finished_title);
-				dialog.setMessage(R.string.course_already_started_message);
+				dialog.setMessage(course.getEnd());
 				dialog.setPositiveButton(R.string.course_finished_button_ok, new DialogInterface.OnClickListener() {
 							
 					public void onClick(DialogInterface dialog, int which) {
@@ -368,7 +400,6 @@ public class CourseStepActivity extends MapActivity{
 							dialog.dismiss();
 					}
 				});
-				
 				dialog.show();
 		    }
     	} 
@@ -383,20 +414,28 @@ public class CourseStepActivity extends MapActivity{
 		String packageName = am.getRunningTasks(1).get(0).topActivity.getPackageName();
 		String className = am.getRunningTasks(1).get(0).topActivity.getClassName();
 		
-		if(!className.equals(CourseDetailsActivity.class.getName())) {
-			//send notification in not in foreground
+		if(!className.equals(CourseStepActivity.class.getName())) {
+			//send notification if not in foreground
 				NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 				Notification notification = new Notification(R.drawable.ic_launcher,placemarks.get(currentPlacemark).getName(), System.currentTimeMillis());
 				notification.flags |= Notification.FLAG_AUTO_CANCEL;
+				notification.defaults |= Notification.DEFAULT_SOUND;
+				notification.defaults |= Notification.DEFAULT_VIBRATE;
 				notification.number += 1;
 				
-				PendingIntent activity = PendingIntent.getActivity(getBaseContext(), 0, new Intent(getBaseContext(),CourseDetailsActivity.class),0);
+				Intent i = new Intent(getBaseContext(),CourseStepActivity.class);
+				i.putExtra(Course.ID_EXTRA, course.getId());
+		        i.putExtra(Course.URL_EXTRA, course.getUrl());
+				
+				PendingIntent activity = PendingIntent.getActivity(getBaseContext(), 0, i,0);
 				notification.setLatestEventInfo(getBaseContext(), placemarks.get(currentPlacemark).getName(),placemarks.get(currentPlacemark).getName(), activity);
 				notificationManager.notify(0, notification);
-		} else {		
-				AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 				
-				if(type.equals(Course.TYPE_GAME)) {
+		    	SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+		 } else {		
+				AlertDialog.Builder dialog = ToolBox.getDialog(this);
+				
+				if(placemarks.get(currentPlacemark).getQuestions()!=null) {
 					dialog.setTitle(placemarks.get(currentPlacemark).getName());
 					dialog.setMessage(placemarks.get(currentPlacemark).getGreetings());
 					dialog.setPositiveButton(R.string.game_play, new DialogInterface.OnClickListener() {
@@ -416,7 +455,6 @@ public class CourseStepActivity extends MapActivity{
 					dialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 						
 						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
 							currentPlacemark++;
 					        updatePlacemark();
 					        dialog.dismiss();
@@ -474,6 +512,36 @@ public class CourseStepActivity extends MapActivity{
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
+	
+	public void nextPlacemark(View view) {
+		if(currentPlacemark<placemarks.size()-1){
+			incrementCurrentPlacemark();
+			updatePlacemark();
+		}
+	}
+	public void previousPlacemark(View view){
+		if(currentPlacemark>0){
+			decrementCurrentPlacemark();
+			updatePlacemark();
+		}
+	}
+	public void pauseGame(View view) {
+		Log.d("pause", "pause");
+	}
+	public void showHelp(View view) {
+		AlertDialog.Builder dialog = ToolBox.getDialog(this);
+
+		dialog.setTitle(placemarks.get(currentPlacemark).getName());
+		dialog.setMessage(placemarks.get(currentPlacemark).getDirection());
+		dialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+					
+				public void onClick(DialogInterface dialog, int which) {
+									// TODO Auto-generated method stub
+							dialog.dismiss();
+					}
+				});
+		dialog.show();
+	}
   
 }
 
@@ -528,8 +596,7 @@ class MapOverlay extends com.google.android.maps.Overlay {
                     y1 = y2;
             }
     }
-    
-
+        
 }
 
 
@@ -557,5 +624,3 @@ class MyLocationListener implements LocationListener {
     public void onProviderEnabled(String s) {            
     }
 }
-
-
