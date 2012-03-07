@@ -6,6 +6,7 @@ import java.util.List;
 import com.toursims.mobile.model.Course;
 import com.toursims.mobile.ui.HomeAdapter;
 import com.toursims.mobile.ui.HomeItem;
+import com.toursims.mobile.ui.ToolBox;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -60,7 +61,9 @@ public class HomeActivity extends Activity {
         
 	    HomeAdapter adapter = new HomeAdapter(this, items,getCacheDir().getAbsolutePath());
 	    ListView lv = (ListView) findViewById(R.id.lvListe);
-	    lv.setAdapter(adapter);   	
+	    lv.setAdapter(adapter);
+	    ToolBox.setListViewHeightBasedOnChildren(lv);
+
         
 	    //----------------------------------------------------
 	    // SOCIAL
@@ -74,27 +77,28 @@ public class HomeActivity extends Activity {
 				// TODO Auto-generated method stub
 				social(v);
 			}
-		}, R.string.home_social_chat, R.drawable.ic_menu_dialog));
+			}, R.string.home_social_chat, R.drawable.ic_menu_dialog));
 	    
         items2.add(new HomeItem(new OnClickListener() {
 			
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 			}
-		}, R.string.home_social_contacts, R.drawable.ic_menu_allfriends));
+			}, R.string.home_social_contacts, R.drawable.ic_menu_allfriends));
         
         items2.add(new HomeItem(new OnClickListener() {
-			
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				googleLogin(v);
-			}
-		}, R.string.home_social_profil, R.drawable.ic_menu_user));
+	
+        	public void onClick(View v) {
+        		googleLogin(v);
+        	}
+        	}, R.string.home_social_profil, R.drawable.ic_menu_user));
         
 	    HomeAdapter adapter2 = new HomeAdapter(this, items2,getCacheDir().getAbsolutePath());
 	    ListView lv2 = (ListView) findViewById(R.id.lvListe2);
 	    lv2.setAdapter(adapter2);   	
-        
+	    ToolBox.setListViewHeightBasedOnChildren(lv2);
+
+	    
         ComponentName localizationComponentName = new ComponentName(LocalizationService.class.getPackage().getName(), LocalizationService.class.getName());
         ComponentName localizationComponentService = startService(new Intent().setComponent(localizationComponentName));
         if (localizationComponentService == null){

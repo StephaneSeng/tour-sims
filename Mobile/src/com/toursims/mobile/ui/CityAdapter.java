@@ -24,7 +24,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 public class CityAdapter extends BaseAdapter {
 	
 	List<City> cities;

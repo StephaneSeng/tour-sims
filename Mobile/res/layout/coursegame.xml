@@ -19,6 +19,7 @@
 	        android:background="@color/title" /> 
 	          
         <ListView
+            android:cacheColorHint="@android:color/transparent" 
 			android:id="@+id/lvListe"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"/>
