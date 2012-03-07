@@ -99,6 +99,9 @@ public class POIActivity extends MapActivity {
 		if(lastLocation !=null)
 		{
 			Log.d(TAG, "Test : " + lastLocation);
+			if(myLocationOverlay.getMyLocation() == null) {
+				mapController.animateTo(new GeoPoint((int)(lastLocation.getLatitude()*1E6), (int)(lastLocation.getLongitude()*1E6)));
+			}
 			
 			// Call the SearchPointOfInterestPlaces method
 			PlaceWrapper placeWrapper = new PlaceWrapper();
