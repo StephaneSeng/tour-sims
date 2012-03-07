@@ -84,17 +84,6 @@ public class CityActivity extends Activity{
 			}
 		});
 	    	
-	    searchText.setOnClickListener(new OnClickListener() {
-			
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				if(!firstClick){
-					searchText.setText("");
-					firstClick = true;
-				}
-			}
-		});
-	
 	    searchText.setOnKeyListener(new OnKeyListener() {
 			
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -102,6 +91,10 @@ public class CityActivity extends Activity{
 			    if (event.getAction()==KeyEvent.ACTION_DOWN&&keyCode==KeyEvent.KEYCODE_ENTER){
 			    	closeKeyboard();
 			    }
+			    if (!firstClick){
+
+			    }
+			    firstClick = true;
 			    return false;
 			}
 		});
@@ -132,5 +125,9 @@ public class CityActivity extends Activity{
 		// TODO Auto-generated method stub
 		super.onResume();
 		firstClick = false;
+	}
+	
+	private void updateText(int keyCode){
+    	searchText.setText((char)keyCode);
 	}
 }
