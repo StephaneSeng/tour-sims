@@ -24,6 +24,7 @@ import com.toursims.mobile.ui.utils.CheckinOverlayItem;
 import com.toursims.mobile.ui.utils.UserOverlay;
 import com.toursims.mobile.ui.utils.UserOverlayItem;
 
+
 public class SocialActivity extends MapActivity {
 	
 	/**
@@ -133,6 +134,5 @@ public class SocialActivity extends MapActivity {
 	        checkinOverlay.addOverlay(checkinOverlayItem);
 	        mapOverlays.add(checkinOverlay);
 		}
-	}
-	
+	}	
 }

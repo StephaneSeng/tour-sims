@@ -15,6 +15,11 @@
 		var markerArray = [];
 		var directionDisplay;
 		var directionService = new google.maps.DirectionsService();
+		var infowindowArray = [];
+		var name;
+		var names = [];
+		var descriptions = [];
+		var directions = [];
 		function initialize() {
 			geocoder = new google.maps.Geocoder();
 			directionDisplay = new google.maps.DirectionsRenderer();
@@ -26,10 +31,10 @@
 			};
 			map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);
 			google.maps.event.addListener(map, 'click', function(event) {
-				placeMarker(event.latLng);
+				var marker = placeMarker(event.latLng);
 			});
 			directionDisplay.setMap(map);
-			directionDisplay.setPanel(document.getElementById("directionsPanel"));
+			getCity();
 		}
 
 		function searchAddress() {
@@ -37,6 +42,7 @@
 			geocoder.geocode( { 'address': address}, function(results, status) {
 				if (status == google.maps.GeocoderStatus.OK) {
 					map.setCenter(results[0].geometry.location);
+					getCity();
 				} else {
 					alert("Address not found");
 				}
@@ -46,27 +52,47 @@
 			var marker = new google.maps.Marker({
 				position: location, 
 				map: map, 
-				draggable :true, 
+				draggable :true,
+				clickable :true, 
 			});
+			markerArray.push(marker);
+			if(markerArray.length >1)
+				drawRoute();
+			google.maps.event.addListener(marker, "dragend", function() {
+				if(markerArray.length >1)
+					drawRoute();
+			});
+			var html = "<table>" +
+            "<tr><td>Name:</td> <td><input type='text' id='name"+markerArray.indexOf(marker)+"' value ='' /></td> </tr>" +
+            "<tr><td>Description:</td> <td><input type='text' id='description"+markerArray.indexOf(marker)+"'/></td> </tr>" +
+            "<tr><td>Direction:</td> <td><input type='text' id='direction"+markerArray.indexOf(marker)+"'/></td> </tr>" +
+            "<tr><td><input type='button' value='Save' onclick='saveMarkerInfo("+ markerArray.indexOf(marker) + ")'/></td><td></td></tr>" ;
+			var infowindow = new google.maps.InfoWindow({
+				  content: html
+				});
+			infowindowArray.push(infowindow);
+		    google.maps.event.addListener(marker, "click", function() {
+		    	  infowindow.open(map, marker);
+		    });
+
+		
 			google.maps.event.addListener(marker, "rightclick", function() {
 				marker.setMap(null);
 				markerArray.splice(markerArray.indexOf(marker),1);
 				if(markerArray.length >1)
 					drawRoute();
+				names.splice(markerArray.indexOf(marker),1);
+				descriptions.splice(markerArray.indexOf(marker),1);
+				infowindowArray.splice(markerArray.indexOf(marker),1);
+				loadListPOI();
 			});
-			markerArray.push(marker);
-			if(markerArray.length >1)
-					drawRoute();
-			google.maps.event.addListener(marker, "dragend", function() {
-				if(markerArray.length >1)
-					drawRoute();
-			});
+			names[markerArray.indexOf(marker)] = document.getElementById('name').value;
+			return marker;
 		}
 		
 		function drawRoute() {
 			if(directionDisplay != null) {
 				directionDisplay.setMap(map);
-				directionDisplay.setPanel(document.getElementById("directionsPanel"));
 			}
 			var i = 0;
 			var waypts =[];
@@ -81,7 +107,7 @@
 				waypoints:waypts,
 				optimizeWaypoints:true,
 				avoidTolls:true,
-				travelMode: google.maps.DirectionsTravelMode.DRIVING
+				travelMode: google.maps.DirectionsTravelMode.WALKING
 			};
 			directionService.route(request, function(response, status) {
 				if (status == google.maps.DirectionsStatus.OK) {
@@ -91,9 +117,27 @@
 		}
 
 		function saveCourse() {
-			
+			var data = "";
+			data += document.getElementById("courseName").value;
+		    data += ";;";
+			data += document.getElementById("courseDesc").value;
+		    data += ";;";
+			for (i = 0; (i < markerArray.length); i++) {
+			    data += names[i];
+			    data += ";";
+			    data += descriptions[i];
+			    data += ";";
+			    data += directions[i];
+			    data += ";";
+				data += markerArray[i].getPosition().lng();
+				data += ";";
+				data += markerArray[i].getPosition().lat();
+			    data += ";;";
+			 }
+			document.getElementById("lat").value = data;
+		
 		}
-
+			
 		function clearOverlays() {
 			directionDisplay.setMap(null);
 			directionDisplay.setPanel(null);
@@ -101,7 +145,98 @@
 				markerArray[i].setMap(null);
 			}
 			markerArray.splice(0);
+			names = [];
+			directions = [];
+			descriptions=[];
+			infowindowArray = [];
 		}
+
+		function saveMarkerInfo(indexMarker){
+			var elementIdName = "name"+indexMarker;
+			var elementIdDesc = "description"+indexMarker;
+			var elementIdDir = "direction"+indexMarker;
+			name = document.getElementById(elementIdName).value;
+			var desc = document.getElementById(elementIdDesc).value;
+			var direction = document.getElementById(elementIdDir).value;
+			while (names.length <indexMarker+1){
+				if (indexMarker - names.length == 0){
+					names.push(name);
+					descriptions.push(desc);
+					directions.push(desc);
+				}else{
+					names.push('');
+					descriptions.push('');
+				}
+			}
+			if (names.length == 0) {
+				names.push(name);
+				descriptions.push(desc);
+				directions.push(direction);
+			}else if (indexMarker < names.length){
+				names[indexMarker]= name;
+				descriptions[indexMarker]=desc;
+				directions[indexMarker]=direction;
+			}else {
+				names.push(name);
+				descriptions.push(desc);
+				directions.push(direction);
+			}
+			google.maps.event.clearListeners(markerArray[indexMarker],'click');
+			var html = "<table>" +
+            "<tr><td>Name:</td> <td><input type='text' id='name"+indexMarker+"' value ='"+ names[indexMarker] +"' /></td> </tr>" +
+            "<tr><td>Description:</td> <td><input type='text' id='description"+indexMarker+"' value ='"+ descriptions[indexMarker] +"'/></td> </tr>" +
+            "<tr><td>Direction:</td> <td><input type='text' id='direction"+indexMarker+"' value ='"+ directions[indexMarker] +"'/></td> </tr>" +
+            "<tr><td><input type='button' value='Save' onclick='saveMarkerInfo("+ indexMarker + ")'/></td><td></td></tr>" ;
+			var infowindow = infowindowArray[indexMarker];
+			infowindow.setContent(html);
+		    google.maps.event.addListener(markerArray[indexMarker], "click", function() {
+		    	  infowindow.open(map, markerArray[indexMarker]);
+		    });
+			saveCourse();
+			loadListPOI();
+		}
+
+		function loadListPOI()
+		{
+		    txt="<ul>";
+		    for (i=0;i<names.length;i++)
+		      {
+		      xx="Name: "+names[i]+"</br>Description: " + descriptions[i];
+		        {
+		        try
+		          {
+		          txt=txt + "<li>" + xx + "</li>";
+		          }
+		        catch (er)
+		          {
+		          txt=txt + "<li>&nbsp;</li>";
+		          }
+		        }
+		    	
+		    }
+		    txt=txt + "</ul>";
+		    document.getElementById('directionsPanel').innerHTML=txt;
+		}
+		
+		function getCity() {
+		    var lat = map.getCenter().lat();
+		    var lng = map.getCenter().lng();
+		    var latlng = new google.maps.LatLng(lat, lng);
+		    geocoder.geocode({'latLng': latlng}, function(results, status) {
+		      if (status == google.maps.GeocoderStatus.OK) {
+		        if (results[1]) {		          
+		          document.getElementById('courseCity').value = results[1].formatted_address;
+		        }
+		      } else {
+		        alert("Geocoder failed due to: " + status);
+		      }
+		    });
+		  }
+
+		  function loadImg(){
+			  document.getElementById('picture').src = document.getElementById('courseImg').value
+		  }
+		  
 		</script>
 		<title>Tour'SIMS</title>
 	</head>
@@ -110,31 +245,45 @@
 		<table style="text-align: left; background-color: rgb(0, 204, 204); width: 100%; height: 68px;" border="0" cellpadding="2" cellspacing="2">
 			<tbody>
 			<tr>
-			<td style="width: 68px;"><img style="width: 45px; height: 55px;" alt="" src="images/logo.png"></td>
+			<td style="width: 68px;"><img style="width: 45px; height: 55px;" alt="" src="img/logo.png"></td>
 			<td style="text-align: center; color: white; font-weight: bold; width: 1064px;"><big>Tour'SIMS</big></td>
 			</tr>
 			</tbody>
 		</table>
 		<br>
 		<div style="width: 100%; float: left; margin : 0;background-color:#ffffff">
-			<div style="width: 30%; margin: 40px; float: left; background-color:#ffffff">
-				Name
-				<input id="courseName" value="" type="textbox">
+		<form name="saveCourse" id ="saveCourse" method="post" action="courseToKML.php" onsubmit="saveCourse()">
+			<div style="width: 42%; margin: 40px; float: left; background-color:#ffffff">
+					<table><tr><td width= "5%">Name </td>      
+					<td width= "20%"><input id="courseName" name="courseName" value="" type="textbox"></td>
+					<td width = "5%">Description</td>
+					<td width= "20%"><input id="courseDesc" name="courseDesc" value="" type="textbox"></td></tr>
+					<tr><td width= "5%">Time  </td>     
+					<td width= "20%"><input id="courseTime" name="courseTime" value="" type="textbox"></td>
+					<td width = "5%">City </td>       
+					<td width= "20%"><input id="courseCity" name="courseCity" value="" type="textbox"></td></tr>
+					<tr> <td width= "5%">Image </td>
+					<td width= "20%"><input id="courseImg" name="courseImg" value="" type="textbox" onchange="loadImg()"></td>
+					<td><img src="" alt="Picture" height="50" width="50" id="picture" border="1" /> 
+					<input type="hidden" name="lat" id="lat">
+					</table>
 			</div> 
-			<div style="width: 40%; margin:40px; float: left;background-color:#ffffff">
+			<div style="margin: 40px; float: left;background-color:#ffffff">
+				<input value="Save" type="submit">
+				
+				<input value="Clear" onclick="clearOverlays()" type="button">
+			</div> 
+		</form>
+			<div style="width: 20%; margin:40px; float: right;background-color:#ffffff">
 				<input id="address" value="Search your city" type="textbox" onfocus="value=''">
 				<input value="Search" onclick="searchAddress()" type="button">
-			</div> 
-			<div style="margin: 40px; float: right;background-color:#ffffff">
-				<input value="Save" onclick="saveCourse()" type="button">
-				<span style="margin-left:30px;"><input value="Clear" onclick="clearOverlays()" type="button"></span>
 			</div> 
 		</div>
 			<br>
 		<div style="width: 100%; height: 65%; float: left; margin : 0x;background-color:#ffffff">
-			<div style="margin: 1%; width: 28%; float: left;" id="directionsPanel">
+			<div style="margin: 1%; width:38%; float: left;" id="directionsPanel">
 			</div>
-			<div style="margin: 0; width: 68%; background-color:#ffffff" id="map_canvas">
+			<div style="margin: 0; width: 58%; background-color:#ffffff" id="map_canvas">
 			</div>
 		</div>
 	</body>

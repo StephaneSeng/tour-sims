@@ -1,4 +1,5 @@
 <resources>
+    
     <color name="background">#FFFFFFFF</color>
     <color name="title">#073776</color>
     <color name="text">#000000</color>
