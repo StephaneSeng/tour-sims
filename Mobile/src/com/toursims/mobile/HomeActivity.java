@@ -206,6 +206,7 @@ public class HomeActivity extends Activity {
 					items.remove(items.size()-1);
 					adapter.setItems(items);
 					lv.setAdapter(adapter);
+				    ToolBox.setListViewHeightBasedOnChildren(lv);
 					dialog.dismiss();
 				}
 			});
