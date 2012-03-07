@@ -54,8 +54,8 @@ public class HomeActivity extends Activity {
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        ImageView recImage = (ImageView)findViewById(R.id.recImage);
-        
+        recImage = (ImageView)findViewById(R.id.recImage);
+                
     	settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0); 
 		SharedPreferences.Editor editor = settings.edit();
 		editor.remove(ALREADY_ASKED_TO_RESUME);
@@ -294,7 +294,6 @@ public class HomeActivity extends Activity {
 			editor.remove(CustomPreferences.RECORDING_RIGHT_NOW);
 		}
 		editor.commit();
-		recImage();
     }
     
     private void recImage() {
@@ -302,8 +301,8 @@ public class HomeActivity extends Activity {
     	if(settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1)==-1){
     		recImage.setImageResource(R.drawable.ic_media_play);
     	} else {
+            ImageView recImage = (ImageView)findViewById(R.id.recImage);
     		recImage.setImageResource(R.drawable.ic_media_pause);
     	}
     }
 }
- 

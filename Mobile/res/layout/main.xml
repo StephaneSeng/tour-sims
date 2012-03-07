@@ -55,7 +55,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_alignParentTop="true"
-	        android:layout_alignParentRight="true"
+			android:layout_toLeftOf="@+id/recImage"	     
 	        />
 	    <ImageView 
 	        android:id="@+id/recImage"
@@ -66,7 +66,6 @@
 	        android:layout_alignParentRight="true"
 	        android:onClick="rec"
 	        />
-	    
     </RelativeLayout>
     
   <!--  android:background="@drawable/ic_launcher"-->

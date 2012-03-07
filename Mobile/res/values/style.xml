@@ -63,8 +63,8 @@
 		<item name="android:textColor">@color/title</item>
 	    <item name="android:singleLine">true</item>
 	    <item name="android:layout_width">fill_parent</item>
-	    <item name="android:layout_height">fill_parent</item>
-	    <item name="android:paddingTop">5dip</item>
-	    <item name="android:paddingBottom">5dip</item>
+	    <item name="android:layout_height">17dip</item>
+	    <item name="android:textSize">12dip</item>
+	    <item name="android:gravity">center_vertical</item>
     </style>
 </resources>
