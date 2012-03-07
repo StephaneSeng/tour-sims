@@ -173,7 +173,7 @@ public class CourseBDD {
 	public List<City> getAllCities() {
 		List<City> list = new ArrayList<City>();
 		Cursor cursor = bdd.query(SQLiteHelper.TABLE_CITY,
-				allColumnsCity, null, null, null, null, null);
+				allColumnsCity, null, null, null, null, SQLiteHelper.COL_NAME);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			City item = cursorToCity(cursor);

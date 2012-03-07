@@ -15,21 +15,15 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
-import com.toursims.mobile.LocalizationService.MyBinder;
-import com.toursims.mobile.controller.CourseBDD;
 import com.toursims.mobile.controller.CourseLoader;
-import com.toursims.mobile.controller.PlaceWrapper;
 import com.toursims.mobile.model.Course;
 import com.toursims.mobile.model.kml.Placemark;
 import com.toursims.mobile.model.kml.Point;
-import com.toursims.mobile.model.places.Place;
 import com.toursims.mobile.model.places.Road;
 import com.toursims.mobile.ui.ToolBox;
 import com.toursims.mobile.ui.utils.CustomItemizedOverlay;
-import com.toursims.mobile.ui.utils.DirectionPathOverlay;
 import com.toursims.mobile.ui.utils.RoadProvider;
 
-import android.R.integer;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -37,34 +31,24 @@ import android.graphics.drawable.Drawable;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Vibrator;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.SlidingDrawer;
-import android.widget.Toast;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -95,7 +79,7 @@ public class CourseStepActivity extends MapActivity{
 	private MyLocationOverlay myLocationOverlay;
 	private MapView mapView;
     private LocationManager locationManager;
-    private static int currentPlacemark = -1;
+    private static int currentPlacemark;
     private static BroadcastReceiver receiverLocalization;
 	private LocalizationService s;
 
@@ -103,11 +87,16 @@ public class CourseStepActivity extends MapActivity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-
+        SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+        currentPlacemark = settings.getInt(CustomPreferences.COURSE_CURRENT_PLACEMARK, -1);       
+        
         Bundle bundle = getIntent().getExtras();       
         setContentView(R.layout.coursestep);
         
         placemarks = getPlaceMarks();
+        
+        
+        
         
         if(bundle.containsKey(Course.NEXT_PLACEMARK)){
         	if(currentPlacemark<placemarks.size()-1)
@@ -142,15 +131,12 @@ public class CourseStepActivity extends MapActivity{
 		// TODO Auto-generated method stub
 		super.onPause();
 		Log.d("TAG","Start Service");
-		
 		Intent i = new Intent(this, LocalizationService.class);
 		i.putExtra(Point.LATITUDE, placemarks.get(currentPlacemark).getPoint().getLatitude());
 		i.putExtra(Point.LONGITUDE, placemarks.get(currentPlacemark).getPoint().getLatitude());
 		i.putExtra(Placemark.NAME, placemarks.get(currentPlacemark).getName());
-
 		startService(i);
-	}
-	
+	}	
     
 	@Override
 	protected void onResume() {
@@ -203,12 +189,15 @@ public class CourseStepActivity extends MapActivity{
 		{
 			pl = placemarks.get(++currentPlacemark);
 		}
-				
+        SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt(CustomPreferences.COURSE_CURRENT_PLACEMARK, currentPlacemark);
+        editor.commit();
 	}
 	
 	private void decrementCurrentPlacemark() {
 		Placemark pl = placemarks.get(--currentPlacemark);
-		while (!pl.isRoutePlacemark())
+		while (pl.isRoutePlacemark())
 		{
 			pl = placemarks.get(--currentPlacemark);
 		}
@@ -284,6 +273,7 @@ public class CourseStepActivity extends MapActivity{
 		    		};
 		    		t.setCoord(formerPoint, lL);
 	        		t.start();
+	        		
         		}
         	} else {
         		//place user at the beginning of the course
@@ -396,12 +386,8 @@ public class CourseStepActivity extends MapActivity{
 
 		    } else {
 		    	//End of the course 
-		    	SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);    	
-		    	SharedPreferences.Editor editor = settings.edit();
-				editor.remove(CustomPreferences.COURSE_STARTED_URL);
-				editor.remove(CustomPreferences.COURSE_STARTED_TIME_STARTED);
-				editor.remove(CustomPreferences.COURSE_STARTED_ID);		    	
-		    	editor.commit();
+		    	SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+		    	CustomPreferences.removeCourseStarted(settings);
 				
 		    	AlertDialog.Builder dialog = ToolBox.getDialog(this);
 				
@@ -469,7 +455,6 @@ public class CourseStepActivity extends MapActivity{
 					dialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 						
 						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
 							currentPlacemark++;
 					        updatePlacemark();
 					        dialog.dismiss();

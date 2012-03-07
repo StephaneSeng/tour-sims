@@ -3,9 +3,7 @@ package com.toursims.mobile.ui;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
@@ -54,6 +52,11 @@ public class CityAdapter extends BaseAdapter {
 		return position;
 	}
 
+	public void setCities(List<City> cities) {
+		this.cities = cities;
+	}
+	
+	
 	
 	private class ViewHolder {
 		ImageView image;
@@ -99,21 +102,18 @@ public class CityAdapter extends BaseAdapter {
 				 
 				FileOutputStream fos = new FileOutputStream(file);
 				fos.write(baf.toByteArray());
-				fos.close();			 
-			}  
-				
-			if(file.exists()){
-			    Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-			    holder.image.setImageBitmap(myBitmap);
+				fos.close();
 			}
 			
-			} catch (MalformedURLException e) {
-			  e.printStackTrace();
-			  holder.image.setImageResource(R.drawable.ic_menu_globe);
-			} catch (IOException e) {
-			  e.printStackTrace();
-			  holder.image.setImageResource(R.drawable.ic_menu_globe);
+			if(file.exists()){
+					Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+					holder.image.setImageBitmap(myBitmap);
 			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			holder.image.setImageResource(R.drawable.ic_menu_globe);
+		} 
 		
 	return convertView;
 

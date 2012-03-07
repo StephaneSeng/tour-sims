@@ -40,6 +40,11 @@ public class CityWrapper {
 	private static final String TAG = CityWrapper.class.toString();
 	
 	/**
+	 * Application server root
+	 */
+	private static final String SERVER_ROOT = "http://10.0.2.2:80";
+	
+	/**
 	 * Our HTTP client, used for making requests
 	 */
 	private HttpClient httpClient;
@@ -79,8 +84,8 @@ public class CityWrapper {
 		List<City> cities = new ArrayList<City>();
 		
 		// Build the SOAP request
-		StringBuffer request = new StringBuffer("http://192.168.0.1:80/city.php?");
-		request.append("action=" + "get");
+		StringBuffer request = new StringBuffer(SERVER_ROOT + "/city.php?");
+		request.append("action=" + "_get_cities");
 		request.append("&latitude=" + latitude);
 		request.append("&longitude=" + longitude);
 
@@ -134,10 +139,10 @@ public class CityWrapper {
 			jsonName = jsonResult.has("name") ? jsonResult.getString("name") : "";
 			jsonImage = jsonResult.has("image") ? jsonResult.getString("image") : "";
 			
-			Log.d(TAG, "Name : " + jsonName);
-			Log.d(TAG, "Image : " + jsonImage);
+			Log.d(TAG, "name : " + jsonName);
+			Log.d(TAG, "image : " + jsonImage);
 			
-			// Construct the Place object
+			// Construct the City object
 			cities.add(new City(jsonName, jsonImage));
 		}
 		

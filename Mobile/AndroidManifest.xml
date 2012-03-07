@@ -39,7 +39,8 @@
         <activity android:name=".CourseStepActivity"> </activity>
         <activity android:name=".POIActivity"> </activity>
         <activity android:name=".SocialActivity"> </activity>      
-        <activity android:name=".CityActivity"> </activity>
+        <activity android:name=".CityActivity"
+            	  android:windowSoftInputMode="stateHidden"> </activity>
         
         
         <activity android:name=".CourseStepActivity" 

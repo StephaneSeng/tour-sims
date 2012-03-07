@@ -9,16 +9,15 @@ import com.toursims.mobile.ui.HomeItem;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Adapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 public class HomeActivity extends Activity {
 	
@@ -96,12 +95,11 @@ public class HomeActivity extends Activity {
 	    ListView lv2 = (ListView) findViewById(R.id.lvListe2);
 	    lv2.setAdapter(adapter2);   	
         
-      // Start the localization service
-      //  ComponentName localizationComponentName = new ComponentName(LocalizationService.class.getPackage().getName(), LocalizationService.class.getName());
-      //  ComponentName localizationComponentService = startService(new Intent().setComponent(localizationComponentName));
-      //  if (localizationComponentService == null){
-      //          Log.e(TAG, "Could not start service " + localizationComponentName.toString());
-      //  }
+        ComponentName localizationComponentName = new ComponentName(LocalizationService.class.getPackage().getName(), LocalizationService.class.getName());
+        ComponentName localizationComponentService = startService(new Intent().setComponent(localizationComponentName));
+        if (localizationComponentService == null){
+                Log.e(TAG, "Could not start service " + localizationComponentName.toString());
+        }
         
         
     }
@@ -153,9 +151,11 @@ public class HomeActivity extends Activity {
 				public void onClick(DialogInterface dialog, int which) {
 					// TODO Auto-generated method stub
 					SharedPreferences.Editor editor = settings.edit();
-					editor.remove(CustomPreferences.COURSE_STARTED_URL);
-					editor.remove(CustomPreferences.COURSE_STARTED_TIME_STARTED);
-					editor.remove(CustomPreferences.COURSE_STARTED_ID);
+					
+					for (String item : CustomPreferences.COURSE_ALL) {
+						editor.remove(item);
+					}
+					
 					dialog.dismiss();
 				}
 			});

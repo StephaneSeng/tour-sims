@@ -2,46 +2,55 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
-
-	<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal" >
-     <TextView
-        android:id="@+id/previous"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="O"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:onClick="previousPlacemark"
-        android:clickable="true" />
-	 <TextView
-        android:id="@+id/pause"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="||"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:onClick="pauseGame"
-        android:clickable="true" />
-	 <TextView
-        android:id="@+id/next"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="O"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:onClick="nextPlacemark"
-        android:clickable="true" />
-	 <TextView
-        android:id="@+id/help"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="\?"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:onClick="showHelp"
-        android:clickable="true" />
-	    
-    </LinearLayout>
+    android:orientation="vertical"
+    android:background="@color/background">
+    
+    <LinearLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal"
+	    android:gravity="left"
+	    android:paddingLeft="10dip" >
+	     <ImageView
+	        android:id="@+id/previous"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center_vertical"
+	        android:src="@drawable/ic_media_previous"
+	        android:onClick="previousPlacemark"
+	        android:clickable="true" />
+		<ImageView
+	        android:id="@+id/pause"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center_vertical"
+	        android:src="@drawable/ic_media_pause"
+	        android:onClick="pauseGame"
+	        android:clickable="true" />
+		<ImageView
+	        android:id="@+id/next"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center_vertical"
+	        android:src="@drawable/ic_media_next"
+	        android:onClick="nextPlacemark"
+	        android:clickable="true" />	 
+		 <LinearLayout
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:orientation="horizontal"
+		    android:gravity="right" >
+			 <ImageView
+		        android:id="@+id/help"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_gravity="center_vertical"
+		        android:src="@drawable/ic_menu_help"
+		        android:textAppearance="?android:attr/textAppearanceLarge"
+		        android:onClick="showHelp"
+		        android:clickable="true" />
+	    	</LinearLayout>
+   		</LinearLayout>
     
              <com.google.android.maps.MapView
                  android:id="@+id/map"
