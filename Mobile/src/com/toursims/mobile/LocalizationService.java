@@ -1,6 +1,7 @@
 package com.toursims.mobile;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.util.Calendar;
@@ -29,6 +30,9 @@ import com.toursims.mobile.controller.UserWrapper;
 import com.toursims.mobile.model.kml.Placemark;
 import com.toursims.mobile.model.kml.Point;
 
+import de.micromata.opengis.kml.v_2_2_0.Kml;
+import de.micromata.opengis.kml.v_2_2_0.KmlFactory;
+
 public class LocalizationService extends Service {
 	
 	private final IBinder mBinder = new MyBinder();
@@ -51,6 +55,8 @@ public class LocalizationService extends Service {
 	private static final long expiration = 600000;
 	private Calendar c;
 	private SharedPreferences settings;
+	private static Kml kml = new Kml();
+
 
 	
 	private static final float radius = 100f;
@@ -65,7 +71,7 @@ public class LocalizationService extends Service {
 			
 		Log.d(TAG, "The LocalizationService is starting...");
 		
-		locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+		/*locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
 		
 		criteria = new Criteria();
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
@@ -80,7 +86,16 @@ public class LocalizationService extends Service {
 		if (!bestProvider.equals("null")) {
 			locationManager.requestLocationUpdates(bestProvider, 0, 0, localizationListener);
 //			locationManager.requestLocationUpdates(bestProvider, minUpdateTime, minUpdateDistance, localizationListener);
-		}
+		}*/
+		
+		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER, 
+                        0, 
+                        0,
+                        new LocalizationListener()
+        );
 		
 		localizationTask();		
 		Log.d(TAG, "The LocalizationService has been started");
@@ -126,9 +141,7 @@ public class LocalizationService extends Service {
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
-				if (!bestProvider.equals("null")) {
-					localizationListener.onLocationChanged(locationManager.getLastKnownLocation(bestProvider));
-				}
+				//Log.d("TAG","Timer");
 			}
 		}, 0, UPDATE_INTERVAL);
 		Log.d(getClass().getSimpleName(), "Timer started.");
@@ -150,16 +163,10 @@ public class LocalizationService extends Service {
 	private final class LocalizationListener implements LocationListener {
 		
 		public void onLocationChanged(Location location) {
-		//	Log.d(TAG, "The GPS location will be updated");
 			Log.d(TAG, "New location : " + location);
 
-			
 			if (location != null) {
 				
-				//SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
-				//if(settings.getBoolean(CustomPreferences.RECORDING_RIGHT_NOW, false)) {
-				//	
-				//}
 				recordLocation(location);
 				
 				// Create a checkin
@@ -194,6 +201,7 @@ public class LocalizationService extends Service {
 			Log.d(TAG, "Best current localization provider : " + bestProvider);
 		}
 		
+		
 	}
 	 
 	@Override
@@ -214,25 +222,23 @@ public class LocalizationService extends Service {
 		Log.d(TAG, "The LocalizationService has be destroyed");
 	}	
 	
-	public void recordLocation(Location location){	
-		
+	public void recordLocation(Location location){
+		SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
 		Long startedTime = settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1);
+		Log.d("TAG",startedTime.toString());
 		
 		if(startedTime!=-1){
 			try{
-				StringBuffer s = new StringBuffer();
-				s.append(location.getTime()+",");
-				s.append(location.getLatitude()+",");
-				s.append(location.getLongitude());
+				String filename = getCacheDir()+"/"+startedTime.toString();
+				kml.createAndSetPlacemark()
+				   .createAndSetPoint()
+				   .addToCoordinates(location.getLongitude(), location.getLatitude());
 				
-				FileWriter fstream = new FileWriter(getCacheDir()+"records/"+startedTime.toString());
-				BufferedWriter out = new BufferedWriter(fstream);
-				out.write(s.toString());				
+				kml.marshal(new File(filename));
+				
 			} catch (Exception e) {
-			
+				e.printStackTrace();
 			}
-	//		fos.write();
-	//		fos.close();
 		}
 	}
 	

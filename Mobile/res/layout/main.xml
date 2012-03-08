@@ -50,22 +50,28 @@
 		        android:layout_toRightOf="@+id/picTourSims"/>
 		</LinearLayout>
 
+		<LinearLayout
+		   	android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:orientation="horizontal"
+		    android:paddingTop="10dip"
+		    android:layout_alignParentLeft="true"
+		    android:layout_alignParentRight="true" >
+		 <ImageView 
+	        android:id="@+id/recImage"
+	        android:src="@drawable/ic_media_play"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_gravity="center_vertical"
+	        android:onClick="rec"
+	        />
 	    <ImageView 
 	        android:src="@drawable/ic_menu_preferences"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_alignParentTop="true"
 			android:layout_toLeftOf="@+id/recImage"	     
 	        />
-	    <ImageView 
-	        android:id="@+id/recImage"
-	        android:src="@drawable/ic_media_play"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_alignParentTop="true"
-	        android:layout_alignParentRight="true"
-	        android:onClick="rec"
-	        />
+	    </LinearLayout>
     </RelativeLayout>
     
   <!--  android:background="@drawable/ic_launcher"-->

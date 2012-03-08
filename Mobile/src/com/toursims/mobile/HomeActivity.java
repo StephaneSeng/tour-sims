@@ -12,16 +12,20 @@ import com.toursims.mobile.ui.ToolBox;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.toursims.mobile.model.Course;
 import com.toursims.mobile.model.User;
@@ -151,12 +155,13 @@ public class HomeActivity extends Activity {
 	    ToolBox.setListViewHeightBasedOnChildren(lv2);
 
 	    
-        ComponentName localizationComponentName = new ComponentName(LocalizationService.class.getPackage().getName(), LocalizationService.class.getName());
-        ComponentName localizationComponentService = startService(new Intent().setComponent(localizationComponentName));
-        if (localizationComponentService == null){
-                Log.e(TAG, "Could not start service " + localizationComponentName.toString());
-        }
-        
+        //ComponentName localizationComponentName = new ComponentName(LocalizationService.class.getPackage().getName(), LocalizationService.class.getName());
+        //ComponentName localizationComponentService = startService(new Intent().setComponent(localizationComponentName));
+        //if (localizationComponentService == null){
+        //        Log.e(TAG, "Could not start service " + localizationComponentName.toString());
+        //}
+		doBindService();
+
     }
     
     @Override
@@ -186,7 +191,7 @@ public class HomeActivity extends Activity {
     	
     	if(settings.contains(CustomPreferences.COURSE_STARTED_URL)&&!settings.getBoolean(ALREADY_ASKED_TO_RESUME, true)){
     		    		
-			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+			AlertDialog.Builder dialog = ToolBox.getDialog(this);
 			
     		dialog.setTitle(R.string.course_already_started_title);
 			dialog.setMessage(R.string.course_already_started_message);
@@ -290,9 +295,13 @@ public class HomeActivity extends Activity {
 			Calendar c = Calendar.getInstance();
 			Long l = c.getTimeInMillis();
 			editor.putLong(CustomPreferences.RECORDING_RIGHT_NOW,l);
+			Log.d("TAG","Start recording"+l);
 		} else {
 			editor.remove(CustomPreferences.RECORDING_RIGHT_NOW);
+			Log.d("TAG","Stop recording");
+
 		}
+		recImage();
 		editor.commit();
     }
     
@@ -305,4 +314,24 @@ public class HomeActivity extends Activity {
     		recImage.setImageResource(R.drawable.ic_media_pause);
     	}
     }
+
+	private LocalizationService s;
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+		public void onServiceConnected(ComponentName className, IBinder binder) {
+			s = ((LocalizationService.MyBinder) binder).getService();
+			Log.d("TAG","connected");
+		}
+
+		public void onServiceDisconnected(ComponentName className) {
+			s = null;
+		}
+	};
+
+	void doBindService() {
+		bindService(new Intent(this, LocalizationService.class), mConnection,
+				Context.BIND_AUTO_CREATE);
+	}
+
 }

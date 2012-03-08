@@ -43,7 +43,7 @@ public class ToolBox {
 	
 	public static String cacheFile(String fileURL, String cachePath) {
 		try {
-			String fileName = cachePath + fileURL.replaceAll("[.|/|:]", "_");			
+			String fileName = cachePath+"/" + fileURL.replaceAll("[.|/|:]", "_");			
 			File file = new File(fileName);
 			
 			if(!file.exists()){
