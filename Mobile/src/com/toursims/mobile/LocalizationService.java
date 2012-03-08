@@ -1,7 +1,6 @@
 package com.toursims.mobile;
 
-import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -48,8 +47,9 @@ public class LocalizationService extends Service {
 	private static final long expiration = 600000;
 	private Calendar c;
 	private SharedPreferences settings;
-	private static StringBuffer fileString = new StringBuffer(2000);
+	private static String fileString = new String();
 	private static Location knownLocation;
+	private static boolean recording = false;
 	
 	private static final float radius = 100f;
 	
@@ -63,7 +63,7 @@ public class LocalizationService extends Service {
 			
 		Log.d(TAG, "The LocalizationService is starting...");
 		
-		/*locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+		locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
 		
 		criteria = new Criteria();
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
@@ -78,10 +78,10 @@ public class LocalizationService extends Service {
 		if (!bestProvider.equals("null")) {
 			locationManager.requestLocationUpdates(bestProvider, 0, 0, localizationListener);
 //			locationManager.requestLocationUpdates(bestProvider, minUpdateTime, minUpdateDistance, localizationListener);
-		}*/
+		}
 		
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
+		knownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);		
         locationManager.requestLocationUpdates(
                         LocationManager.GPS_PROVIDER, 
                         0, 
@@ -134,9 +134,6 @@ public class LocalizationService extends Service {
 			@Override
 			public void run() {
 				//Log.d("TAG","Timer");
-				if(knownLocation!=null){
-					recordLocation(knownLocation);
-				}
 			}
 		}, 0, UPDATE_INTERVAL);
 		Log.d(getClass().getSimpleName(), "Timer started.");
@@ -164,6 +161,9 @@ public class LocalizationService extends Service {
 				//recordLocation(location);
 				knownLocation = location;
 				
+				if(knownLocation!=null){
+					recordLocation(knownLocation);
+				}				
 				// Create a checkin
 				TourSims tourSims = (TourSims)getApplicationContext();
 				if (tourSims.isUserLoggedIn()) {
@@ -217,15 +217,11 @@ public class LocalizationService extends Service {
 		Log.d(TAG, "The LocalizationService has be destroyed");
 	}	
 	
-	public void recordLocation(Location location){
-		SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
-		Long startedTime = settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1);
-		Log.d("TAG",startedTime.toString());
-		
-		if(startedTime!=-1){
+	public void recordLocation(Location location){		
+		if(recording){
 			try{
-				fileString.append(location.getTime()+","+location.getLatitude()+","+location.getLongitude());
-				if(fileString.length()>1000){
+				fileString += location.getTime()+","+location.getLatitude()+","+location.getLongitude()+"\n";
+				if(fileString.length()>500){
 					writeFile();
 				}
 			} catch (Exception e) {
@@ -233,27 +229,21 @@ public class LocalizationService extends Service {
 			}
 		}
 	}
+
 	
 	public void stopRecording(){
+		recording=false;
 		writeFile();
 	}
 	
 	public void writeFile() {
 		SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
 		Long startedTime = settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1);
-		String filename = getCacheDir()+"/"+startedTime.toString();	
-
 		try {
-			File f;
-			f=new File(filename);
-			if(!f.exists()){
-				f.createNewFile();
-			}
-			
-			FileWriter fstream = new FileWriter(f);
-			fstream.append(fileString.toString());
-			fstream.close();
-			fileString.setLength(0);
+			String filename = getCacheDir()+"/"+startedTime.toString();	
+			FileOutputStream fos = openFileOutput(startedTime.toString(), Context.MODE_APPEND);
+			fos.write(fileString.getBytes());
+			fos.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -261,7 +251,10 @@ public class LocalizationService extends Service {
 	}
 	
 	public void startRecording(){
-		
+		SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+		recording = true;
+		Long startedTime = settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1);
+		recordLocation(knownLocation);		
 	}
 	
 }
