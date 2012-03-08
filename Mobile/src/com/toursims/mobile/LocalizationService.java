@@ -41,12 +41,10 @@ public class LocalizationService extends Service {
 	private Criteria criteria;
 	private String bestProvider;
 	private LocalizationListener localizationListener;
-	private Location currentLocation;
-	private Location lastLocation;
+	//private Location currentLocation;
+	//private Location lastLocation;
 	private PendingIntent pendingIntentForProximityAlert = null;
 	private static final long expiration = 600000;
-	private Calendar c;
-	private SharedPreferences settings;
 	private static String fileString = new String();
 	private static Location knownLocation;
 	private static boolean recording = false;
@@ -59,7 +57,7 @@ public class LocalizationService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		
-		c = Calendar.getInstance();
+//		c = Calendar.getInstance();
 			
 		Log.d(TAG, "The LocalizationService is starting...");
 		
@@ -192,7 +190,6 @@ public class LocalizationService extends Service {
 		public void onStatusChanged(String provider, int status, Bundle extras) {
 			Log.d(TAG, "The GPS provider status has changed to " + status);		
 			bestProvider = locationManager.getBestProvider(criteria, true);
-//			bestProvider = LocationManager.GPS_PROVIDER;
 			Log.d(TAG, "Best current localization provider : " + bestProvider);
 		}
 		
@@ -251,10 +248,7 @@ public class LocalizationService extends Service {
 	}
 	
 	public void startRecording(){
-		SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
 		recording = true;
-		Long startedTime = settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1);
 		recordLocation(knownLocation);		
-	}
-	
+	}	
 }

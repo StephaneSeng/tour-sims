@@ -16,7 +16,15 @@
     <string name="home_social_profile">Mon profil</string>
     <string name="home_social_login">Google Login</string>
     <string name="home_social_contacts">Contacts</string>
-    <string name="home_goon_course">Reprendre le parcours</string>    
+    <string name="home_goon_course">Reprendre le parcours</string>
+    <string name="home_my_records">Mes parcours</string>
+    
+    <string name="home_record_course">Enregistrez votre parcours</string> 
+    <string name="home_record_title">Titre</string>
+    <string name="home_record_hint">Les quais de la Seine</string>
+    <string name="home_record_cancel">annuler</string>
+    <string name="home_record_record">enregister</string>
+    <string name="home_record_stop_recording">Trace arrêtée. Retrouvez la dans vos parcours!</string>
     
     <!--  Related to the game Activity -->
     <string name="game_next_stage">Passer à l\'étape suivante</string>

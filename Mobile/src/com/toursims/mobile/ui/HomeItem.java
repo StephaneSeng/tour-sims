@@ -45,17 +45,10 @@ public class HomeItem {
 		this.pictureURL = pictureURL;
 	}
 	
-	public HomeItem(Intent i,int text, int pictureURL) {
-		super();
-		this.intent = i;
+	public HomeItem(int text, int pictureURL){
 		this.text = text;
 		this.pictureURL = pictureURL;
-	}	
+	}
 	
-	public Intent getIntent() {
-		return intent;
-	}
-	public void setIntent(Intent intent) {
-		this.intent = intent;
-	}
+	
 }

@@ -30,7 +30,6 @@ public class CityActivity extends Activity{
 	private CityAdapter adapter;
 	private ListView lv;
 	private List<City> cities2;
-	private boolean firstClick = false;
 	private OnItemClickListener listener;
 	
 	public void onCreate(Bundle savedInstanceState){

@@ -1,6 +1,5 @@
 package com.toursims.mobile;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -21,16 +20,14 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
-import com.toursims.mobile.model.Course;
 import com.toursims.mobile.model.User;
-import com.toursims.mobile.ui.HomeAdapter;
-import com.toursims.mobile.ui.HomeItem;
 
 public class HomeActivity extends Activity {
 	
@@ -39,13 +36,22 @@ public class HomeActivity extends Activity {
 	/**
 	 * Android debugging tag
 	 */
-//	@SuppressWarnings("unused")
+	@SuppressWarnings("unused")
 	private static final String TAG = HomeActivity.class.getName(); 
 	private static SharedPreferences settings;
+	private static SharedPreferences.Editor editor;
+
 	private static List<HomeItem> items = new ArrayList<HomeItem>();
+	private static List<HomeItem> items2 = new ArrayList<HomeItem>();
+	
 	private static HomeAdapter adapter;
+	private static HomeAdapter adapter2;
 	private static ListView lv;
+	private static ListView lv2;
 	private static ImageView recImage;
+	
+	private LocalizationService s;
+
 	
 	/**
 	 * Application context
@@ -59,11 +65,13 @@ public class HomeActivity extends Activity {
         setContentView(R.layout.main);
         
         recImage = (ImageView)findViewById(R.id.recImage);
+	    lv = (ListView) findViewById(R.id.lvListe);
+	    lv2 = (ListView) findViewById(R.id.lvListe2);
                 
     	settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0); 
-		SharedPreferences.Editor editor = settings.edit();
-		editor.remove(ALREADY_ASKED_TO_RESUME);
-		editor.commit();
+		settings.edit()
+			.remove(ALREADY_ASKED_TO_RESUME)
+			.commit();
         
         // Application context initialisation
         tourSims = (TourSims) getApplication();
@@ -72,95 +80,71 @@ public class HomeActivity extends Activity {
 	    // HOME
 	    //----------------------------------------------------
 	           
-        
-                
-        items.add(new HomeItem(new OnClickListener() {
-			
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				allCityActivityClick();
-			}
-		}, R.string.home_cities_all, R.drawable.ic_menu_compass));
-        
-        items.add(new HomeItem(new OnClickListener() {
-			
-			public void onClick(View v) {
-				
-				// TODO Auto-generated method stub
-				poiClick();
-			}
-		}, R.string.home_poi, R.drawable.ic_menu_info_details));
-        
-        if(settings.contains(CustomPreferences.COURSE_STARTED_URL)){
-            items.add(new HomeItem(new OnClickListener() {
-    			public void onClick(View v) {
-    				// TODO Auto-generated method stub
-    				restartCourse();
-    			}
-    		}, R.string.home_goon_course, R.drawable.ic_menu_myplaces));
-        }
-        
+        items.add(new HomeItem(R.string.home_cities_all, R.drawable.ic_menu_compass));
+        items.add(new HomeItem(R.string.home_poi, R.drawable.ic_menu_info_details));
+        items.add(new HomeItem(R.string.home_goon_course, R.drawable.ic_menu_myplaces));
+        items.add(new HomeItem(R.string.home_my_records,R.drawable.ic_menu_mylocation));
+          
 	    adapter = new HomeAdapter(this, items,getCacheDir().getAbsolutePath());
-	    lv = (ListView) findViewById(R.id.lvListe);
 	    lv.setAdapter(adapter);
 	    ToolBox.setListViewHeightBasedOnChildren(lv);
-
+	    	    	
+	    lv.setOnItemClickListener(new OnItemClickListener() {
+	        
+	        public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+	    		switch (items.get(position).getText()) {
+	    		case R.string.home_cities_all:
+	    			allCityActivityClick();
+	    			break;
+	    		case R.string.home_poi:
+	    			poiClick();
+	    		case R.string.home_goon_course:
+	    			restartCourse();
+	    		default:
+	    			break;
+	    		}	    	
+	        }
+	    });
         
 	    //----------------------------------------------------
 	    // SOCIAL
 	    //----------------------------------------------------
-	    
-	    List<HomeItem> items2 = new ArrayList<HomeItem>();
-        
-	    items2.add(new HomeItem(new OnClickListener() {
-			
-			public void onClick(View v) {
-				social(v);
-			}
-		}, R.string.home_social_map, R.drawable.ic_menu_globe));
-	    
-	    items2.add(new HomeItem(new OnClickListener() {
-			
-			public void onClick(View v) {
-				chatClick(v);
-			}
-		}, R.string.home_social_chat, R.drawable.ic_menu_dialog));
-	    
-        items2.add(new HomeItem(new OnClickListener() {
-			
-			public void onClick(View v) {
-				contactsClick(v);
-			}
-			}, R.string.home_social_contacts, R.drawable.ic_menu_allfriends));
-        
-        items2.add(new HomeItem(new OnClickListener() {
-			
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				profileClick(v);
-			}
-		}, R.string.home_social_profile, R.drawable.ic_menu_user));
-        
-        items2.add(new HomeItem(new OnClickListener() {
-			
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				googleLoginClick(v);
-			}
-		}, R.string.home_social_login, R.drawable.ic_menu_user));
-        
-	    HomeAdapter adapter2 = new HomeAdapter(this, items2,getCacheDir().getAbsolutePath());
-	    ListView lv2 = (ListView) findViewById(R.id.lvListe2);
+	            
+	    items2.add(new HomeItem(R.string.home_social_map, R.drawable.ic_menu_globe));   
+	    items2.add(new HomeItem(R.string.home_social_chat, R.drawable.ic_menu_dialog));
+        items2.add(new HomeItem(R.string.home_social_contacts, R.drawable.ic_menu_allfriends));  
+        items2.add(new HomeItem(R.string.home_social_profile, R.drawable.ic_menu_user));
+        items2.add(new HomeItem(R.string.home_social_login, R.drawable.ic_menu_user));
+              
+	    adapter2 = new HomeAdapter(this, items2,getCacheDir().getAbsolutePath());
 	    lv2.setAdapter(adapter2);   	
 	    ToolBox.setListViewHeightBasedOnChildren(lv2);
-
 	    
-        //ComponentName localizationComponentName = new ComponentName(LocalizationService.class.getPackage().getName(), LocalizationService.class.getName());
-        //ComponentName localizationComponentService = startService(new Intent().setComponent(localizationComponentName));
-        //if (localizationComponentService == null){
-        //        Log.e(TAG, "Could not start service " + localizationComponentName.toString());
-        //}
+	    lv2.setOnItemClickListener(new OnItemClickListener() {
+	        
+	        public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+	    		switch (items.get(position).getText()) {
+	    		case R.string.home_social_map:
+	    			social(view);
+	    			break;
+	    		case R.string.home_social_chat:
+	    			chatClick(view);
+	    			break;
+	    		case R.string.home_social_contacts:
+	    			contactsClick(view);
+	    			break;
+	    		case R.string.home_social_profile:
+	    			profileClick(view);
+	    		case R.string.home_social_login:
+	    			googleLoginClick(view);
+	    		default:
+	    			break;
+	    		}	    	
+	        }
+	    });
+
 		doBindService();
+		recImage();
 
     }
     
@@ -184,6 +168,7 @@ public class HomeActivity extends Activity {
 		}
 		
         popUpRestart();
+        recImage();
 	}
     
     private void popUpRestart(){
@@ -193,9 +178,9 @@ public class HomeActivity extends Activity {
     		    		
 			AlertDialog.Builder dialog = ToolBox.getDialog(this);
 			
-    		dialog.setTitle(R.string.course_already_started_title);
-			dialog.setMessage(R.string.course_already_started_message);
-			dialog.setPositiveButton(R.string.course_already_started_go_on, new DialogInterface.OnClickListener() {
+    		dialog.setTitle(R.string.course_already_started_title)
+				.setMessage(R.string.course_already_started_message)
+				.setPositiveButton(R.string.course_already_started_go_on, new DialogInterface.OnClickListener() {
 					
 				public void onClick(DialogInterface dialog, int which) {	
 						// TODO Auto-generated method stub
@@ -210,7 +195,8 @@ public class HomeActivity extends Activity {
 					SharedPreferences.Editor editor = settings.edit();
 					
 					for (String item : CustomPreferences.COURSE_ALL) {
-						editor.remove(item);
+						editor.remove(item)
+							.commit();
 					}
 					
 					items.remove(items.size()-1);
@@ -222,12 +208,11 @@ public class HomeActivity extends Activity {
 			});
 			
 			dialog.setNeutralButton(R.string.later, new DialogInterface.OnClickListener() {
-				
 				public void onClick(DialogInterface dialog, int which) {
 					// TODO Auto-generated method stub
 					SharedPreferences.Editor editor = settings.edit();
-					editor.putBoolean(ALREADY_ASKED_TO_RESUME, true);
-					editor.commit();
+					editor.putBoolean(ALREADY_ASKED_TO_RESUME, true)
+						.commit();
 					dialog.dismiss();		
 				}
 			});
@@ -237,8 +222,10 @@ public class HomeActivity extends Activity {
     
     private void restartCourse() {
     	Intent activity = new Intent(getApplicationContext(),CourseStepActivity.class);
-        activity.putExtra(Course.URL_EXTRA, settings.getString(CustomPreferences.COURSE_STARTED_URL, null));
-        activity.putExtra(Course.ID_EXTRA, settings.getInt(CustomPreferences.COURSE_STARTED_ID, 0));
+    	
+        activity.putExtra(Course.URL_EXTRA, settings.getString(CustomPreferences.COURSE_STARTED_URL, null))
+        	.putExtra(Course.ID_EXTRA, settings.getInt(CustomPreferences.COURSE_STARTED_ID, 0));
+        
         startActivity(activity);
     }
     
@@ -246,8 +233,8 @@ public class HomeActivity extends Activity {
     protected void onDestroy() {
     	// TODO Auto-generated method stub
 		SharedPreferences.Editor editor = settings.edit();
-		editor.remove(ALREADY_ASKED_TO_RESUME);
-		editor.commit();
+		editor.remove(ALREADY_ASKED_TO_RESUME)
+			.commit();
     	super.onDestroy();
     }
     
@@ -289,22 +276,46 @@ public class HomeActivity extends Activity {
     
     public void rec(View v){
     	settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
-		SharedPreferences.Editor editor = settings.edit();
-		
+		editor = settings.edit();
+
 		if(settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1)==-1){
-			Calendar c = Calendar.getInstance();
-			Long l = c.getTimeInMillis();
-			editor.putLong(CustomPreferences.RECORDING_RIGHT_NOW,l);
-			Log.d("TAG","Start recording"+l);
-			editor.commit();
-			s.startRecording();
+			
+			final AlertDialog.Builder dialog = ToolBox.getDialog(this);
+			dialog.setTitle(R.string.home_record_title);
+
+			EditText e = new EditText(this);
+			e.setHint(R.string.home_record_hint);
+			
+			dialog.setView(e)
+				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						if(s==null){
+							doBindService();
+						}
+						Long l	= Calendar.getInstance().getTimeInMillis();
+				    	settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+						editor = settings.edit();
+						editor.putLong(CustomPreferences.RECORDING_RIGHT_NOW,l);
+						editor.commit();
+						Log.d("TAG","Start recording"+l);
+						s.startRecording();
+						recImage();
+						dialog.dismiss();
+					}
+				})
+				.setNegativeButton(R.string.home_record_cancel, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface arg0, int arg1) {
+						// TODO Auto-generated method stub
+						}
+				})
+			.show();
 		} else {
 			s.stopRecording();
 			editor.remove(CustomPreferences.RECORDING_RIGHT_NOW);
-			Log.d("TAG","Stop recording");
 			editor.commit();
+			Toast.makeText(this, R.string.home_record_stop_recording, Toast.LENGTH_LONG).show();
+			recImage();
 		}
-		recImage();
     }
     
     private void recImage() {
@@ -312,18 +323,14 @@ public class HomeActivity extends Activity {
     	if(settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1)==-1){
     		recImage.setImageResource(R.drawable.ic_media_play);
     	} else {
-            ImageView recImage = (ImageView)findViewById(R.id.recImage);
     		recImage.setImageResource(R.drawable.ic_media_pause);
     	}
     }
-
-	private LocalizationService s;
-
+    
     private ServiceConnection mConnection = new ServiceConnection() {
 
 		public void onServiceConnected(ComponentName className, IBinder binder) {
 			s = ((LocalizationService.MyBinder) binder).getService();
-			Log.d("TAG","connected");
 		}
 
 		public void onServiceDisconnected(ComponentName className) {
@@ -335,5 +342,4 @@ public class HomeActivity extends Activity {
 		bindService(new Intent(this, LocalizationService.class), mConnection,
 				Context.BIND_AUTO_CREATE);
 	}
-
 }
