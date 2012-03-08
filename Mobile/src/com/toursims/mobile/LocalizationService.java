@@ -1,14 +1,10 @@
 package com.toursims.mobile;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import org.apache.http.util.ByteArrayBuffer;
 
 import android.app.PendingIntent;
 import android.app.Service;
@@ -29,9 +25,6 @@ import android.util.Log;
 import com.toursims.mobile.controller.UserWrapper;
 import com.toursims.mobile.model.kml.Placemark;
 import com.toursims.mobile.model.kml.Point;
-
-import de.micromata.opengis.kml.v_2_2_0.Kml;
-import de.micromata.opengis.kml.v_2_2_0.KmlFactory;
 
 public class LocalizationService extends Service {
 	
@@ -55,9 +48,8 @@ public class LocalizationService extends Service {
 	private static final long expiration = 600000;
 	private Calendar c;
 	private SharedPreferences settings;
-	private static Kml kml = new Kml();
-
-
+	private static StringBuffer fileString = new StringBuffer(2000);
+	private static Location knownLocation;
 	
 	private static final float radius = 100f;
 	
@@ -142,6 +134,9 @@ public class LocalizationService extends Service {
 			@Override
 			public void run() {
 				//Log.d("TAG","Timer");
+				if(knownLocation!=null){
+					recordLocation(knownLocation);
+				}
 			}
 		}, 0, UPDATE_INTERVAL);
 		Log.d(getClass().getSimpleName(), "Timer started.");
@@ -166,8 +161,8 @@ public class LocalizationService extends Service {
 			Log.d(TAG, "New location : " + location);
 
 			if (location != null) {
-				
-				recordLocation(location);
+				//recordLocation(location);
+				knownLocation = location;
 				
 				// Create a checkin
 				TourSims tourSims = (TourSims)getApplicationContext();
@@ -229,17 +224,44 @@ public class LocalizationService extends Service {
 		
 		if(startedTime!=-1){
 			try{
-				String filename = getCacheDir()+"/"+startedTime.toString();
-				kml.createAndSetPlacemark()
-				   .createAndSetPoint()
-				   .addToCoordinates(location.getLongitude(), location.getLatitude());
-				
-				kml.marshal(new File(filename));
-				
+				fileString.append(location.getTime()+","+location.getLatitude()+","+location.getLongitude());
+				if(fileString.length()>1000){
+					writeFile();
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void stopRecording(){
+		writeFile();
+	}
+	
+	public void writeFile() {
+		SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+		Long startedTime = settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1);
+		String filename = getCacheDir()+"/"+startedTime.toString();	
+
+		try {
+			File f;
+			f=new File(filename);
+			if(!f.exists()){
+				f.createNewFile();
+			}
+			
+			FileWriter fstream = new FileWriter(f);
+			fstream.append(fileString.toString());
+			fstream.close();
+			fileString.setLength(0);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void startRecording(){
+		
 	}
 	
 }

@@ -296,13 +296,15 @@ public class HomeActivity extends Activity {
 			Long l = c.getTimeInMillis();
 			editor.putLong(CustomPreferences.RECORDING_RIGHT_NOW,l);
 			Log.d("TAG","Start recording"+l);
+			editor.commit();
+			s.startRecording();
 		} else {
+			s.stopRecording();
 			editor.remove(CustomPreferences.RECORDING_RIGHT_NOW);
 			Log.d("TAG","Stop recording");
-
+			editor.commit();
 		}
 		recImage();
-		editor.commit();
     }
     
     private void recImage() {

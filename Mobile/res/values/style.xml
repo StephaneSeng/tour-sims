@@ -57,7 +57,7 @@
 		<item name="android:textColor">@color/text</item>
 		<item name="android:paddingLeft">2dip</item>
     </style>
-    <style name="editTextSearch">
+    <style name="editTextSearch"> 
         <item name="android:hint">@string/search</item>
 	    <item name="android:background">@color/jaune</item>
 		<item name="android:textColor">@color/title</item>
