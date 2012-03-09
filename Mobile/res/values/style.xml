@@ -32,12 +32,17 @@
 	    <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
-    <style name="course_LinearLayout_wrapper">
+    <style name="course_LinearLayout_wrapper" parent="course_LinearLayout_wrapper_generic">
+         <item name="android:gravity">center</item>
+    </style>
+    <style name="course_LinearLayout_wrapper_left" parent="course_LinearLayout_wrapper_generic">
+         <item name="android:gravity">left</item>
+    </style>
+    <style name="course_LinearLayout_wrapper_generic">
          <item name="android:paddingLeft">10dip</item>
          <item name="android:layout_width">fill_parent</item>
          <item name="android:orientation">vertical</item>
          <item name="android:layout_height">fill_parent</item>
-         <item name="android:gravity">center</item>
     </style>
     <style name="course_LinearLayout_line1">
          <item name="android:layout_width">fill_parent</item>
@@ -49,7 +54,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">15dip</item>
         <item name="android:textColor">@color/title</item>
-    </style> 
+    </style>
     <style name="course_LinearLayout_line2">
     	<item name="android:layout_width">fill_parent</item>
     	<item name="android:layout_height">wrap_content</item>

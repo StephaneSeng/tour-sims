@@ -321,7 +321,6 @@ public class HomeActivity extends Activity {
 				Point item = new Point();
 				Location l = s.getKnownLocation();
 				
-				item.setName("unknown");
 				item.setMillis(l.getTime());
 				item.setLongitude(l.getLongitude());
 				item.setLatitude(l.getLatitude());

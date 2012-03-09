@@ -58,6 +58,8 @@
     
     <string name="search">Recherche</string>
     <string name="unknown_author">Inconnu</string>
+    
+    <string name="no_name">No name</string>
 
     <string name="traces_my">Mes traces</string>
     <string name="flag_my">Mes lieux</string>

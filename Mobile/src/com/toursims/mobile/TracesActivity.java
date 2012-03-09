@@ -50,9 +50,5 @@ public class TracesActivity extends Activity{
 	    lv2 = (ListView) findViewById(R.id.lvListe2);
 	    lv2.setTextFilterEnabled(true);
 	    lv2.setAdapter(adapter2);
-	    
-	    
-
 	}
-
 }

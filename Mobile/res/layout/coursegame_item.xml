@@ -11,7 +11,7 @@
                 android:id="@+id/courseImage"
                 android:clickable="false"
                 android:background="@color/background"
-                android:src="ic_menu_myplaces"
+                android:src="@drawable/ic_menu_myplaces"
                  />
             	
     	<LinearLayout style="@style/course_LinearLayout_wrapper">           

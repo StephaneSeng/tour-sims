@@ -2,9 +2,7 @@ package com.toursims.mobile.ui;
 
 import java.util.List;
 
-import com.google.api.client.util.DateTime;
 import com.toursims.mobile.R;
-import com.toursims.mobile.model.Trace;
 import com.toursims.mobile.model.kml.Point;
 
 import android.content.Context;
@@ -25,17 +23,14 @@ public class FlagAdapter extends BaseAdapter {
 	}
 	
 	public int getCount() {
-		// TODO Auto-generated method stub
 		return items.size();
 	}
 	
 	public Object getItem(int arg0) {
-		// TODO Auto-generated method stub
 		return items.get(arg0);
 	}
 
 	public long getItemId(int position) {
-		// TODO Auto-generated method stub
 		return position;
 	}
 	
@@ -51,7 +46,6 @@ public class FlagAdapter extends BaseAdapter {
 		if(convertView == null) {
 			holder = new ViewHolder();
 			convertView = inflater.inflate(R.layout.trace_item, null);
-			
 			holder.details = (TextView)convertView.findViewById(R.id.details);
 			holder.name = (TextView)convertView.findViewById(R.id.name);
 			convertView.setTag(holder);
@@ -59,7 +53,10 @@ public class FlagAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		holder.name.setText(items.get(position).getName());
+		if(items.get(position).getName()!=null){
+			holder.name.setText(items.get(position).getName());
+		}
+		
 		holder.details.setText(items.get(position).getLongitude()+":"+items.get(position).getLatitude());
 		
 	return convertView;
