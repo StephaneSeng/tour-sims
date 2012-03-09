@@ -45,8 +45,8 @@ public class HomeActivity extends Activity {
 	private static SharedPreferences settings;
 	private static SharedPreferences.Editor editor;
 
-	private static List<HomeItem> items2 = new ArrayList<HomeItem>();
-	private static List<HomeItem> items = new ArrayList<HomeItem>();
+	private List<HomeItem> items2 = new ArrayList<HomeItem>();
+	private List<HomeItem> items = new ArrayList<HomeItem>();
 	private HomeAdapter adapter;
 	private HomeAdapter adapter2;
 	private ListView lv;
@@ -122,15 +122,13 @@ public class HomeActivity extends Activity {
     			startActivityForResult(intent, 0);
 			}
 		}));
-        
-                     
+                         
 	    adapter2 = new HomeAdapter(this, items2,getCacheDir().getAbsolutePath());
 	    lv2.setAdapter(adapter2);   	
 	    ToolBox.setListViewHeightBasedOnChildren(lv2);
 
 	    doBindService();
 		recImage();
-
     }
     
     @Override
