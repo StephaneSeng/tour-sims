@@ -57,13 +57,6 @@
                  android:layout_width="fill_parent"
                  android:layout_height="fill_parent"
                  android:clickable="true"
-                 android:apiKey="0UtEsm2mlQi8j4KHjCmoq1xXDkIEU2kRcC4mYcg"
-                 />
-
-             <!-- 
-            xlaptop // 0UtEsm2mlQi8j4KHjCmoq1xXDkIEU2kRcC4mYcg
-            tour    // 0UtEsm2mlQi-XisrXwfM4YprkP-cKS6zYZ8URyg
-              -->
-              
-
+                 android:apiKey="@string/key_map"
+                 />             
 </LinearLayout>
