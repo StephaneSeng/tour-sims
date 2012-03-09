@@ -90,11 +90,30 @@ public class HomeActivity extends Activity {
         
     	settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0); 
     	if(settings.contains(CustomPreferences.COURSE_STARTED_URL)){
-    		items.add(new HomeItem(R.string.home_goon_course, R.drawable.ic_menu_myplaces, new OnClickListener(){
-				public void onClick(View v) {
-					restartCourse();
+			try {
+				CourseBDD datasource = new CourseBDD(this);
+				datasource.open();
+				Course c = datasource.getCourseWithId(settings.getInt(CustomPreferences.COURSE_STARTED_ID,1));
+				datasource.close();
+				
+				if(c.getCoverPictureURL()!=null){
+					items.add(new HomeItem(R.string.home_goon_course, c.getCoverPictureURL(), new OnClickListener(){
+						public void onClick(View v) {
+							restartCourse();
+						}
+		    		}));
+				} else {
+					items.add(new HomeItem(R.string.home_goon_course, R.drawable.ic_menu_myplaces, new OnClickListener(){
+						public void onClick(View v) {
+							restartCourse();
+						}
+		    		}));
 				}
-    		}));
+		   		
+			} catch (IOException e) {
+			e.printStackTrace();
+			}
+ 
     	}      
         items.add(new HomeItem(R.string.home_my_records,R.drawable.ic_menu_mylocation,TracesActivity.class));
               
@@ -139,10 +158,15 @@ public class HomeActivity extends Activity {
 //		TextView nameTextView = (TextView)findViewById(R.id.nameTextView);
 //		TextView btnGoogleLogin = (TextView)findViewById(R.id.googleLogin);
 		
-		if (!tourSims.isUserLoggedIn()) {
-			// The user is not yet connected 
-//			nameTextView.setText("Welcome, please login with your Google Account...");
+		if (tourSims.isUserLoggedIn()) {
+			items2.remove(items2.size()-1);
+			items2.get(4).setPictureURL(tourSims.getUser().getAvatar());
+			adapter2.setItems(items2);
+		    lv2.setAdapter(adapter2);   	
+		    ToolBox.setListViewHeightBasedOnChildren(lv2);
+			//			nameTextView.setText("Welcome, please login with your Google Account...");
 		} else {
+			// The user is not yet connected
 //			nameTextView.setText("Welcome " + tourSims.getUserName() + " !");
 //			TextView textView = (TextView) findViewById(R.id.home_user_name);
 //			ImageView imageView = (ImageView) findViewById(R.id.home_avatar);
@@ -225,8 +249,7 @@ public class HomeActivity extends Activity {
     	settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
 		editor = settings.edit();
 
-		if(settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1)==-1){
-			
+		if(settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1)==-1){		
 			final AlertDialog.Builder dialog = ToolBox.getDialog(this);
 			dialog.setTitle(R.string.home_record_title);
 
@@ -330,7 +353,6 @@ public class HomeActivity extends Activity {
 					datasource.close();
 					Toast.makeText(this, "Flag OK", Toast.LENGTH_LONG).show();
 				} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				}
 			}

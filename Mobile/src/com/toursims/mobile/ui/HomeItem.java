@@ -7,6 +7,7 @@ public class HomeItem {
         private OnClickListener function;
         private int text;
         private int pictureURL;
+        private String pictureURL_string;
         private Class<?> c;
         
         public HomeItem() {
@@ -32,9 +33,17 @@ public class HomeItem {
         public int getPictureURL() {
                 return pictureURL;
         }
-
+        
         public void setPictureURL(int pictureURL) {
                 this.pictureURL = pictureURL;
+        }
+        
+        public void setPictureURL(String pictureURL){
+        	this.pictureURL_string = pictureURL;
+        }
+        
+        public String getPictureURLString(){
+        	return pictureURL_string;
         }
 
         public HomeItem(int text, int pictureURL,OnClickListener function) {
@@ -42,6 +51,14 @@ public class HomeItem {
                 this.function = function;
                 this.text = text;
                 this.pictureURL = pictureURL;
+        }
+        
+        public HomeItem(int text, String pictureURL,OnClickListener function){
+            super();
+            this.function = function;
+            this.text = text;
+            this.pictureURL_string = pictureURL;
+
         }
         
         public HomeItem(int text, int pictureURL){

@@ -6,6 +6,8 @@ import com.toursims.mobile.CourseStepActivity;
 import com.toursims.mobile.R;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.GpsStatus.Listener;
 import android.os.storage.OnObbStateChangeListener;
 import android.sax.StartElementListener;
@@ -74,7 +76,16 @@ public class HomeAdapter extends BaseAdapter{
 		}
 		
 		holder.name.setText(items.get(position).getText());
-		holder.image.setImageResource(items.get(position).getPictureURL());	
+		
+		if(items.get(position).getPictureURLString()!=null){
+			String fileName = ToolBox.cacheFile(items.get(position).getPictureURLString(), cachePath);
+			if(fileName!=null){
+				Bitmap myBitmap = BitmapFactory.decodeFile(fileName);
+			    holder.image.setImageBitmap(myBitmap);
+			} 
+		} else {
+			holder.image.setImageResource(items.get(position).getPictureURL());	
+		}
 		convertView.setTag(holder);
 		
 		
