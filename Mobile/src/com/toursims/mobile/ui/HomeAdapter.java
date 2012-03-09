@@ -1,10 +1,17 @@
 package com.toursims.mobile.ui;
 
 import java.util.List;
+
+import com.toursims.mobile.CourseStepActivity;
 import com.toursims.mobile.R;
 import android.content.Context;
+import android.content.Intent;
+import android.location.GpsStatus.Listener;
+import android.os.storage.OnObbStateChangeListener;
+import android.sax.StartElementListener;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -15,8 +22,11 @@ public class HomeAdapter extends BaseAdapter{
 	LayoutInflater inflater;
 	List<HomeItem> items;
 	String cachePath;
+	Context context;
+	int i;
 	
 	public HomeAdapter(Context context,List<HomeItem> items, String cachePath) {
+		this.context = context;
 		inflater = LayoutInflater.from(context);
 		this.items = items;
 		this.cachePath = cachePath;
@@ -54,7 +64,15 @@ public class HomeAdapter extends BaseAdapter{
 		holder.name = (TextView)convertView.findViewById(R.id.text);
 		holder.layout = (LinearLayout)convertView.findViewById(R.id.layout);
 		
-		holder.layout.setOnClickListener(items.get(position).getFunction());
+		if(items.get(position).getFunction()!=null)
+			holder.layout.setOnClickListener(items.get(position).getFunction());
+		
+		if(items.get(position).getC()!=null){
+			CustomOnClickListener listener = new CustomOnClickListener();
+			listener.setI(position);
+			holder.layout.setOnClickListener(listener);
+		}
+		
 		holder.name.setText(items.get(position).getText());
 		holder.image.setImageResource(items.get(position).getPictureURL());	
 		convertView.setTag(holder);
@@ -118,5 +136,20 @@ public class HomeAdapter extends BaseAdapter{
 	
 	public void setItems(List<HomeItem> items) {
 		this.items = items;
+	}
+	
+	public class CustomOnClickListener implements OnClickListener{
+		int i;
+		
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+	    	Intent intent = new Intent(context.getApplicationContext(),items.get(i).getC());
+	    	context.startActivity(intent);
+		}
+		
+		public void setI(int i) {
+			this.i = i;
+		}
+		
 	}
 }

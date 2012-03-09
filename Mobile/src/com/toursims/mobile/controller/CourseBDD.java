@@ -9,7 +9,9 @@ import java.util.List;
 
 import com.toursims.mobile.model.City;
 import com.toursims.mobile.model.Course;
+import com.toursims.mobile.model.Trace;
 import com.toursims.mobile.model.kml.Placemark;
+import com.toursims.mobile.model.kml.Point;
 import com.toursims.mobile.util.SQLiteHelper;
 
 import android.content.ContentValues;
@@ -20,83 +22,139 @@ import android.util.Log;
 
 public class CourseBDD {
 	private static final int VERSION_BDD = 1;
-	private static final String NOM_BDD = "sqlite.db";
+	private static final String BDD_PACKAGE = "sqlite.db";
+	private static final String BDD_CUSTOM = "trace.db";
 	private static final String PATH_BDD = "/data/data/com.toursims.mobile/databases/";
 	
-	private SQLiteHelper maBaseSQLite;
-	private SQLiteDatabase bdd;
+	private SQLiteHelper packageBaseSQLite;
+	private SQLiteHelper customBaseSQLite;
+	private SQLiteDatabase packageDB;
+	private SQLiteDatabase customDB;
 	
 	public CourseBDD(Context context) throws IOException{
 		copyDataBase(context);
-		maBaseSQLite = new SQLiteHelper(context, NOM_BDD, null, VERSION_BDD);
+		packageBaseSQLite = new SQLiteHelper(context, BDD_PACKAGE, null, VERSION_BDD);
+		customBaseSQLite = new SQLiteHelper(context, BDD_CUSTOM, null, VERSION_BDD); 
 	}
  
 	public void open(){
-		bdd = maBaseSQLite.getWritableDatabase();
+		packageDB = packageBaseSQLite.getWritableDatabase();
+		customDB = customBaseSQLite.getWritableDatabase();
 	}
  
 	public void close(){
-		bdd.close();
+		packageDB.close();
+		customDB.close();
 	}
  
 	public SQLiteDatabase getBDD(){
-		return bdd;
+		return packageDB;
 	}
 	
 	private String[] allColumnsCity = {SQLiteHelper.COL_ID, 
 			SQLiteHelper.COL_NAME,
-			SQLiteHelper.COL_CITY_COVERPICTUREURL
+			SQLiteHelper.CITY_COVERPICTUREURL_COL
 	};
 	
 	private String[] allColumnsCourse = {SQLiteHelper.COL_ID, 
 			SQLiteHelper.COL_NAME,
-			SQLiteHelper.COL_COURSE_CITYID,
-			SQLiteHelper.COL_COURSE_TIME,
-			SQLiteHelper.COL_COURSE_DESC,
-			SQLiteHelper.COL_COURSE_URL,
-			SQLiteHelper.COL_COURSE_RATING,
-			SQLiteHelper.COL_COURSE_PICTURE};
-  
-	public long insertCourse(Course course){		
-		ContentValues values = new ContentValues();
-		values.put(SQLiteHelper.COL_COURSE_CITYID, course.getCity());
-		values.put(SQLiteHelper.COL_COURSE_DESC, course.getDesc());
-		values.put(SQLiteHelper.COL_COURSE_PICTURE, course.getCoverPictureURL());
-		values.put(SQLiteHelper.COL_COURSE_RATING, course.getRating());
-		values.put(SQLiteHelper.COL_COURSE_TIME, course.getLength());
-		values.put(SQLiteHelper.COL_COURSE_URL, course.getUrl());
-		values.put(SQLiteHelper.COL_NAME, course.getName());
-		return bdd.insert(SQLiteHelper.TABLE_COURSE, null, values);
-	}
+			SQLiteHelper.COURSE_CITYID_COL,
+			SQLiteHelper.COURSE_TIME_COL,
+			SQLiteHelper.COURSE_DESC_COL,
+			SQLiteHelper.COURSE_URL_COL,
+			SQLiteHelper.COURSE_RATING_COL,
+			SQLiteHelper.COURSE_PICTURE_COL};
+	
+	private String[] allColumnsTrace = {SQLiteHelper.COL_ID,
+			SQLiteHelper.COL_NAME,
+			SQLiteHelper.TRACE_MILLIS_COL
+	};
 	
 	private String[] allColumnsPlacemark = {SQLiteHelper.COL_ID,
 			SQLiteHelper.COL_NAME,
-			SQLiteHelper.COL_PLACEMARK_DESCRIPTION,
-			SQLiteHelper.COL_PLACEMARK_ADDRESS,
-			SQLiteHelper.COL_PLACEMARK_POINT
+			SQLiteHelper.PLACEMARK_DESCRIPTION_COL,
+			SQLiteHelper.PLACEMARK_ADDRESS_COL,
+			SQLiteHelper.PLACEMARK_POINT_COL
 	};
 	
+	private String[] allColumnsFlag = {SQLiteHelper.COL_ID,
+			SQLiteHelper.COL_NAME,
+			SQLiteHelper.FLAG_MILLIS_COL,
+			SQLiteHelper.FLAG_LONGITUDE_COL,
+			SQLiteHelper.FLAG_LATITUDE_COL
+	};
+  
+	public long insertCourse(Course item){		
+		ContentValues values = new ContentValues();
+		values.put(SQLiteHelper.COURSE_CITYID_COL, item.getCity());
+		values.put(SQLiteHelper.COURSE_DESC_COL, item.getDesc());
+		values.put(SQLiteHelper.COURSE_PICTURE_COL, item.getCoverPictureURL());
+		values.put(SQLiteHelper.COURSE_RATING_COL, item.getRating());
+		values.put(SQLiteHelper.COURSE_TIME_COL, item.getLength());
+		values.put(SQLiteHelper.COURSE_URL_COL, item.getUrl());
+		values.put(SQLiteHelper.COL_NAME, item.getName());
+		return packageDB.insert(SQLiteHelper.TABLE_COURSE, null, values);
+	}
+	
+	public long insertTrace(Trace item){
+		ContentValues values = new ContentValues();
+		values.put(SQLiteHelper.COL_NAME, item.getName());
+		values.put(SQLiteHelper.TRACE_MILLIS_COL, item.getMillis());
+		return customDB.insert(SQLiteHelper.TABLE_TRACE, null, values);
+	}
+	
+	public long insertFlag(Point item){
+		ContentValues values = new ContentValues();
+		values.put(SQLiteHelper.COL_NAME, item.getName());
+		values.put(SQLiteHelper.FLAG_MILLIS_COL, item.getMillis());
+		values.put(SQLiteHelper.FLAG_LONGITUDE_COL, item.getLongitude());
+		values.put(SQLiteHelper.FLAG_LATITUDE_COL, item.getLatitude());
+		return customDB.insert(SQLiteHelper.TABLE_FLAG, null, values);
+	}
+	
+	private Point cursorToFlag(Cursor c){
+		if (c.getCount() == 0)
+			return null;
+		Point item = new Point();
+		item.setId(c.getInt(SQLiteHelper.COL_ID_NUM));
+		item.setName(c.getString(SQLiteHelper.COL_NAME_NUM));
+		item.setMillis(c.getLong(SQLiteHelper.FLAG_MILLIS_NUM));
+		item.setLongitude(c.getDouble(SQLiteHelper.FLAG_LONGITUDE_NUM));
+		item.setLatitude(c.getDouble(SQLiteHelper.FLAG_LATITUDE_NUM));
+		return item;
+	}
+	
+	private Trace cursorToTrace(Cursor c){
+		if (c.getCount() == 0)
+			return null;
+		Trace item = new Trace();
+		item.setId(c.getInt(SQLiteHelper.COL_ID_NUM));
+		item.setName(c.getString(SQLiteHelper.COL_NAME_NUM));
+		item.setMillis(c.getLong(SQLiteHelper.TRACE_MILLIS_NUM));
+		return item;
+	}
+		
 	private Placemark cursorToPlacemark(Cursor c){
 		if (c.getCount() == 0)
 			return null;
-		Placemark placemark = new Placemark();
-		placemark.setName(c.getString(SQLiteHelper.NUM_COL_NAME));
-		placemark.setId(c.getInt(SQLiteHelper.NUM_COL_ID));
-		placemark.setAddress(c.getString(SQLiteHelper.NUM_COL_PLACEMARK_ADDRESS));
-		placemark.setDescription(c.getString(SQLiteHelper.NUM_COL_PLACEMARK_DESCRIPTION));
-		placemark.setPoint(c.getString(SQLiteHelper.NUM_COL_PLACEMARK_POINT));				
-		return placemark;
+		Placemark item = new Placemark();
+		item.setId(c.getInt(SQLiteHelper.COL_ID_NUM));
+		item.setName(c.getString(SQLiteHelper.COL_NAME_NUM));
+		item.setAddress(c.getString(SQLiteHelper.PLACEMARK_ADDRESS_NUM));
+		item.setDescription(c.getString(SQLiteHelper.PLACEMARK_DESCRIPTION_NUM));
+		item.setPoint(c.getString(SQLiteHelper.PLACEMARK_POINT_NUM));				
+		return item;
 	}
 	
-	public long insertPlacemark(Placemark placemark,Course course){
+	public long insertPlacemark(Placemark item,Course course){
 		ContentValues values = new ContentValues();
-		values.put(SQLiteHelper.COL_ID, placemark.getId());
-		values.put(SQLiteHelper.COL_PLACEMARK_ADDRESS, placemark.getAddress());
-		values.put(SQLiteHelper.COL_PLACEMARK_DESCRIPTION, placemark.getDescription());
-		values.put(SQLiteHelper.COL_PLACEMARK_POINT, placemark.getPoint().getCoordinates());
-		values.put(SQLiteHelper.COL_NAME, placemark.getName());
-		values.put(SQLiteHelper.COL_PLACEMARK_COURSE_ID,course.getId());
-		return bdd.insert(SQLiteHelper.TABLE_PLACEMARK, null, values);
+		values.put(SQLiteHelper.COL_ID, item.getId());
+		values.put(SQLiteHelper.PLACEMARK_ADDRESS_COL, item.getAddress());
+		values.put(SQLiteHelper.PLACEMARK_DESCRIPTION_COL, item.getDescription());
+		values.put(SQLiteHelper.PLACEMARK_POINT_COL, item.getPoint().getCoordinates());
+		values.put(SQLiteHelper.COL_NAME, item.getName());
+		values.put(SQLiteHelper.PLACEMARK_COURSE_ID_COL,course.getId());
+		return packageDB.insert(SQLiteHelper.TABLE_PLACEMARK, null, values);
 	}
 	
 	public void insertPlacemarks(Course course){
@@ -105,9 +163,8 @@ public class CourseBDD {
 		}
 	}
 	
-	
 	public Course getCourseWithId(Integer id){
-		Cursor c = bdd.query(SQLiteHelper.TABLE_COURSE, allColumnsCourse, SQLiteHelper.COL_ID + " LIKE \"" + id +"\"", null, null, null, null);
+		Cursor c = packageDB.query(SQLiteHelper.TABLE_COURSE, allColumnsCourse, SQLiteHelper.COL_ID + " LIKE \"" + id +"\"", null, null, null, null);
 		c.moveToFirst();
 		Course course = cursorToCourse(c);
 		c.close();
@@ -115,7 +172,7 @@ public class CourseBDD {
 	}
 	
 	public Course getCourseWithURL(String url){
-		Cursor c = bdd.query(SQLiteHelper.TABLE_COURSE, allColumnsCourse, SQLiteHelper.COL_COURSE_URL + " LIKE \"" + url +"\"", null, null, null, null);
+		Cursor c = packageDB.query(SQLiteHelper.TABLE_COURSE, allColumnsCourse, SQLiteHelper.COURSE_URL_COL + " LIKE \"" + url +"\"", null, null, null, null);
 		c.moveToFirst();
 		Course course = cursorToCourse(c);
 		c.close();
@@ -123,7 +180,7 @@ public class CourseBDD {
 	}
 	 
 	public Integer getCourseIdWithURL(String url){
-		Cursor c = bdd.query(SQLiteHelper.TABLE_COURSE, allColumnsCourse, SQLiteHelper.COL_COURSE_URL + " LIKE \"" + url +"\"", null, null, null, null);
+		Cursor c = packageDB.query(SQLiteHelper.TABLE_COURSE, allColumnsCourse, SQLiteHelper.COURSE_URL_COL + " LIKE \"" + url +"\"", null, null, null, null);
 		c.moveToFirst();
 		Course course = cursorToCourse(c);
 		c.close();
@@ -135,14 +192,14 @@ public class CourseBDD {
 		if (c.getCount() == 0)
 			return null;
 		Course course = new Course();
-		course.setId(c.getInt(SQLiteHelper.NUM_COL_ID));
-		course.setDesc(c.getString(SQLiteHelper.NUM_COL_COURSE_DESC));
-		course.setCity(c.getString(SQLiteHelper.NUM_COL_COURSE_CITYID));
-		course.setLength(c.getDouble(SQLiteHelper.NUM_COL_COURSE_TIME));
-		course.setCoverPictureURL(c.getString(SQLiteHelper.NUM_COL_COURSE_PICTURE));
-		course.setRating(c.getDouble(SQLiteHelper.NUM_COL_COURSE_RATING));
-		course.setUrl(c.getString(SQLiteHelper.NUM_COL_COURSE_URL));
-		course.setName(c.getString(SQLiteHelper.NUM_COL_NAME));
+		course.setId(c.getInt(SQLiteHelper.COL_ID_NUM));
+		course.setDesc(c.getString(SQLiteHelper.COURSE_DESC_NUM));
+		course.setCity(c.getString(SQLiteHelper.COURSE_CITYID_NUM));
+		course.setLength(c.getDouble(SQLiteHelper.COURSE_TIME_NUM));
+		course.setCoverPictureURL(c.getString(SQLiteHelper.COURSE_PICTURE_NUM));
+		course.setRating(c.getDouble(SQLiteHelper.COURSE_RATING_NUM));
+		course.setUrl(c.getString(SQLiteHelper.COURSE_URL_NUM));
+		course.setName(c.getString(SQLiteHelper.COL_NAME_NUM));
 		return course;
 	}
 	
@@ -150,29 +207,58 @@ public class CourseBDD {
 		if (c.getCount() == 0)
 			return null;
 		City item = new City();
-		item.setId(c.getInt(SQLiteHelper.NUM_COL_ID));
-		item.setName(c.getString(SQLiteHelper.NUM_COL_NAME));
-		item.setCoverPictureURL(c.getString(SQLiteHelper.NUM_COL_CITY_COVERPICTUREURL));
+		item.setId(c.getInt(SQLiteHelper.COL_ID_NUM));
+		item.setName(c.getString(SQLiteHelper.COL_NAME_NUM));
+		item.setCoverPictureURL(c.getString(SQLiteHelper.CITY_COVERPICTUREURL_NUM));
 		return item;
 	}
 	
 	public List<Course> getAllCourses() {
 		List<Course> courses = new ArrayList<Course>();
-		Cursor cursor = bdd.query(SQLiteHelper.TABLE_COURSE,
+		Cursor cursor = packageDB.query(SQLiteHelper.TABLE_COURSE,
 				allColumnsCourse, null, null, null, null, null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
-			Course course = cursorToCourse(cursor);
-			courses.add(course);
+			Course item = cursorToCourse(cursor);
+			courses.add(item);
 			cursor.moveToNext();
 		}
 		cursor.close();
 		return courses;
 	}
 	
+	public List<Trace> getAllTraces() {
+		List<Trace> items = new ArrayList<Trace>();
+		Cursor cursor = customDB.query(SQLiteHelper.TABLE_TRACE,
+				allColumnsTrace, null, null, null, null, SQLiteHelper.COL_ID+" DESC");
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			Trace item = cursorToTrace(cursor);
+			items.add(item);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return items;
+	}
+	
+	public List<Point> getAllPoints() {
+		List<Point> items = new ArrayList<Point>();
+		Cursor cursor = customDB.query(SQLiteHelper.TABLE_FLAG,
+				allColumnsFlag, null, null, null, null, SQLiteHelper.COL_ID+" DESC");
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			Point item = cursorToFlag(cursor);
+			items.add(item);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return items;
+	}
+	
+	
 	public List<City> getAllCities() {
 		List<City> list = new ArrayList<City>();
-		Cursor cursor = bdd.query(SQLiteHelper.TABLE_CITY,
+		Cursor cursor = packageDB.query(SQLiteHelper.TABLE_CITY,
 				allColumnsCity, null, null, null, null, SQLiteHelper.COL_NAME);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
@@ -186,7 +272,7 @@ public class CourseBDD {
 	
 	public List<Placemark> getAllPlacemarks(Course course){
 		List<Placemark> placemarks = new ArrayList<Placemark>();
-		Cursor cursor = bdd.query(SQLiteHelper.TABLE_PLACEMARK, allColumnsPlacemark , SQLiteHelper.COL_PLACEMARK_COURSE_ID + " = "+course.getId(), null, null, null, null);
+		Cursor cursor = packageDB.query(SQLiteHelper.TABLE_PLACEMARK, allColumnsPlacemark , SQLiteHelper.PLACEMARK_COURSE_ID_COL + " = "+course.getId(), null, null, null, null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			Placemark p = cursorToPlacemark(cursor);
@@ -200,7 +286,7 @@ public class CourseBDD {
 	public List<Course> getCoursesWithCity(String city){
 		
 		List<Course> courses = new ArrayList<Course>();
-		Cursor cursor = bdd.query(SQLiteHelper.TABLE_COURSE, allColumnsCourse , SQLiteHelper.COL_COURSE_CITYID + " LIKE \""+city+"\"", null, null, null, null);
+		Cursor cursor = packageDB.query(SQLiteHelper.TABLE_COURSE, allColumnsCourse , SQLiteHelper.COURSE_CITYID_COL + " LIKE \""+city+"\"", null, null, null, null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			Course c = cursorToCourse(cursor);
@@ -213,18 +299,18 @@ public class CourseBDD {
 	}
 	
 	public void truncate() {
-		bdd.execSQL("DELETE FROM " + SQLiteHelper.TABLE_PLACEMARK + ";");
-		bdd.execSQL("DELETE FROM " + SQLiteHelper.TABLE_COURSE + ";");
+		packageDB.execSQL("DELETE FROM " + SQLiteHelper.TABLE_PLACEMARK + ";");
+		packageDB.execSQL("DELETE FROM " + SQLiteHelper.TABLE_COURSE + ";");
 	}
 	
 	private void copyDataBase(Context c) throws IOException{
 		 
 		Log.d("CourseBDD","Copy Database");
     	//Open your local db as the input stream
-    	InputStream myInput = c.getAssets().open(NOM_BDD);
+    	InputStream myInput = c.getAssets().open(BDD_PACKAGE);
  
     	// Path to the just created empty db
-    	String outFileName = PATH_BDD + NOM_BDD;
+    	String outFileName = PATH_BDD + BDD_PACKAGE;
  
     	File f = new File(PATH_BDD);
     	f.mkdirs();
@@ -243,6 +329,28 @@ public class CourseBDD {
     	myOutput.flush();
     	myOutput.close();
     	myInput.close();
-    }
+    	
+    /*	f = new File(PATH_BDD+BDD_CUSTOM);
+    	//if(!f.exists()){
+    		myInput = c.getAssets().open(BDD_CUSTOM);
+    		 
+        	// Path to the just created empty db
+        	outFileName = PATH_BDD + BDD_CUSTOM;
+         	
+        	myOutput = new FileOutputStream(outFileName);
+     
+        	//transfer bytes from the inputfile to the outputfile
+        	buffer = new byte[1024];
+        	
+        	while ((length = myInput.read(buffer))>0){
+        		myOutput.write(buffer, 0, length);
+        	}
+     
+        	//Close the streams
+        	myOutput.flush();
+        	myOutput.close();
+        	myInput.close();
+    	//}*/
+	}
 	
 }

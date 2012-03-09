@@ -1,7 +1,9 @@
 package com.toursims.mobile.model.kml;
 import org.simpleframework.xml.Element;
 
-public class Point {
+import com.toursims.mobile.model.BasicObject;
+
+public class Point extends BasicObject {
 	public static final String LATITUDE = "point_latitude";
 	public static final String LONGITUDE = "point_longitude";
 	
@@ -9,7 +11,8 @@ public class Point {
 	private String coordinates;
 	private double longitude;
 	private double latitude;
-
+	private long millis;
+	
 	public Point() {
 		super();
 	}
@@ -27,14 +30,18 @@ public class Point {
 	}
 	
 	public double getLongitude(){
-        String[] lL = getCoordinates().split(",");
-    	longitude = Double.parseDouble(lL[0]);
-    	return longitude;
+		if(getCoordinates()!=null){
+	        String[] lL = getCoordinates().split(",");
+	    	longitude = Double.parseDouble(lL[0]);
+		} 			
+		return longitude;
 	}
 	
 	public double getLatitude(){
-        String[] lL = getCoordinates().split(",");
-    	latitude = Double.parseDouble(lL[1]);	        	
+		if(getCoordinates()!=null){
+			String[] lL = getCoordinates().split(",");
+			latitude = Double.parseDouble(lL[1]);
+		}
     	return latitude;
 	}
 	
@@ -46,5 +53,11 @@ public class Point {
 		this.longitude = longitude;
 	}
 	
+	public long getMillis() {
+		return millis;
+	}
 	
+	public void setMillis(long millis) {
+		this.millis = millis;
+	}
 }

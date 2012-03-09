@@ -18,24 +18,24 @@ import android.widget.TextView;
 
 public class CityAdapter extends BaseAdapter {
 	
-	List<City> cities;
+	List<City> items;
 	LayoutInflater inflater;
 	String cachePath;
 	
-	public CityAdapter(Context context,List<City> cities,String cachePath) {
+	public CityAdapter(Context context,List<City> items,String cachePath) {
 		inflater = LayoutInflater.from(context);
-		this.cities = cities;
+		this.items = items;
 		this.cachePath = cachePath;
 	}
 	
 	public int getCount() {
 		// TODO Auto-generated method stub
-		return cities.size();
+		return items.size();
 	}
 
 	public Object getItem(int arg0) {
 		// TODO Auto-generated method stub
-		return cities.get(arg0);
+		return items.get(arg0);
 	}
 
 	public long getItemId(int position) {
@@ -43,11 +43,9 @@ public class CityAdapter extends BaseAdapter {
 		return position;
 	}
 
-	public void setCities(List<City> cities) {
-		this.cities = cities;
+	public void setCities(List<City> items) {
+		this.items = items;
 	}
-	
-	
 	
 	private class ViewHolder {
 		ImageView image;
@@ -69,10 +67,10 @@ public class CityAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		holder.name.setText(cities.get(position).getName());
+		holder.name.setText(items.get(position).getName());
 		holder.image.setBackgroundColor(Color.WHITE);
 		
-		String fileURL = cities.get(position).getCoverPictureURL();
+		String fileURL = items.get(position).getCoverPictureURL();
 		String fileName = ToolBox.cacheFile(fileURL, cachePath);
 			
 		if(fileName!=null){

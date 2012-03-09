@@ -1,10 +1,13 @@
 package com.toursims.mobile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import com.toursims.mobile.controller.CourseBDD;
 import com.toursims.mobile.model.Course;
+import com.toursims.mobile.model.Trace;
 import com.toursims.mobile.ui.HomeAdapter;
 import com.toursims.mobile.ui.HomeItem;
 import com.toursims.mobile.ui.ToolBox;
@@ -16,18 +19,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.toursims.mobile.model.User;
+import com.toursims.mobile.model.kml.Point;
 
 public class HomeActivity extends Activity {
 	
@@ -41,25 +45,24 @@ public class HomeActivity extends Activity {
 	private static SharedPreferences settings;
 	private static SharedPreferences.Editor editor;
 
-	private static List<HomeItem> items = new ArrayList<HomeItem>();
 	private static List<HomeItem> items2 = new ArrayList<HomeItem>();
-	
-	private static HomeAdapter adapter;
-	private static HomeAdapter adapter2;
-	private static ListView lv;
-	private static ListView lv2;
-	private static ImageView recImage;
+	private static List<HomeItem> items = new ArrayList<HomeItem>();
+	private HomeAdapter adapter;
+	private HomeAdapter adapter2;
+	private ListView lv;
+	private ListView lv2;
+	private ImageView recImage;
+	private EditText e;
 	
 	private LocalizationService s;
 
-	
 	/**
 	 * Application context
 	 */
 	TourSims tourSims;
 
 	/** Called when the activity is first created. */
-    @Override
+    @Override 
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
@@ -79,71 +82,59 @@ public class HomeActivity extends Activity {
         //----------------------------------------------------
 	    // HOME
 	    //----------------------------------------------------
-	           
-        items.add(new HomeItem(R.string.home_cities_all, R.drawable.ic_menu_compass));
-        items.add(new HomeItem(R.string.home_poi, R.drawable.ic_menu_info_details));
-        items.add(new HomeItem(R.string.home_goon_course, R.drawable.ic_menu_myplaces));
-        items.add(new HomeItem(R.string.home_my_records,R.drawable.ic_menu_mylocation));
+        
+        List<HomeItem> items = new ArrayList<HomeItem>();
+        	           
+        items.add(new HomeItem(R.string.home_cities_all, R.drawable.ic_menu_compass,CityActivity.class));
+        items.add(new HomeItem(R.string.home_poi, R.drawable.ic_menu_info_details,POIActivity.class));
+        
+    	settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0); 
+    	if(settings.contains(CustomPreferences.COURSE_STARTED_URL)){
+    		items.add(new HomeItem(R.string.home_goon_course, R.drawable.ic_menu_myplaces, new OnClickListener(){
+				public void onClick(View v) {
+					restartCourse();
+				}
+    		}));
+    	}      
+        items.add(new HomeItem(R.string.home_my_records,R.drawable.ic_menu_mylocation,TracesActivity.class));
+        
+
+	//	restartCourse();
+	//	break;
           
 	    adapter = new HomeAdapter(this, items,getCacheDir().getAbsolutePath());
 	    lv.setAdapter(adapter);
-	    ToolBox.setListViewHeightBasedOnChildren(lv);
-	    	    	
-	    lv.setOnItemClickListener(new OnItemClickListener() {
+	    
+	    
 	        
-	        public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
-	    		switch (items.get(position).getText()) {
-	    		case R.string.home_cities_all:
-	    			allCityActivityClick();
-	    			break;
-	    		case R.string.home_poi:
-	    			poiClick();
-	    		case R.string.home_goon_course:
-	    			restartCourse();
-	    		default:
-	    			break;
-	    		}	    	
-	        }
-	    });
-        
+	    ToolBox.setListViewHeightBasedOnChildren(lv);	            
 	    //----------------------------------------------------
 	    // SOCIAL
 	    //----------------------------------------------------
 	            
-	    items2.add(new HomeItem(R.string.home_social_map, R.drawable.ic_menu_globe));   
-	    items2.add(new HomeItem(R.string.home_social_chat, R.drawable.ic_menu_dialog));
-        items2.add(new HomeItem(R.string.home_social_contacts, R.drawable.ic_menu_allfriends));  
-        items2.add(new HomeItem(R.string.home_social_profile, R.drawable.ic_menu_user));
-        items2.add(new HomeItem(R.string.home_social_login, R.drawable.ic_menu_user));
-              
+	    items2.add(new HomeItem(R.string.home_social_map, R.drawable.ic_menu_globe,SocialActivity.class));   
+	    items2.add(new HomeItem(R.string.home_social_chat, R.drawable.ic_menu_dialog,ChatActivity.class));
+        items2.add(new HomeItem(R.string.home_social_contacts, R.drawable.ic_menu_allfriends,ContactActivity.class));  
+        items2.add(new HomeItem(R.string.home_social_profile, R.drawable.ic_menu_user, new OnClickListener(){
+        	public void onClick(View v) {
+    			Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+    			intent.putExtra(User.USER_ID_EXTRA, tourSims.getUser().getUserId());
+			}
+        }));
+        
+        items2.add(new HomeItem(R.string.home_social_login, R.drawable.ic_menu_user, new OnClickListener(){
+			public void onClick(View v) {
+    			Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+    			startActivityForResult(intent, 0);
+			}
+		}));
+        
+                     
 	    adapter2 = new HomeAdapter(this, items2,getCacheDir().getAbsolutePath());
 	    lv2.setAdapter(adapter2);   	
 	    ToolBox.setListViewHeightBasedOnChildren(lv2);
-	    
-	    lv2.setOnItemClickListener(new OnItemClickListener() {
-	        
-	        public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
-	    		switch (items.get(position).getText()) {
-	    		case R.string.home_social_map:
-	    			social(view);
-	    			break;
-	    		case R.string.home_social_chat:
-	    			chatClick(view);
-	    			break;
-	    		case R.string.home_social_contacts:
-	    			contactsClick(view);
-	    			break;
-	    		case R.string.home_social_profile:
-	    			profileClick(view);
-	    		case R.string.home_social_login:
-	    			googleLoginClick(view);
-	    		default:
-	    			break;
-	    		}	    	
-	        }
-	    });
 
-		doBindService();
+	    doBindService();
 		recImage();
 
     }
@@ -221,12 +212,12 @@ public class HomeActivity extends Activity {
     }
     
     private void restartCourse() {
-    	Intent activity = new Intent(getApplicationContext(),CourseStepActivity.class);
+    	Intent intent = new Intent(getApplicationContext(),CourseStepActivity.class);
     	
-        activity.putExtra(Course.URL_EXTRA, settings.getString(CustomPreferences.COURSE_STARTED_URL, null))
+        intent.putExtra(Course.URL_EXTRA, settings.getString(CustomPreferences.COURSE_STARTED_URL, null))
         	.putExtra(Course.ID_EXTRA, settings.getInt(CustomPreferences.COURSE_STARTED_ID, 0));
         
-        startActivity(activity);
+        startActivity(intent);
     }
     
     @Override
@@ -237,43 +228,7 @@ public class HomeActivity extends Activity {
 			.commit();
     	super.onDestroy();
     }
-    
-    public void allCityActivityClick(){
-    	Intent courseGameList = new Intent(getApplicationContext(), CityActivity.class);
-        startActivity(courseGameList);
-    }
-    
-    public void poiClick(){
-    	Intent POI = new Intent(getApplicationContext(),POIActivity.class);
-		startActivity(POI);
-    }
-    
-    public void chatClick(View v){
-		Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-		startActivity(intent);	
-    }
-    
-    public void contactsClick(View v){
-		Intent intent = new Intent(getApplicationContext(), ContactActivity.class);
-		startActivity(intent);	
-    }
-    
-    public void profileClick(View v){
-		Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-		intent.putExtra(User.USER_ID_EXTRA, tourSims.getUser().getUserId());
-		startActivity(intent);	
-    }
-    
-    public void googleLoginClick(View v){
-		Intent GoogleLogin = new Intent(getApplicationContext(), LoginActivity.class);
-		startActivityForResult(GoogleLogin, 0);	
-    }
-    
-    public void social(View v){
-    	Intent Social = new Intent(getApplicationContext(),SocialActivity.class);	
-		startActivity(Social);
-    }
-    
+                
     public void rec(View v){
     	settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
 		editor = settings.edit();
@@ -283,7 +238,7 @@ public class HomeActivity extends Activity {
 			final AlertDialog.Builder dialog = ToolBox.getDialog(this);
 			dialog.setTitle(R.string.home_record_title);
 
-			EditText e = new EditText(this);
+			e = new EditText(this);
 			e.setHint(R.string.home_record_hint);
 			
 			dialog.setView(e)
@@ -301,6 +256,11 @@ public class HomeActivity extends Activity {
 						s.startRecording();
 						recImage();
 						dialog.dismiss();
+						Trace item = new Trace();
+						item.setName(e.getText().toString());
+						item.setMillis(l);
+						insertTrace(item);
+				    
 					}
 				})
 				.setNegativeButton(R.string.home_record_cancel, new DialogInterface.OnClickListener() {
@@ -341,5 +301,49 @@ public class HomeActivity extends Activity {
 	void doBindService() {
 		bindService(new Intent(this, LocalizationService.class), mConnection,
 				Context.BIND_AUTO_CREATE);
+	}
+	
+	
+	public void insertTrace(Trace item){
+		try {
+			CourseBDD datasource;
+			datasource = new CourseBDD(this);
+			datasource.open();
+			datasource.insertTrace(item);
+		    datasource.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void setFlag(View v){
+		if(s==null){
+			doBindService();
+		}
+		if(s!=null){
+			if(s.getKnownLocation()!=null){
+				CourseBDD datasource;
+				
+				Point item = new Point();
+				Location l = s.getKnownLocation();
+				
+				item.setName("unknown");
+				item.setMillis(l.getTime());
+				item.setLongitude(l.getLongitude());
+				item.setLatitude(l.getLatitude());
+				
+				try {
+					datasource = new CourseBDD(this);
+					datasource.open();
+					datasource.insertFlag(item);
+					datasource.close();
+					Toast.makeText(this, "Flag OK", Toast.LENGTH_LONG).show();
+				} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				}
+			}
+		}
 	}
 }

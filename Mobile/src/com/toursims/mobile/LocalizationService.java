@@ -1,7 +1,7 @@
 package com.toursims.mobile;
 
+import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -237,8 +237,13 @@ public class LocalizationService extends Service {
 		SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
 		Long startedTime = settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1);
 		try {
-			String filename = getCacheDir()+"/"+startedTime.toString();	
-			FileOutputStream fos = openFileOutput(startedTime.toString(), Context.MODE_APPEND);
+			String filename = getCacheDir()+"/trace/trace_"+startedTime.toString();
+			File f = new File(filename);
+			
+			if(!f.exists())
+		    	f.mkdirs();
+				    	
+			FileOutputStream fos = openFileOutput(filename, Context.MODE_APPEND);
 			fos.write(fileString.getBytes());
 			fos.close();
 		} catch (Exception e) {
@@ -250,5 +255,9 @@ public class LocalizationService extends Service {
 	public void startRecording(){
 		recording = true;
 		recordLocation(knownLocation);		
-	}	
+	}
+	
+	public Location getKnownLocation() {
+		return knownLocation;
+	}
 }

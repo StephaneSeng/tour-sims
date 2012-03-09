@@ -17,7 +17,7 @@
     <string name="home_social_login">Google Login</string>
     <string name="home_social_contacts">Contacts</string>
     <string name="home_goon_course">Reprendre le parcours</string>
-    <string name="home_my_records">Mes parcours</string>
+    <string name="home_my_records">Mes traces</string>
     
     <string name="home_record_course">Enregistrez votre parcours</string> 
     <string name="home_record_title">Titre</string>
@@ -59,4 +59,7 @@
     <string name="search">Recherche</string>
     <string name="unknown_author">Inconnu</string>
 
+    <string name="traces_my">Mes traces</string>
+    <string name="flag_my">Mes lieux</string>
+    <string name="traces">Traces</string>
 </resources>
