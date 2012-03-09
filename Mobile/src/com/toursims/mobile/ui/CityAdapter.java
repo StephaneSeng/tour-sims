@@ -8,7 +8,6 @@ import com.toursims.mobile.model.City;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,7 +67,6 @@ public class CityAdapter extends BaseAdapter {
 		}
 
 		holder.name.setText(items.get(position).getName());
-		holder.image.setBackgroundColor(Color.WHITE);
 		
 		String fileURL = items.get(position).getCoverPictureURL();
 		String fileName = ToolBox.cacheFile(fileURL, cachePath);
@@ -76,9 +74,7 @@ public class CityAdapter extends BaseAdapter {
 		if(fileName!=null){
 			Bitmap myBitmap = BitmapFactory.decodeFile(fileName);
 		    holder.image.setImageBitmap(myBitmap);
-		} else {
-			holder.image.setImageResource(R.drawable.ic_menu_globe);
-		}
+		} 
 		
 	return convertView;
 

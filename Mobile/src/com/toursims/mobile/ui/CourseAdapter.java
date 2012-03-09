@@ -8,7 +8,6 @@ import com.toursims.mobile.model.Course;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,25 +24,20 @@ public class CourseAdapter extends BaseAdapter {
 	String cachePath;
 	
 	public CourseAdapter(Context context,List<Course> courses,String cachePath) {
-
 		inflater = LayoutInflater.from(context);
 		this.courses = courses;
 		this.cachePath = cachePath;
-
 	}
 	
 	public int getCount() {
-		// TODO Auto-generated method stub
 		return courses.size();
 	}
 
 	public Object getItem(int arg0) {
-		// TODO Auto-generated method stub
 		return courses.get(arg0);
 	}
 
 	public long getItemId(int position) {
-		// TODO Auto-generated method stub
 		return position;
 	}
 
@@ -80,23 +74,16 @@ public class CourseAdapter extends BaseAdapter {
 		
 		if(courses.get(position).getAuthor()!=null){
 			holder.description.setText(courses.get(position).getAuthor());
-		} else {
-			holder.description.setText(R.string.unknown_author);
 		}
 		
-		holder.rating.setRating((float) r);
-	
-		holder.image.setBackgroundColor(Color.WHITE);
-		
+		holder.rating.setRating((float) r);	
 		String fileURL = courses.get(position).getCoverPictureURL();
 		String fileName = ToolBox.cacheFile(fileURL, cachePath);
 			
 		if(fileName!=null){
 			Bitmap myBitmap = BitmapFactory.decodeFile(fileName);
 		    holder.image.setImageBitmap(myBitmap);
-		} else {
-			holder.image.setImageResource(R.drawable.ic_menu_myplaces);
-		}
+		} 
 		
 	return convertView;
 	}

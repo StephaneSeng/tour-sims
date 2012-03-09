@@ -97,16 +97,10 @@ public class HomeActivity extends Activity {
     		}));
     	}      
         items.add(new HomeItem(R.string.home_my_records,R.drawable.ic_menu_mylocation,TracesActivity.class));
-        
-
-	//	restartCourse();
-	//	break;
-          
+              
 	    adapter = new HomeAdapter(this, items,getCacheDir().getAbsolutePath());
 	    lv.setAdapter(adapter);
 	    
-	    
-	        
 	    ToolBox.setListViewHeightBasedOnChildren(lv);	            
 	    //----------------------------------------------------
 	    // SOCIAL
@@ -302,7 +296,6 @@ public class HomeActivity extends Activity {
 		bindService(new Intent(this, LocalizationService.class), mConnection,
 				Context.BIND_AUTO_CREATE);
 	}
-	
 	
 	public void insertTrace(Trace item){
 		try {

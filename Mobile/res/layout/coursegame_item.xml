@@ -10,6 +10,8 @@
                 android:layout_height="60dip"
                 android:id="@+id/courseImage"
                 android:clickable="false"
+                android:background="@color/background"
+                android:src="ic_menu_myplaces"
                  />
             	
     	<LinearLayout style="@style/course_LinearLayout_wrapper">           
@@ -35,6 +37,7 @@
 	            <TextView 
 	                style="@style/course_LinearLayout_line2"
 	                android:id="@+id/courseDetails"
+	                android:text="@string/unknown_author"
 	                />
 </LinearLayout>             
 </LinearLayout>             

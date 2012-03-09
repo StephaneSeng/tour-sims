@@ -12,6 +12,8 @@
                 android:layout_height="60dip"
                 android:id="@+id/cityImage"
                 android:focusable="false"
+                android:src="@drawable/ic_menu_globe"
+                android:background="@color/background"
                  />
             	          
  		<TextView 
