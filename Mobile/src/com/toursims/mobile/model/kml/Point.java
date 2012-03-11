@@ -60,4 +60,11 @@ public class Point extends BasicObject {
 	public void setMillis(long millis) {
 		this.millis = millis;
 	}
+	
+	public String toKml(){
+		String s = "<Point><coordinates>";
+		s += getCoordinates();
+		s += "</coordinates></Point>";
+		return s;
+	}
 }

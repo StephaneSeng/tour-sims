@@ -169,4 +169,16 @@ public class Course {
 		this.author = author;
 	}
 	
+	public String toKml() {
+		String s = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><kml xmlns=\"http://www.opengis.net/kml/2.2\"><Document>";
+		for (Placemark item : placemarks) {
+			s += item.toKml();
+		}
+		s += "</Document></kml>";
+		return s;
+	}
+	
+	public void addPlacemark(Placemark placemark){
+		placemarks.add(placemark);
+	}
 }

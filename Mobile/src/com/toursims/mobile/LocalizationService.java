@@ -22,6 +22,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.toursims.mobile.controller.UserWrapper;
+import com.toursims.mobile.model.Course;
 import com.toursims.mobile.model.kml.Placemark;
 import com.toursims.mobile.model.kml.Point;
 
@@ -48,6 +49,7 @@ public class LocalizationService extends Service {
 	private static String fileString = new String();
 	private static Location knownLocation;
 	private static boolean recording = false;
+	private static Course course;
 	
 	private static final float radius = 100f;
 	
@@ -218,33 +220,41 @@ public class LocalizationService extends Service {
 		if(recording){
 			try{
 				fileString += location.getTime()+","+location.getLatitude()+","+location.getLongitude()+"\n";
+				Placemark p = new Placemark(location.getLongitude(), location.getLatitude());
+				if(course==null){
+					course = new Course();
+				}
+				course.addPlacemark(p);
+				
 				if(fileString.length()>500){
-					writeFile();
+					writeFile(fileString,".log");
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 	}
-
 	
 	public void stopRecording(){
 		recording=false;
-		writeFile();
+		if(course!=null){
+			writeFile(course.toKml(),"kml");
+		}
 	}
 	
-	public void writeFile() {
+	public void writeFile(String stringFile, String fileNameExt) {
 		SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
 		Long startedTime = settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1);
 		try {
-			String filename = getCacheDir()+"/trace/trace_"+startedTime.toString();
-			File f = new File(filename);
+			String filename = "trace_"+startedTime.toString()+fileNameExt;
+			Log.d("TAG",filename);
 			
-			if(!f.exists())
-		    	f.mkdirs();
-				    	
+			//File f = new File(filename);
+						
+			//if(!f.exists())
+		    //	f.mkdirs();
 			FileOutputStream fos = openFileOutput(filename, Context.MODE_APPEND);
-			fos.write(fileString.getBytes());
+			fos.write(stringFile.getBytes());
 			fos.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -254,7 +264,8 @@ public class LocalizationService extends Service {
 	
 	public void startRecording(){
 		recording = true;
-		recordLocation(knownLocation);		
+		recordLocation(knownLocation);
+		course = new Course();
 	}
 	
 	public Location getKnownLocation() {

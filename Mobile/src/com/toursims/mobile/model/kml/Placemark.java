@@ -198,4 +198,22 @@ public class Placemark {
 	public void setRoutePlacemark(String routePlacemark) {
 		this.routePlacemark = routePlacemark;
 	}
+	
+	public String toKml(){
+		String s = "<Placemark>";
+		s += Point.toKml();
+		s += "</Placemark>";
+		return s;
+	}
+	
+	public Placemark(double longitude, double latitude){
+		super();
+		Point p = new Point();
+		p.setCoordinates(Double.toString(latitude)+","+Double.toString(longitude)+",0");
+		this.Point = p;
+	}
+	
+	public Placemark() {
+		super();
+	}
 }
