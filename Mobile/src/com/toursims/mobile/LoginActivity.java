@@ -108,6 +108,7 @@ public class LoginActivity extends Activity {
 				        	tourSims.setUserLoggedIn(true);
 				        	
 				        	finishActivity(0);
+				        	finish();
 						}
 					} catch (Exception e) {
 //						Log.e(TAG, e.getMessage());
