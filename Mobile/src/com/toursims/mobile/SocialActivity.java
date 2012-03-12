@@ -49,7 +49,7 @@ public class SocialActivity extends MapActivity {
         setContentView(R.layout.social);
         
         // Initialize the share attributes
-        mapView = (MapView)findViewById(R.id.socialMapView);
+//        mapView = (MapView)findViewById(R.id.socialMapView);
         mapController = mapView.getController();
 		mapOverlays = mapView.getOverlays();
         
