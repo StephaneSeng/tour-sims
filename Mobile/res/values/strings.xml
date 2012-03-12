@@ -64,4 +64,5 @@
     <string name="traces_my">Mes traces</string>
     <string name="flag_my">Mes lieux</string>
     <string name="traces">Traces</string>
+    <string name="server_root">http://toursims.free.fr</string>
 </resources>

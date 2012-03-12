@@ -330,15 +330,15 @@ public class CourseBDD {
     	myOutput.close();
     	myInput.close();
     	
-    /*	f = new File(PATH_BDD+BDD_CUSTOM);
-    	//if(!f.exists()){
+    	f = new File(PATH_BDD+BDD_CUSTOM);
+    	if(!f.exists()){
     		myInput = c.getAssets().open(BDD_CUSTOM);
     		 
         	// Path to the just created empty db
         	outFileName = PATH_BDD + BDD_CUSTOM;
          	
         	myOutput = new FileOutputStream(outFileName);
-     
+    
         	//transfer bytes from the inputfile to the outputfile
         	buffer = new byte[1024];
         	
@@ -350,7 +350,7 @@ public class CourseBDD {
         	myOutput.flush();
         	myOutput.close();
         	myInput.close();
-    	//}*/
+    	}
 	}
 	
 }

@@ -1,13 +1,13 @@
 <?php
 
 // Establish the connection to the database
-$connection = pg_connect("host=localhost port=5432 dbname=toursims user=postgres password=postgres") or die('Could not connect: '.pg_last_error());
+$connection = pg_connect("host=localhost port=5432 dbname=toursims user=toursims password=") or die('Could not connect: '.pg_last_error());
 
 // Define and perform the SQL queries
 switch ($_REQUEST['action']) {
 	case "authenticate":
 		// Check if the user has already been registred in our service
-		// Test: http://localhost:80/user.php?action=authenticate&name=St%C3%A9phane%20Seng&avatar=https%3A%2F%2Flh5.googleusercontent.com%2F-D6UO0_G4D2M%2FAAAAAAAAAAI%2FAAAAAAAAAAA%2FXHg1v57fjBU%2Fphoto.jpg%3Fsz%3D50&sso_id=1&sso_name=107988237770371698580
+		// Test: http://toursims.free.fr/user.php?action=authenticate&name=St%C3%A9phane%20Seng&avatar=https%3A%2F%2Flh5.googleusercontent.com%2F-D6UO0_G4D2M%2FAAAAAAAAAAI%2FAAAAAAAAAAA%2FXHg1v57fjBU%2Fphoto.jpg%3Fsz%3D50&sso_id=1&sso_name=107988237770371698580
 		$query = "
 		SELECT
 			u.user_id
@@ -74,7 +74,7 @@ switch ($_REQUEST['action']) {
 		break;
 	case "checkin":
 		// Create a checkin for the current user
-		// Test: http://localhost:80/user.php?action=checkin&latitude=48.870278&longitude=2.316389&timestamp=2007-05-06%2020%3A00%3A00&user_id=1
+		// Test: http://toursims.free.fr/user.php?action=checkin&latitude=48.870278&longitude=2.316389&timestamp=2007-05-06%2020%3A00%3A00&user_id=1
 		$query = "
 		INSERT INTO checkin (latitude, longitude, \"timestamp\", user_id) VALUES (".$_REQUEST['latitude'].", ".$_REQUEST['longitude'].", '".$_REQUEST['timestamp']."', ".$_REQUEST['user_id'].");
 		";
@@ -137,7 +137,7 @@ switch ($_REQUEST['action']) {
 		break;
 	case "get_contacts":
 		// List all the contacts linked to the specified user
-		// Test: http://localhost:80/user.php?action=get_contacts&user_id=1
+		// Test: http://toursims.free.fr/user.php?action=get_contacts&user_id=1
 		$query = "
 		-- The current user is user_a
 		SELECT
@@ -156,7 +156,7 @@ switch ($_REQUEST['action']) {
 		break;
 	case "add_contact":
 		// Add a contact to the specified user
-		// Test: http://localhost:80/user.php?action=add_contact&user_id=1&contact_id=2
+		// Test: http://toursims.free.fr/user.php?action=add_contact&user_id=1&contact_id=2
 		$query = "
 		INSERT INTO user_user (user_a_id, user_b_id) VALUES (".$_REQUEST['user_id'].", ".$_REQUEST['contact_id'].");
 		";
@@ -165,7 +165,7 @@ switch ($_REQUEST['action']) {
 		break;
 	case "get_profile":
 		// Retreive the shared informations about the specified user
-		// Test: http://localhost:80/user.php?action=get_profile&user_id=1
+		// Test: http://toursims.free.fr/user.php?action=get_profile&user_id=1
 		$query = "
 		SELECT
 			u.user_id,
@@ -191,12 +191,14 @@ switch ($_REQUEST['action']) {
 }
 
 // Display the results in JSON
+include_once('JSON.php');
+$json = new Services_JSON();
 header('Content-Type: text/javascript');
 $rows = array();
 while($r = pg_fetch_assoc($result)) {
     $rows[] = $r;
 }
-print json_encode($rows);
+print $json->encode($rows);
 
 // Free the resultset
 pg_free_result($result);

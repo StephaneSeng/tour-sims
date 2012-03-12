@@ -53,11 +53,13 @@ public class LocalizationService extends Service {
 	
 	private static final float radius = 100f;
 	
-	private UserWrapper userWrapper = new UserWrapper();
+	private UserWrapper userWrapper;
 		
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		
+		userWrapper = new UserWrapper(getApplicationContext());
 		
 //		c = Calendar.getInstance();
 			

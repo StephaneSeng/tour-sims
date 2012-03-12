@@ -3,6 +3,8 @@ package com.toursims.mobile.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.util.Log;
+
 import com.toursims.mobile.model.kml.Document;
 import com.toursims.mobile.model.kml.Placemark;
 
@@ -145,9 +147,10 @@ public class Course {
 			setRating(Double.valueOf(item.getExtendedData().get(3).getValue()));
 			setLength(Double.valueOf(item.getExtendedData().get(4).getValue()));
 			setType(item.getExtendedData().get(5).getValue());
-		} catch (IndexOutOfBoundsException e) {
+		} catch (Exception e) {
 			setType(Course.TYPE_COURSE);
 		}	
+		Log.d("TAG","SIZE "+item.getPlacemark().size());
 		setPlacemarks(item.getPlacemarks());
 		setEnd(item.getEnd());
 		setPresentation(item.getPresentation());

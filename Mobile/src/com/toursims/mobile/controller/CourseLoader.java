@@ -23,7 +23,6 @@ public class CourseLoader {
 	}
 	
 	public Course parse(String address){
-
 		Kml kml1 = new Kml(); 		  
 	   	HttpURLConnection urlConnection= null;
 	   	Course course = new Course();

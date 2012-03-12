@@ -24,8 +24,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.toursims.mobile.R;
 import com.toursims.mobile.model.City;
 import com.toursims.mobile.util.places.EasySSLSocketFactory;
 
@@ -42,7 +44,7 @@ public class CityWrapper {
 	/**
 	 * Application server root
 	 */
-	private static final String SERVER_ROOT = "http://10.0.2.2:80";
+	private String serverRoot;
 	
 	/**
 	 * Our HTTP client, used for making requests
@@ -53,8 +55,10 @@ public class CityWrapper {
 	 * Default constructor
 	 * Initialize the HTTP client, we use a less secure one
 	 */
-	public CityWrapper() {
+	public CityWrapper(Context context) {
 		super();
+		
+		serverRoot = context.getString(R.string.server_root);
 		
 		// Create a HTTP server with minor security
 		// Source : http://www.virtualzone.de/2011-02-27/how-to-use-apache-httpclient-with-httpsssl-on-android
@@ -84,7 +88,7 @@ public class CityWrapper {
 		List<City> cities = new ArrayList<City>();
 		
 		// Build the SOAP request
-		StringBuffer request = new StringBuffer(SERVER_ROOT + "/city.php?");
+		StringBuffer request = new StringBuffer(serverRoot + "/city.php?");
 		request.append("action=" + "_get_cities");
 		request.append("&latitude=" + latitude);
 		request.append("&longitude=" + longitude);
