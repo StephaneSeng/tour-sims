@@ -297,8 +297,10 @@ class Services_JSON
                             // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                             $char = pack('C*', $ord_var_c, ord($var{$c + 1}));
                             $c += 1;
-                            $utf16 = $this->utf82utf16($char);
-                            $ascii .= sprintf('\u%04s', bin2hex($utf16));
+							// See: http://stackoverflow.com/questions/410704/cyrillic-characters-in-phps-json-encode
+                            //$utf16 = $this->utf82utf16($char);
+                            //$ascii .= sprintf('\u%04s', bin2hex($utf16));
+							$ascii .= $char;
                             break;
 
                         case (($ord_var_c & 0xF0) == 0xE0):
@@ -308,8 +310,9 @@ class Services_JSON
                                          ord($var{$c + 1}),
                                          ord($var{$c + 2}));
                             $c += 2;
-                            $utf16 = $this->utf82utf16($char);
-                            $ascii .= sprintf('\u%04s', bin2hex($utf16));
+                            //$utf16 = $this->utf82utf16($char);
+                            //$ascii .= sprintf('\u%04s', bin2hex($utf16));
+							$ascii .= $char;
                             break;
 
                         case (($ord_var_c & 0xF8) == 0xF0):
@@ -320,8 +323,9 @@ class Services_JSON
                                          ord($var{$c + 2}),
                                          ord($var{$c + 3}));
                             $c += 3;
-                            $utf16 = $this->utf82utf16($char);
-                            $ascii .= sprintf('\u%04s', bin2hex($utf16));
+                            //$utf16 = $this->utf82utf16($char);
+                            //$ascii .= sprintf('\u%04s', bin2hex($utf16));
+							$ascii .= $char;
                             break;
 
                         case (($ord_var_c & 0xFC) == 0xF8):
@@ -333,8 +337,9 @@ class Services_JSON
                                          ord($var{$c + 3}),
                                          ord($var{$c + 4}));
                             $c += 4;
-                            $utf16 = $this->utf82utf16($char);
-                            $ascii .= sprintf('\u%04s', bin2hex($utf16));
+                            //$utf16 = $this->utf82utf16($char);
+                            //$ascii .= sprintf('\u%04s', bin2hex($utf16));
+							$ascii .= $char;
                             break;
 
                         case (($ord_var_c & 0xFE) == 0xFC):
@@ -347,8 +352,9 @@ class Services_JSON
                                          ord($var{$c + 4}),
                                          ord($var{$c + 5}));
                             $c += 5;
-                            $utf16 = $this->utf82utf16($char);
-                            $ascii .= sprintf('\u%04s', bin2hex($utf16));
+                            //$utf16 = $this->utf82utf16($char);
+                            //$ascii .= sprintf('\u%04s', bin2hex($utf16));
+							$ascii .= $char;
                             break;
                     }
                 }
