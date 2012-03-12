@@ -44,7 +44,9 @@ public class SQLiteHelper extends SQLiteOpenHelper{
 	public static final String TABLE_TRACE = "TRACES";
 	public static final String TRACE_MILLIS_COL= "MILLIS";
 	public static final int TRACE_MILLIS_NUM = 2;
-	
+	public static final String TRACE_FILE_COL= "FILE";
+	public static final int TRACE_FILE_NUM = 3;
+		
 	public static final String TABLE_FLAG = "FLAG";
 	public static final String FLAG_MILLIS_COL = "MILLIS";
 	public static final int FLAG_MILLIS_NUM = 2;
@@ -78,8 +80,6 @@ public class SQLiteHelper extends SQLiteOpenHelper{
  
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-	//	db.execSQL(CREATE_BDD_COURSE);
-	//	db.execSQL(CREATE_BDD_PLACEMARK);
 	}
  
 	@Override
