@@ -57,7 +57,7 @@ public class TraceMapActivity extends MapActivity{
         
         
         
-    	course = CourseLoader.getInstance().parse("/data/data/com.toursims.mobile/files/trace_1331541519395kml");
+    	course = CourseLoader.getInstance().parse("http://pymitsuomi.com/trace_1331541519395kml");
     	
     	
         drawable = this.getResources().getDrawable(R.drawable.maps_icon);
@@ -70,7 +70,7 @@ public class TraceMapActivity extends MapActivity{
         	Log.d(getLocalClassName(), String.valueOf(l) + " " + String.valueOf(L));
         	GeoPoint point = new GeoPoint(l,L);
 
-       		OverlayItem overlayItem = new OverlayItem(point, placemark.getName(),placemark.getDescription());
+       		OverlayItem overlayItem = new OverlayItem(point, "","");
         	
             itemizedOverlay.addOverlay(overlayItem);
         	

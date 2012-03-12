@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/linearLayout_noPadding"
-    android:id="@+id/layout"
+    android:id="@+id/layout">
     
     <!-- TEMP -->
     <Button
@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:text="TraceMap"
         android:onClick="traceMap"
-    >    
+    /> 
     <!--  
     <LinearLayout
         android:id="@+id/linearLayout1"
