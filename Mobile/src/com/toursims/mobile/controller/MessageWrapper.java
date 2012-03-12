@@ -26,8 +26,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.toursims.mobile.R;
 import com.toursims.mobile.model.Message;
 import com.toursims.mobile.util.places.EasySSLSocketFactory;
 
@@ -44,7 +46,7 @@ public class MessageWrapper {
 	/**
 	 * Application server root
 	 */
-	private static final String SERVER_ROOT = "http://10.0.2.2:80";
+	private String serverRoot;
 	
 	/**
 	 * JSON "true" boolean output
@@ -65,8 +67,10 @@ public class MessageWrapper {
 	 * Default constructor
 	 * Initialize the HTTP client, we use a less secure one
 	 */
-	public MessageWrapper() {
+	public MessageWrapper(Context context) {
 		super();
+		
+		serverRoot = context.getString(R.string.server_root);
 		
 		// Create a HTTP server with minor security
 		// Source : http://www.virtualzone.de/2011-02-27/how-to-use-apache-httpclient-with-httpsssl-on-android
@@ -97,7 +101,7 @@ public class MessageWrapper {
 		List<Message> messages = null;
 		
 		// Build the SOAP request
-		StringBuffer request = new StringBuffer(SERVER_ROOT + "/message.php?");
+		StringBuffer request = new StringBuffer(serverRoot + "/message.php?");
 		request.append("action=" + "get_messages");
 		request.append("&user_id=" + user_id);
 
@@ -140,7 +144,7 @@ public class MessageWrapper {
 		List<Message> messages = null;
 		
 		// Build the SOAP request
-		StringBuffer request = new StringBuffer(SERVER_ROOT + "/message.php?");
+		StringBuffer request = new StringBuffer(serverRoot + "/message.php?");
 		request.append("action=" + "get_reply_messages");
 		request.append("&root_message_id=" + root_message_id);
 

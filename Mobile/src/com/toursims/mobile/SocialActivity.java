@@ -49,7 +49,7 @@ public class SocialActivity extends MapActivity {
         setContentView(R.layout.social);
         
         // Initialize the share attributes
-        mapView = (MapView)findViewById(R.id.socialMapView);
+//        mapView = (MapView)findViewById(R.id.socialMapView);
         mapController = mapView.getController();
 		mapOverlays = mapView.getOverlays();
         
@@ -77,7 +77,7 @@ public class SocialActivity extends MapActivity {
 		Log.d(TAG, "Test : " + lastLocation);
 		
 		// Call the SearchCheckins method
-		UserWrapper userWrapper = new UserWrapper();
+		UserWrapper userWrapper = new UserWrapper(getApplicationContext());
 		TourSims tourSims = (TourSims)getApplicationContext();
 		List<Checkin> checkins = userWrapper.SearchCheckins(lastLocation.getLatitude(), lastLocation.getLongitude(), tourSims.getUser().getUserId());
 		

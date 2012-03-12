@@ -41,7 +41,7 @@ public class ContactActivity extends Activity {
 	    tourSims = (TourSims) getApplication();
 	    
 	    // Retreive the current user contacts
-	    UserWrapper userWrapper = new UserWrapper();
+	    UserWrapper userWrapper = new UserWrapper(getApplicationContext());
 	    contacts = userWrapper.GetContacts(tourSims.getUser().getUserId());
 	    
 	    // Layout initialisation

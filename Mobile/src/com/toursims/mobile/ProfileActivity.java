@@ -19,7 +19,7 @@ public class ProfileActivity extends Activity {
 	    setContentView(R.layout.layout_profile);
 	    
 	    // Initialise the current user
-	    UserWrapper userWrapper = new UserWrapper();
+	    UserWrapper userWrapper = new UserWrapper(getApplicationContext());
 	    user = userWrapper.GetProfile(getIntent().getIntExtra(User.USER_ID_EXTRA, 0));
 	    
 	    // Layout initialisation
