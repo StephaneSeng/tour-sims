@@ -1,14 +1,14 @@
 <?php
 
 // Establish the connection to the database
-$connection = pg_connect("host=localhost port=5432 dbname=toursims user=postgres password=postgres") or die('Could not connect: '.pg_last_error());
+$connection = pg_connect("host=localhost port=5432 dbname=toursims user=toursims password=") or die('Could not connect: '.pg_last_error());
 
 // Define and perform the SQL query
 switch ($_REQUEST['action']) {
 	case "get_messages":
 		// List all the latest messages linked to the specified user
 		// The user will be able to fetch the whole thread of messages later
-		// Test: http://localhost:80/message.php?action=get_messages&user_id=1
+		// Test: http://toursims.free.fr/message.php?action=get_messages&user_id=1
 		$query = "
 		-- Last message of each thread
 		SELECT
@@ -199,12 +199,14 @@ switch ($_REQUEST['action']) {
 }
 
 // Display the results in JSON
+include_once('JSON.php');
+$json = new Services_JSON();
 header('Content-Type: text/javascript');
 $rows = array();
 while($r = pg_fetch_assoc($result)) {
     $rows[] = $r;
 }
-print json_encode($rows);
+print $json->encode($rows);
 
 // Free the resultset
 pg_free_result($result);

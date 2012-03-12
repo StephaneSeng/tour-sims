@@ -1,14 +1,14 @@
 <?php
 
 // Establish the connection to the database
-$connection = pg_connect("host=localhost port=5432 dbname=toursims user=postgres password=postgres") or die('Could not connect: '.pg_last_error());
+$connection = pg_connect("host=localhost port=5432 dbname=toursims user=toursims password=") or die('Could not connect: '.pg_last_error());
 
 // Define and perform the SQL query
 switch ($_REQUEST['action']) {
 	case "get_cities":
 		// List all the cities known in the database
 		// The results are ordered by their names
-		// Test: http://localhost:80/city.php?action=get_cities
+		// Test: http://toursims.free.fr/city.php?action=get_cities
 		$query = "
 		SELECT
 			c.city_id,
@@ -42,7 +42,7 @@ switch ($_REQUEST['action']) {
 	case "_get_cities":
 		// List all the cities known in the database ordered by their distance with the specified position
 		// Distance forumla from: http://zcentric.com/2010/03/11/calculate-distance-in-mysql-with-latitude-and-longitude/
-		// Test: http://localhost:80/city.php?action=_get_cities&latitude=45.7597&longitude=4.8422
+		// Test: http://toursims.free.fr/city.php?action=_get_cities&latitude=45.7597&longitude=4.8422
 		$query = "
 		SELECT
 			c.city_id,
@@ -82,12 +82,14 @@ switch ($_REQUEST['action']) {
 }
 
 // Display the results in JSON
+include_once('JSON.php');
+$json = new Services_JSON();
 header('Content-Type: text/javascript');
 $rows = array();
 while($r = pg_fetch_assoc($result)) {
     $rows[] = $r;
 }
-print json_encode($rows);
+print $json->encode($rows);
 
 // Free the resultset
 pg_free_result($result);
