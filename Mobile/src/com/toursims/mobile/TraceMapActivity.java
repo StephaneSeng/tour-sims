@@ -33,8 +33,11 @@ public class TraceMapActivity extends MapActivity{
 	private MapController mapController;
 	private List<Overlay> mapOverlays;
 	private Drawable drawable;
-	private CustomItemizedOverlay itemizedOverlay;
+	private Drawable drawable2;
+	private CustomItemizedOverlay itemizedOverlay1;
+	private CustomItemizedOverlay itemizedOverlay2;
 	private Course course;
+	private static List<GeoPoint> bounds;
 	
 	/**
 	 * Called when the activity is first created
@@ -51,7 +54,6 @@ public class TraceMapActivity extends MapActivity{
         
         // Set the MapView properties
         mapView.setBuiltInZoomControls(true);
-        mapController.setZoom(14); // Zoom 1 is world view
         
         mapOverlays = mapView.getOverlays();        
         
@@ -60,9 +62,12 @@ public class TraceMapActivity extends MapActivity{
     	course = CourseLoader.getInstance().parse("http://pymitsuomi.com/trace_1331541519395kml");
     	
     	
-        drawable = this.getResources().getDrawable(R.drawable.maps_icon);
-        itemizedOverlay = new CustomItemizedOverlay(drawable, this);
+        drawable = this.getResources().getDrawable(R.drawable.ic_start_pos);
+        itemizedOverlay1 = new CustomItemizedOverlay(drawable, this);
+        drawable2 = this.getResources().getDrawable(R.drawable.ic_finish_pos);
+        itemizedOverlay2 = new CustomItemizedOverlay(drawable2, this);
     	GeoPoint formerPoint = null;
+    	int i = 0;
     	for (Placemark placemark : course.getPlacemarks()) {
         	String[] lL = placemark.getPoint().getCoordinates().split(",");
         	int l = (new Double(Double.parseDouble(lL[1])* 1000000)).intValue();
@@ -70,26 +75,59 @@ public class TraceMapActivity extends MapActivity{
         	Log.d(getLocalClassName(), String.valueOf(l) + " " + String.valueOf(L));
         	GeoPoint point = new GeoPoint(l,L);
 
+        	if(bounds == null) {
+        		bounds = new ArrayList<GeoPoint>();
+        	}
+        	bounds.add(point);
+        	
        		OverlayItem overlayItem = new OverlayItem(point, "","");
         	
-            itemizedOverlay.addOverlay(overlayItem);
+            //itemizedOverlay.addOverlay(overlayItem);
         	
         	/***** load routes *****/
         	if(formerPoint != null) {
         		mapOverlays.add(new MySimplePathOverlay(formerPoint, point, mapView.getProjection())); 
         	}
         	else {
-        		mapController.animateTo(point);
+        		itemizedOverlay1.addOverlay(overlayItem);
         	}
         	formerPoint = point;
+        	if(i == course.getPlacemarks().size()-1) {
+        		itemizedOverlay2.addOverlay(overlayItem);
+        	}
+        	i++;
     	}
-    	mapOverlays.add(itemizedOverlay);
+    	mapOverlays.add(itemizedOverlay1);
+    	mapOverlays.add(itemizedOverlay2);
+    	zoomInBounds();
     }
 	
 	
 	@Override
 	protected boolean isRouteDisplayed() {
 		return false;
+	}
+	
+	 private void zoomInBounds() {
+
+		    int minLat = Integer.MAX_VALUE;
+		    int minLong = Integer.MAX_VALUE;
+		    int maxLat = Integer.MIN_VALUE;
+		    int maxLong = Integer.MIN_VALUE;
+
+		    for (GeoPoint point : bounds) {
+		        minLat = Math.min(point.getLatitudeE6(), minLat);
+		        minLong = Math.min(point.getLongitudeE6(), minLong);
+		        maxLat = Math.max(point.getLatitudeE6(), maxLat);
+		        maxLong = Math.max(point.getLongitudeE6(), maxLong);
+		    }
+
+		    mapController.zoomToSpan(
+		                       Math.abs(minLat - maxLat), Math.abs(minLong - maxLong));
+		    mapController.animateTo(new GeoPoint((maxLat + minLat) / 2,
+		        (maxLong + minLong) / 2));
+		    
+		    bounds.clear();
 	}
 
 }

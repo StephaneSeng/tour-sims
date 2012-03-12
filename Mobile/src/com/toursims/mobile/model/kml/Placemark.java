@@ -209,7 +209,7 @@ public class Placemark {
 	public Placemark(double longitude, double latitude){
 		super();
 		Point p = new Point();
-		p.setCoordinates(Double.toString(latitude)+","+Double.toString(longitude)+",0");
+		p.setCoordinates(Double.toString(longitude)+","+Double.toString(latitude)+",0");
 		this.Point = p;
 	}
 	
