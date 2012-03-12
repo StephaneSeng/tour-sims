@@ -73,8 +73,10 @@ public class CourseStepActivity extends MapActivity{
 	private MapController mapController;
 	private List<Overlay> mapOverlays;
 	private Drawable drawable;
+	private Drawable fdrawable;
 	private CustomItemizedOverlay itemizedOverlay;
 	private CustomItemizedOverlay itemizedOverlay_currentPoint;
+	private CustomItemizedOverlay itemizedOverlay_prev;
 	private List<Road> mRoads;
 	private MyLocationOverlay myLocationOverlay;
 	private MapView mapView;
@@ -216,7 +218,9 @@ public class CourseStepActivity extends MapActivity{
     public void updateMap() {
         mapOverlays = mapView.getOverlays();
         drawable = this.getResources().getDrawable(R.drawable.maps_icon);
+        fdrawable = this.getResources().getDrawable(R.drawable.maps_icon_former);
         itemizedOverlay = new CustomItemizedOverlay(drawable, this);
+        itemizedOverlay_prev = new CustomItemizedOverlay(fdrawable, this);
         //itemizedOverlay_currentPoint = new CustomItemizedOverlay(drawable, this);
         
         mapOverlays.clear();
@@ -247,7 +251,12 @@ public class CourseStepActivity extends MapActivity{
 	                itemizedOverlay_currentPoint.addOverlay(overlayItem);
 	                mapOverlays.add(itemizedOverlay_currentPoint);
 	        	} else if(!placemark.isRoutePlacemark()){
-	            	itemizedOverlay.addOverlay(overlayItem);
+	        		if(i>currentPlacemark){
+	        			itemizedOverlay.addOverlay(overlayItem);
+	        		}
+	        		else {
+	        			itemizedOverlay_prev.addOverlay(overlayItem);
+	        		}
 	        	}
         	}
         	i++;
@@ -280,6 +289,7 @@ public class CourseStepActivity extends MapActivity{
 
         }
         mapOverlays.add(itemizedOverlay);
+        mapOverlays.add(itemizedOverlay_prev);
         
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		myLocationOverlay.enableMyLocation();

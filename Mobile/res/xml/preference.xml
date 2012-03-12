@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory
+            android:title="@string/preferences_social_title">
+
+        <CheckBoxPreference
+                android:key="checkbox_preference"
+                android:title="@string/preferences_social_contact"
+                 />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+            android:title="@string/preferences_pos_title">
+        <CheckBoxPreference
+                android:key="checkbox_preference"
+                android:title="@string/preferences_pos_localisation"
+                 />
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>
