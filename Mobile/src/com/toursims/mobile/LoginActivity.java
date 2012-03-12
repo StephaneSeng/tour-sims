@@ -99,7 +99,7 @@ public class LoginActivity extends Activity {
 				        	System.out.println("Profile URL: " + profile.getUrl());
 				        	
 				        	// Call our own webservice for the authentication
-				        	UserWrapper userWrapper = new UserWrapper();
+				        	UserWrapper userWrapper = new UserWrapper(getApplicationContext());
 				        	User user = userWrapper.AuthenticateUser(profile.getDisplayName(), profile.getImage().getUrl(), 1, profile.getId());
 				        	
 				        	// Update the user name in the application

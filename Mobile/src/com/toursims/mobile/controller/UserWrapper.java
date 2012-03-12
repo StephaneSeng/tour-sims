@@ -27,9 +27,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import com.toursims.mobile.R;
 import com.toursims.mobile.model.Checkin;
 import com.toursims.mobile.model.User;
 import com.toursims.mobile.util.places.EasySSLSocketFactory;
@@ -47,7 +49,7 @@ public class UserWrapper {
 	/**
 	 * Application server root
 	 */
-	private static final String SERVER_ROOT = "http://10.0.2.2:80";
+	private String serverRoot;
 	
 	/**
 	 * JSON "true" boolean output
@@ -63,8 +65,10 @@ public class UserWrapper {
 	 * Default constructor
 	 * Initialize the HTTP client, we use a less secure one
 	 */
-	public UserWrapper() {
+	public UserWrapper(Context context) {
 		super();
+		
+		serverRoot = context.getString(R.string.server_root);
 		
 		// Create a HTTP server with minor security
 		// Source : http://www.virtualzone.de/2011-02-27/how-to-use-apache-httpclient-with-httpsssl-on-android
@@ -98,7 +102,7 @@ public class UserWrapper {
 		User user = null;
 		
 		// Build the SOAP request
-		StringBuffer request = new StringBuffer(SERVER_ROOT + "/user.php?");
+		StringBuffer request = new StringBuffer(serverRoot + "/user.php?");
 		request.append("action=" + "authenticate");
 		request.append("&name=" + Uri.encode(name));
 		request.append("&avatar=" + Uri.encode(avatar));
@@ -144,7 +148,7 @@ public class UserWrapper {
 		User user = null;
 		
 		// Build the SOAP request
-		StringBuffer request = new StringBuffer(SERVER_ROOT + "/user.php?");
+		StringBuffer request = new StringBuffer(serverRoot + "/user.php?");
 		request.append("action=" + "get_profile");
 		request.append("&user_id=" + user_id);
 
@@ -187,7 +191,7 @@ public class UserWrapper {
 		List<User> users = null;
 		
 		// Build the SOAP request
-		StringBuffer request = new StringBuffer(SERVER_ROOT + "/user.php?");
+		StringBuffer request = new StringBuffer(serverRoot + "/user.php?");
 		request.append("action=" + "get_contacts");
 		request.append("&user_id=" + user_id);
 
@@ -232,7 +236,7 @@ public class UserWrapper {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SZ");
 		
 		// Build the SOAP request
-		StringBuffer request = new StringBuffer(SERVER_ROOT + "/user.php?");
+		StringBuffer request = new StringBuffer(serverRoot + "/user.php?");
 		request.append("action=" + "checkin");
 		request.append("&latitude=" + latitude);
 		request.append("&longitude=" + longitude);
@@ -275,7 +279,7 @@ public class UserWrapper {
 		List<Checkin> checkins = new ArrayList<Checkin>();
 		
 		// Build the SOAP request
-		StringBuffer request = new StringBuffer(SERVER_ROOT + "/user.php?");
+		StringBuffer request = new StringBuffer(serverRoot + "/user.php?");
 		request.append("action=" + "get_nearby_checkins");
 		request.append("&latitude=" + latitude);
 		request.append("&longitude=" + longitude);

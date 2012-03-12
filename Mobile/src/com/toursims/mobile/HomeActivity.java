@@ -173,8 +173,11 @@ public class HomeActivity extends Activity {
 		// TextView btnGoogleLogin = (TextView)findViewById(R.id.googleLogin);
 
 		if (tourSims.isUserLoggedIn()) {
-			items2.remove(items2.size() - 1);
-			items2.get(4).setPictureURL(tourSims.getUser().getAvatar());
+			// TODO: Refactoring!
+			if (items2.size() == 5) {
+				items2.remove(4);
+			}
+			items2.get(3).setPictureURL(tourSims.getUser().getAvatar());
 			adapter2.setItems(items2);
 			lv2.setAdapter(adapter2);
 			ToolBox.setListViewHeightBasedOnChildren(lv2);

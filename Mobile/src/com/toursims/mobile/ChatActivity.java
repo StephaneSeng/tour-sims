@@ -41,7 +41,7 @@ public class ChatActivity extends Activity {
 	    tourSims = (TourSims) getApplication();
 	    
 	    // Retreive the current user contacts
-	    MessageWrapper messageWrapper = new MessageWrapper();
+	    MessageWrapper messageWrapper = new MessageWrapper(getApplicationContext());
 	    messages = messageWrapper.GetMessages(tourSims.getUser().getUserId());
 	    
 	    // Layout initialisation
