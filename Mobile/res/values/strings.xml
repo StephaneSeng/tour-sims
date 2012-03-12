@@ -46,6 +46,10 @@
     
 	<string name="preferences_current_course_url">PREFERENCES_CURRENT_COURSE</string> 
     <string name="preferences_file">PREFS</string>
+    <string name="preferences_social_title">SOCIAL</string>
+    <string name="preferences_social_contact">Contactable</string>
+    <string name="preferences_pos_title">Localisation</string>
+    <string name="preferences_pos_localisation">Être localisable</string>
     
     <string name="ok">OK</string>
     
