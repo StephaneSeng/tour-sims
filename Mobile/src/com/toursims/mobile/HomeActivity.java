@@ -132,6 +132,7 @@ public class HomeActivity extends Activity {
         	public void onClick(View v) {
     			Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
     			intent.putExtra(User.USER_ID_EXTRA, tourSims.getUser().getUserId());
+    			startActivity(intent);
 			}
         }));
         
@@ -357,5 +358,10 @@ public class HomeActivity extends Activity {
 				}
 			}
 		}
+	}
+	
+	public void traceMap(View v){
+		Intent intent = new Intent(getApplicationContext(), TraceMapActivity.class);
+		startActivity(intent);
 	}
 }
