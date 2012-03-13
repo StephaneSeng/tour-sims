@@ -53,6 +53,10 @@
     
     <string name="ok">OK</string>
     
+    <string name="help_dialog_pin_current">Indique le prochain point d\'intérêt.</string>
+    <string name="help_dialog_pin_next">Indique les points d\'intérêt suivants.</string>
+    <string name="help_dialog_pin_previous">Indique les points d\'intérêt déjà visités.</string>
+    
     <string name="later">Plus tard</string>
     
     <string name="menu_pause">Pause</string>
