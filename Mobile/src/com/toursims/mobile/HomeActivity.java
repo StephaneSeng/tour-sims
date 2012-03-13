@@ -19,6 +19,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -76,6 +77,27 @@ public class HomeActivity extends Activity {
 
 		settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
 		settings.edit().remove(ALREADY_ASKED_TO_RESUME).commit();
+
+		// Copy only one time the database after each fresh version
+		android.content.pm.PackageInfo pInfo;
+		try {
+			pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+			String version = pInfo.versionName;
+			String last_version = settings.getString(CustomPreferences.LATEST_VERSION, "-1");
+			if (!version.equals(last_version)) {
+				settings.edit().putString(CustomPreferences.LATEST_VERSION,
+						version).commit();
+				CourseBDD datasource;
+				datasource = new CourseBDD(this);
+				datasource.copyDataBase(this);
+			}
+		} catch (NameNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// Application context initialisation
 		tourSims = (TourSims) getApplication();
@@ -300,14 +322,9 @@ public class HomeActivity extends Activity {
 											l);
 									editor.commit();
 									Log.d("TAG", "Start recording" + l);
-									s.startRecording();
+									s.startRecording(e.getText().toString());
 									recImage();
 									dialog.dismiss();
-									Trace item = new Trace();
-									item.setName(e.getText().toString());
-									item.setMillis(l);
-									insertTrace(item);
-
 								}
 							})
 					.setNegativeButton(R.string.home_record_cancel,
@@ -352,19 +369,6 @@ public class HomeActivity extends Activity {
 				Context.BIND_AUTO_CREATE);
 	}
 
-	public void insertTrace(Trace item) {
-		try {
-			CourseBDD datasource;
-			datasource = new CourseBDD(this);
-			datasource.open();
-			datasource.insertTrace(item);
-			datasource.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 	public void setFlag(View v) {
 		if (s == null) {
 			doBindService();
@@ -398,26 +402,27 @@ public class HomeActivity extends Activity {
 				TraceMapActivity.class);
 		startActivity(intent);
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.home, menu);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.home, menu);
 
-	    return true;
+		return true;
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle item selection
-	    switch (item.getItemId()) {
-	        case R.id.prefs:
-	    		Intent intent = new Intent(getApplicationContext(),
-	    				PrefActivity.class);
-	    		startActivity(intent);
-	        	return true;
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.prefs:
+			Intent intent = new Intent();
+			// Intent intent = new Intent(getApplicationContext(),
+			// PrefActivity.class);
+			startActivity(intent);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 }
