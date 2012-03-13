@@ -10,6 +10,7 @@ import com.toursims.mobile.model.Trace;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -67,7 +68,8 @@ public class TraceAdapter extends BaseAdapter {
 			holder.name = (TextView) convertView.findViewById(R.id.name);
 			holder.imageDelete = (ImageView) convertView
 					.findViewById(R.id.imageDelete);
-			holder.wrapper = (LinearLayout) convertView.findViewById(R.id.wrapper);
+			holder.wrapper = (LinearLayout) convertView
+					.findViewById(R.id.wrapper);
 
 			holder.name.setText(items.get(position).getName());
 			holder.details
@@ -75,7 +77,7 @@ public class TraceAdapter extends BaseAdapter {
 							.toStringRfc3339());
 
 			convertView.setTag(holder);
-			
+
 			holder.imageDelete.setOnClickListener(new OnClickListener() {
 				private int pos = position;
 
@@ -84,30 +86,35 @@ public class TraceAdapter extends BaseAdapter {
 					ToolBox.deleteItem(items_full.get(pos), context);
 					int i = 0;
 
-					for (Trace item : items) {
-						if (item.getId() == items_full.get(pos).getId())
-							items.remove(i);
+					while (i < items.size()) {
+						if (items.get(i).getId() == items_full.get(pos).getId())
+							break;
 						i++;
 					}
+
+					if (i < items.size()) {
+						items.remove(i);
+					}
+
 					notifyDataSetChanged();
 				}
 			});
-			
+
 			holder.wrapper.setOnClickListener(new OnClickListener() {
 				private int pos = position;
 
 				@Override
 				public void onClick(View v) {
-					Intent intent = new Intent(context,TraceMapActivity.class);
+					Intent intent = new Intent(context, TraceMapActivity.class);
 					intent.putExtra("TRACE", items_full.get(pos).getFile());
 					context.startActivity(intent);
 				}
 			});
+
+			Log.d("TAG", items_full.get(position).getFile());
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-
-
 
 		return convertView;
 	}

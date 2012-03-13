@@ -62,7 +62,8 @@ public class CourseBDD {
 			SQLiteHelper.COURSE_PICTURE_COL };
 
 	private String[] allColumnsTrace = { SQLiteHelper.COL_ID,
-			SQLiteHelper.COL_NAME, SQLiteHelper.TRACE_MILLIS_COL };
+			SQLiteHelper.COL_NAME, SQLiteHelper.TRACE_MILLIS_COL,
+			SQLiteHelper.TRACE_FILE_COL };
 
 	private String[] allColumnsPlacemark = { SQLiteHelper.COL_ID,
 			SQLiteHelper.COL_NAME, SQLiteHelper.PLACEMARK_DESCRIPTION_COL,
@@ -314,8 +315,6 @@ public class CourseBDD {
 	public void copyDataBase(Context c) throws IOException {
 
 		Log.d("CourseBDD", "Copy Database");
-		// Open your local db as the input stream
-
 		InputStream myInput = c.getAssets().open(BDD_PACKAGE);
 
 		// Path to the just created empty db

@@ -258,13 +258,6 @@ public class LocalizationService extends Service {
 		Long startedTime = settings.getLong(
 				CustomPreferences.RECORDING_RIGHT_NOW, -1);
 		try {
-			String filename = "trace_" + startedTime.toString() + fileNameExt;
-			Log.d("TAG", filename);
-
-			// File f = new File(filename);
-
-			// if(!f.exists())
-			// f.mkdirs();
 			FileOutputStream fos = openFileOutput(filename, Context.MODE_APPEND);
 			fos.write(stringFile.getBytes());
 			fos.close();
@@ -287,11 +280,13 @@ public class LocalizationService extends Service {
 					CustomPreferences.RECORDING_RIGHT_NOW, -1);
 			filename = "/data/data/com.toursims.mobile/files/trace_"
 					+ startedTime.toString() + ".kml";
-			
+
 			item.setFile(filename);
 			item.setMillis(startedTime);
 			item.setName(name);
 
+			filename = "trace_" + startedTime.toString() + ".kml";
+			
 			CourseBDD datasource;
 			datasource = new CourseBDD(this);
 			datasource.open();
