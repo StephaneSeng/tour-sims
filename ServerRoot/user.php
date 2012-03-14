@@ -83,7 +83,7 @@ switch ($_REQUEST['action']) {
 		break;
 	case "get_nearby_checkins":
 		// Retreive the checkins made by the other users near the current location
-		// Test: http://localhost/user.php?action=get_nearby_checkins&latitude=48.870278&longitude=2.316389&user_id=2
+		// Test: http://toursims.free.fr/user.php?action=get_nearby_checkins&latitude=48.870278&longitude=2.316389&user_id=2
 		$query = "
 		SELECT
 			u.user_id,
@@ -116,7 +116,7 @@ switch ($_REQUEST['action']) {
 		break;
 	case "get_user_checkins":
 		// Retreive the checkins made by one user
-		// Test: http://localhost/user.php?action=get_user_checkins&user_id=1
+		// Test: http://toursims.free.fr/user.php?action=get_user_checkins&user_id=1
 		$query = "
 		SELECT
 			c.latitude,

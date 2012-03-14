@@ -7,6 +7,7 @@ REM localhost:5432:*:postgres:postgres
 
 ECHO ON
 
+psql -h localhost -p 5432 -U postgres -f ./CreateRole.sql
 psql -h localhost -p 5432 -U postgres -f ./CreateDatabase.sql
 psql -h localhost -p 5432 -d toursims -U postgres -f ./CreateDatabaseExtensions.sql
 psql -h localhost -p 5432 -d toursims -U postgres -f ./CreateSchema.sql

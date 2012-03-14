@@ -13,30 +13,30 @@ INSERT INTO course (name, description, difficulty, file, "timestamp", user_id, c
 
 -- Table: poi
 
-INSERT INTO poi(name, description, latitude, longitude, address, "timestamp", user_id)
-SELECT
-	name,
-	description,
-	latitude,
-	longitude,
-	address,
-	now() AS "timestamp",
-	1 AS user_id
-FROM
-	dblink(
-		'dbname=osm port=5432 user=postgres password=postgres',
-		'SELECT
-			tags -> ''name'' AS name,
-			tags -> ''address'' AS address,
-			tags -> ''description'' AS description,
-			ST_Y(geom) AS latitude,
-			ST_X(geom) AS longitude
-		FROM
-			nodes
-		WHERE
-			tags ? ''name''
-			AND tags ? ''tourism'';')
-	AS nodes(name character varying, address character varying, description character varying, latitude double precision, longitude double precision);
+-- INSERT INTO poi(name, description, latitude, longitude, address, "timestamp", user_id)
+-- SELECT
+-- 	name,
+-- 	description,
+-- 	latitude,
+-- 	longitude,
+-- 	address,
+-- 	now() AS "timestamp",
+-- 	1 AS user_id
+-- FROM
+-- 	dblink(
+-- 		'dbname=osm port=5432 user=postgres password=postgres',
+-- 		'SELECT
+-- 			tags -> ''name'' AS name,
+-- 			tags -> ''address'' AS address,
+-- 			tags -> ''description'' AS description,
+-- 			ST_Y(geom) AS latitude,
+-- 			ST_X(geom) AS longitude
+-- 		FROM
+-- 			nodes
+-- 		WHERE
+-- 			tags ? ''name''
+-- 			AND tags ? ''tourism'';')
+-- 	AS nodes(name character varying, address character varying, description character varying, latitude double precision, longitude double precision);
 
 -- Table: metadata_tag
 
@@ -50,11 +50,11 @@ INSERT INTO category (category_id, name) VALUES (2, 'Administrative');
 
 -- Table: rating
 
---
+INSERT INTO rating (rating, user_id, course_id) VALUES (5, 1, 1);
 
 -- Table: comment
 
---
+INSERT INTO comment (text, "timestamp", user_id, course_id) VALUES ('Hello World!', now(), 1, 1);
 
 -- Table: metadata
 

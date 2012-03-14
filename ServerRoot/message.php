@@ -104,7 +104,7 @@ switch ($_REQUEST['action']) {
 		break;
 	case 'create_message':
 		// Create a new message for the specified user
-		// Test: http://localhost/message.php?action=create_message&text=HelloWorld&latitude=1&longitude=2&timestamp=12-12-2012&rdv_latitude=0&rdv_longitude=0&rdv_timestamp=12-12-2013&reply_message_id=null&writer_id=1&receiver_id=2
+		// Test: http://toursims.free.fr/message.php?action=create_message&text=HelloWorld&latitude=1&longitude=2&timestamp=12-12-2012&rdv_latitude=0&rdv_longitude=0&rdv_timestamp=12-12-2013&reply_message_id=null&writer_id=1&receiver_id=2
 	
 		// Create the message object
 		$query = "
@@ -133,7 +133,7 @@ switch ($_REQUEST['action']) {
 		break;
 	case "get_reply_messages":
 		// Select all the messages from one given thread
-		// Test : http://localhost/message.php?action=get_reply_messages&root_message_id=1
+		// Test : http://toursims.free.fr/message.php?action=get_reply_messages&root_message_id=1
 		$query = "
 		-- Select all the messages from one given thread
 		SELECT

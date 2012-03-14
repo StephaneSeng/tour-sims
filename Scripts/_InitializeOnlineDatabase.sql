@@ -1,17 +1,8 @@
--- psql -h localhost -p 5432 -U postgres -f ./CreateDatabase.sql
-
---
-
--- psql -h localhost -p 5432 -d toursims -U postgres -f ./CreateDatabaseExtensions.sql
-
--- CREATE EXTENSION dblink;
-
--- psql -h localhost -p 5432 -d toursims -U postgres -f ./CreateSchema.sql
-
---
-
--- psql -h localhost -p 5432 -d toursims -U postgres -f ./CreateTablesUser.sql
-
+-- Warning: This file is generated, it should not be updated manually 
+-- Concatenation of the CREATE TABLE statements found in the other files 
+ 
+-- psql -h localhost -p 5432 -d toursims -U postgres -f ./CreateTablesUser.sql 
+ 
 -- Table: sso
 
 -- DROP TABLE sso;
@@ -162,9 +153,9 @@ WITH (
 );
 ALTER TABLE user_message
   OWNER TO toursims;
-
--- psql -h localhost -p 5432 -d toursims -U postgres -f ./CreateTablesCityCoursePOI.sql
-
+ 
+-- psql -h localhost -p 5432 -d toursims -U postgres -f ./CreateTablesCityCoursePOI.sql 
+ 
 -- Table: city
 
 -- DROP TABLE city;
@@ -276,7 +267,7 @@ ALTER TABLE category
 CREATE TABLE rating
 (
   rating_id serial NOT NULL,
-  rating integer,
+  rating double precision,
   user_id integer,
   course_id integer,
   city_id integer,
@@ -429,9 +420,9 @@ WITH (
 );
 ALTER TABLE course_poi_category
   OWNER TO toursims;
-
--- psql -h localhost -p 5432 -d toursims -U postgres -f ./CreateTablesStepTrial.sql
-
+ 
+-- psql -h localhost -p 5432 -d toursims -U postgres -f ./CreateTablesStepTrial.sql 
+ 
 -- Table: step
 
 -- DROP TABLE step;
@@ -541,3 +532,4 @@ WITH (
 ALTER TABLE poi_step_trial
   OWNER TO toursims;
   
+ 

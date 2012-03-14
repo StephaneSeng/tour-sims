@@ -3,7 +3,7 @@
 -- DROP DATABASE toursims;
 
 CREATE DATABASE toursims
-  WITH OWNER = postgres
+  WITH OWNER = toursims
        ENCODING = 'UTF8'
        TABLESPACE = pg_default
        LC_COLLATE = 'French_France.1252'

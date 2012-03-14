@@ -15,7 +15,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE city
-  OWNER TO postgres;
+  OWNER TO toursims;
 
 -- Table: course
 
@@ -43,7 +43,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE course
-  OWNER TO postgres;
+  OWNER TO toursims;
 
 -- Table: poi
 
@@ -68,7 +68,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE poi
-  OWNER TO postgres;
+  OWNER TO toursims;
   
 -- Table: metadata_tag
 
@@ -84,7 +84,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE metadata_tag
-  OWNER TO postgres;
+  OWNER TO toursims;
 
 -- Table: category
 
@@ -100,7 +100,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE category
-  OWNER TO postgres;
+  OWNER TO toursims;
 
 -- Table: rating
 
@@ -109,7 +109,7 @@ ALTER TABLE category
 CREATE TABLE rating
 (
   rating_id serial NOT NULL,
-  rating integer,
+  rating double precision,
   user_id integer,
   course_id integer,
   city_id integer,
@@ -132,7 +132,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE rating
-  OWNER TO postgres;
+  OWNER TO toursims;
 
 -- Table: comment
 
@@ -165,7 +165,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE comment
-  OWNER TO postgres;
+  OWNER TO toursims;
 
 -- Table: metadata
 
@@ -185,7 +185,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE metadata
-  OWNER TO postgres;
+  OWNER TO toursims;
 
 -- Table: user_category
 
@@ -207,7 +207,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE user_category
-  OWNER TO postgres;
+  OWNER TO toursims;
   
 -- Table: city_course_poi_metadata
 
@@ -236,7 +236,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE city_course_poi_metadata
-  OWNER TO postgres;
+  OWNER TO toursims;
 
 -- Table: course_poi_category
 
@@ -261,4 +261,4 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE course_poi_category
-  OWNER TO postgres;
+  OWNER TO toursims;

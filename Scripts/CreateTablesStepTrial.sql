@@ -18,7 +18,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE step
-  OWNER TO postgres;
+  OWNER TO toursims;
 
 -- Table: subject
 
@@ -34,7 +34,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE subject
-  OWNER TO postgres;
+  OWNER TO toursims;
 
 -- Table: trial
 
@@ -57,7 +57,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE trial
-  OWNER TO postgres;
+  OWNER TO toursims;
 
 -- Table: course_step
 
@@ -80,7 +80,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE course_step
-  OWNER TO postgres;
+  OWNER TO toursims;
 
 -- Table: poi_step_trial
 
@@ -105,5 +105,5 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE poi_step_trial
-  OWNER TO postgres;
+  OWNER TO toursims;
   

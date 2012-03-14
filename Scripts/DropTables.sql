@@ -1,6 +1,3 @@
--- Warning: This file is generated, it should not be updated manually 
--- DROP statements with the same order as the TRUNCATE statements one 
- 
 -- Table: poi_step_trial
 
 DROP TABLE poi_step_trial;
@@ -92,4 +89,3 @@ DROP TABLE preferences;
 -- Table: sso
 
 DROP TABLE sso;
- 

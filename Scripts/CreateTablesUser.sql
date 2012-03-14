@@ -12,7 +12,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE sso
-  OWNER TO postgres;
+  OWNER TO toursims;
 
 -- Table: preferences
 
@@ -29,7 +29,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE preferences
-  OWNER TO postgres;
+  OWNER TO toursims;
 
 -- Table: message
 
@@ -55,7 +55,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE message
-  OWNER TO postgres;
+  OWNER TO toursims;
   
 -- Table: "user"
 
@@ -81,7 +81,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE "user"
-  OWNER TO postgres;
+  OWNER TO toursims;
 
 -- Table: checkin
 
@@ -103,7 +103,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE checkin
-  OWNER TO postgres;
+  OWNER TO toursims;
   
 -- Table: user_user
 
@@ -124,7 +124,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE user_user
-  OWNER TO postgres;
+  OWNER TO toursims;
   
 -- Table: user_message
 
@@ -147,4 +147,4 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE user_message
-  OWNER TO postgres;
+  OWNER TO toursims;
