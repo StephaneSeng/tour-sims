@@ -14,6 +14,7 @@ import com.toursims.mobile.model.Trace;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -120,8 +122,25 @@ public class TraceAdapter extends BaseAdapter {
 		for (Integer i : selectedItems) {
 			ToolBox.deleteItem(items_full.get(i), context);
 			File f = new File(items_full.get(i).getFile());
-			f.delete();			
+			f.delete();
 		}
 	}
 
+	public void share() {
+		if (selectedItems.size() > 0) {
+			ArrayList<Uri> uris = new ArrayList<Uri>();
+			for (Integer i : selectedItems) {
+				uris.add(Uri.fromFile(new File(items.get(i).getFile())));
+			}
+			Intent sendIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+			sendIntent.setType("text/plain");
+			sendIntent.putExtra(Intent.EXTRA_SUBJECT, context.getResources().getString(R.string.traces_my));
+			sendIntent.putExtra(Intent.EXTRA_TEXT, context.getResources().getString(R.string.recorded_with_toursism));
+			sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+			context.startActivity(Intent.createChooser(sendIntent, "Email"));
+		} else {
+			Toast.makeText(context, context.getResources().getString(R.string.none_selected), Toast.LENGTH_LONG)
+					.show();
+		}
+	}
 }

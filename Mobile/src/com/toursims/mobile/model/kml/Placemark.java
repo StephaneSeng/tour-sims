@@ -6,6 +6,7 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
+
 @Root
 public class Placemark {
 	public static final String NAME = "Placemark_NAME";
@@ -19,9 +20,6 @@ public class Placemark {
 	public Integer getId() {
 		return id;
 	}
-
-	private String begin;
-	private String end;
 
 	@Element(required = false)
 	private String clueTitle;
@@ -67,6 +65,9 @@ public class Placemark {
 
 	@Element(required = false)
 	private String routePlacemark = "false";
+
+	@Element(required = false)
+	private TimeSpan TimeSpan;
 
 	public List<Data> getExtendedData() {
 		return ExtendedData;
@@ -205,8 +206,7 @@ public class Placemark {
 	public String toKml() {
 		String s = "<Placemark>";
 		s += Point.toKml();
-		s += "<TimeSpan><begin>" + this.begin + "</begin><end>" + this.end
-				+ "</end></TimeSpan>";
+		s += TimeSpan.toKml();
 		s += "</Placemark>";
 		return s;
 	}
@@ -216,7 +216,8 @@ public class Placemark {
 		Point p = new Point();
 		p.setCoordinates(Double.toString(longitude) + ","
 				+ Double.toString(latitude) + ",0");
-		this.begin = begin;
+		TimeSpan = new TimeSpan();
+		TimeSpan.setBegin(begin);
 		this.Point = p;
 	}
 
@@ -224,20 +225,12 @@ public class Placemark {
 		super();
 	}
 
-	public String getEnd() {
-		return end;
+	public TimeSpan getTimeSpan() {
+		return TimeSpan;
 	}
 
-	public void setEnd(String end) {
-		this.end = end;
-	}
-
-	public String getBegin() {
-		return begin;
-	}
-
-	public void setBegin(String begin) {
-		this.begin = begin;
+	public void setTimeSpan(TimeSpan timeSpan) {
+		TimeSpan = timeSpan;
 	}
 
 }

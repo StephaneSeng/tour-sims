@@ -235,13 +235,17 @@ public class LocalizationService extends Service {
 				if (course == null) {
 					course = new Course();
 				}
-				course.addPlacemark(p);
-				if (course.getPlacemarks().size() - 2 > 0)
+				
+				if (course.getPlacemarks().size() > 0) {
 					course.getPlacemarks()
-							.get(course.getPlacemarks().size() - 2)
+							.get(course.getPlacemarks().size() - 1)
+							.getTimeSpan()
 							.setEnd(Calendar.getInstance().getTime()
 									.toLocaleString());
+				}
 
+				course.addPlacemark(p);
+				
 				if (fileString.length() > 500) {
 					writeFile(fileString, ".log");
 				}

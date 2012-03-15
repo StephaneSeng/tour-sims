@@ -77,7 +77,7 @@ public class TracesActivity extends Activity {
 	}
 
 	public void share(View v) {
-
+		adapter.share();
 	}
 
 }

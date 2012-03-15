@@ -70,6 +70,8 @@
     <string name="no_name">No name</string>
 
     <string name="traces_my">Mes traces</string>
+    <string name="recorded_with_toursism">Enregistré par TourSIMS</string>
+    <string name="none_selected">Aucun élément selectionné</string>
     <string name="flag_my">Mes lieux</string>
     <string name="traces">Traces</string>
     <string name="server_root">http://toursims.free.fr</string>
