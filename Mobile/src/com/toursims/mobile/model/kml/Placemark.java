@@ -1,4 +1,5 @@
 package com.toursims.mobile.model.kml;
+
 import java.util.List;
 
 import org.simpleframework.xml.Element;
@@ -10,75 +11,78 @@ public class Placemark {
 	public static final String NAME = "Placemark_NAME";
 
 	private Integer id;
-		
+
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
+
 	public Integer getId() {
 		return id;
 	}
-	
-	@Element(required=false)
+
+	private String begin;
+	private String end;
+
+	@Element(required = false)
 	private String clueTitle;
-		
-	@Element(required=false)
+
+	@Element(required = false)
 	private String direction;
-	
-	@Element(required=false)
+
+	@Element(required = false)
 	private String name;
 
-	@Element(required=false)
+	@Element(required = false)
 	private String description;
-	
-	@Element(required=false)
+
+	@Element(required = false)
 	private String hint;
-	
-	@Element(required=false)
+
+	@Element(required = false)
 	private String greetings;
 
-	@Element(required=false)
+	@Element(required = false)
 	private String address;
 
-	@ElementList(required=false)
+	@ElementList(required = false)
 	private List<Style> StyleMap;
 
-	@Element(required=false)
+	@Element(required = false)
 	private Point Point;
 
-	@Element(required=false)
+	@Element(required = false)
 	private LookAt LookAt;
 
-	@Element(required=false)
+	@Element(required = false)
 	private GeometryCollection GeometryCollection;
 
-	@Element(required=false)
+	@Element(required = false)
 	private String styleUrl;
-	
-	@ElementList(entry="Data",required=false)
+
+	@ElementList(entry = "Data", required = false)
 	private List<Data> ExtendedData;
-	
-	@ElementList(entry="Question",required=false)
+
+	@ElementList(entry = "Question", required = false)
 	private List<Question> Questions;
-	
-	@Element(required=false)
+
+	@Element(required = false)
 	private String routePlacemark = "false";
-	
+
 	public List<Data> getExtendedData() {
 		return ExtendedData;
 	}
-	
+
 	public List<Question> getQuestions() {
 		return Questions;
 	}
-	
+
 	public void setQuestions(List<Question> questions) {
 		Questions = questions;
 	}
-	
+
 	public void setExtendedData(List<Data> extendedData) {
 		this.ExtendedData = extendedData;
-	}	
+	}
 
 	public String getName() {
 		return name;
@@ -115,14 +119,12 @@ public class Placemark {
 	public Point getPoint() {
 		return Point;
 	}
-	
-
 
 	public void setPoint(Point point) {
 		this.Point = point;
 	}
-	
-	public void setPoint(String coordinates){
+
+	public void setPoint(String coordinates) {
 		this.Point = new Point(coordinates);
 	}
 
@@ -149,71 +151,93 @@ public class Placemark {
 	public void setStyleUrl(String styleUrl) {
 		this.styleUrl = styleUrl;
 	}
-	
+
 	public void setGreetings(String greetings) {
 		this.greetings = greetings;
 	}
-	
+
 	public void setHint(String hint) {
 		this.hint = hint;
 	}
-	
+
 	public String getGreetings() {
 		return greetings;
 	}
-	
+
 	public String getHint() {
 		return hint;
 	}
-	
+
 	public String getDirection() {
-		if (direction == null){
+		if (direction == null) {
 			return description;
 		}
 		return direction;
 	}
-	
+
 	public void setDirection(String direction) {
 		this.direction = direction;
 	}
-	
+
 	public String getClueTitle() {
-		if (clueTitle == null){
+		if (clueTitle == null) {
 			return name;
 		}
 		return clueTitle;
 	}
-	
+
 	public void setClueTitle(String clueTitle) {
 		this.clueTitle = clueTitle;
 	}
-	
+
 	public boolean isRoutePlacemark() {
 		return routePlacemark.equals("true");
 	}
+
 	public String getRoutePlacemark() {
 		return routePlacemark;
 	}
-	
+
 	public void setRoutePlacemark(String routePlacemark) {
 		this.routePlacemark = routePlacemark;
 	}
-	
-	public String toKml(){
+
+	public String toKml() {
 		String s = "<Placemark>";
 		s += Point.toKml();
+		s += "<TimeSpan><begin>" + this.begin + "</begin><end>" + this.end
+				+ "</end></TimeSpan>";
 		s += "</Placemark>";
 		return s;
 	}
-	
-	public Placemark(double longitude, double latitude){
+
+	public Placemark(double longitude, double latitude, String begin) {
 		super();
 		Point p = new Point();
-		p.setCoordinates(Double.toString(longitude)+","+Double.toString(latitude)+",0");
+		p.setCoordinates(Double.toString(longitude) + ","
+				+ Double.toString(latitude) + ",0");
+		this.begin = begin;
 		this.Point = p;
 	}
-	
+
 	public Placemark() {
 		super();
 	}
+
+	public String getEnd() {
+		return end;
+	}
+
+	public void setEnd(String end) {
+		this.end = end;
+	}
+
+	public String getBegin() {
+		return begin;
+	}
+
+	public void setBegin(String begin) {
+		this.begin = begin;
+	}
+
 }

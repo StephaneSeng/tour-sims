@@ -1,8 +1,8 @@
 package com.toursims.mobile;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -230,11 +230,17 @@ public class LocalizationService extends Service {
 				fileString += location.getTime() + "," + location.getLatitude()
 						+ "," + location.getLongitude() + "\n";
 				Placemark p = new Placemark(location.getLongitude(),
-						location.getLatitude());
+						location.getLatitude(), Calendar.getInstance()
+								.getTime().toLocaleString());
 				if (course == null) {
 					course = new Course();
 				}
 				course.addPlacemark(p);
+				if (course.getPlacemarks().size() - 2 > 0)
+					course.getPlacemarks()
+							.get(course.getPlacemarks().size() - 2)
+							.setEnd(Calendar.getInstance().getTime()
+									.toLocaleString());
 
 				if (fileString.length() > 500) {
 					writeFile(fileString, ".log");
@@ -286,7 +292,7 @@ public class LocalizationService extends Service {
 			item.setName(name);
 
 			filename = "trace_" + startedTime.toString() + ".kml";
-			
+
 			CourseBDD datasource;
 			datasource = new CourseBDD(this);
 			datasource.open();

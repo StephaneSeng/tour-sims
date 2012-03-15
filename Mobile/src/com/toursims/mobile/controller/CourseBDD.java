@@ -24,7 +24,7 @@ public class CourseBDD {
 	private static final int VERSION_BDD = 1;
 	private static final String BDD_PACKAGE = "sqlite.db";
 	private static final String BDD_CUSTOM = "trace.db";
-	private static final String PATH_BDD = "/data/data/com.toursims.mobile/databases/";
+	private static final String PATH_BDD = "/data/data/com.biboo.myTrace/databases/";
 
 	private SQLiteHelper packageBaseSQLite;
 	private SQLiteHelper customBaseSQLite;

@@ -1,11 +1,15 @@
 package com.toursims.mobile.ui;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import com.google.api.client.util.DateTime;
 import com.toursims.mobile.R;
 import com.toursims.mobile.TraceMapActivity;
-import com.toursims.mobile.TracesActivity;
 import com.toursims.mobile.model.Trace;
 
 import android.content.Context;
@@ -16,10 +20,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class TraceAdapter extends BaseAdapter {
 
@@ -27,6 +32,7 @@ public class TraceAdapter extends BaseAdapter {
 	List<Trace> items_full;
 	LayoutInflater inflater;
 	Context context;
+	Set<Integer> selectedItems = new HashSet<Integer>();
 
 	public TraceAdapter(Context context, List<Trace> items) {
 		inflater = LayoutInflater.from(context);
@@ -53,8 +59,8 @@ public class TraceAdapter extends BaseAdapter {
 	private class ViewHolder {
 		TextView name;
 		TextView details;
-		ImageView imageDelete;
 		LinearLayout wrapper;
+		CheckBox checkBox;
 	}
 
 	public View getView(final int position, View convertView, ViewGroup parent) {
@@ -66,39 +72,30 @@ public class TraceAdapter extends BaseAdapter {
 
 			holder.details = (TextView) convertView.findViewById(R.id.details);
 			holder.name = (TextView) convertView.findViewById(R.id.name);
-			holder.imageDelete = (ImageView) convertView
-					.findViewById(R.id.imageDelete);
 			holder.wrapper = (LinearLayout) convertView
 					.findViewById(R.id.wrapper);
+			holder.checkBox = (CheckBox) convertView
+					.findViewById(R.id.checkBox);
 
 			holder.name.setText(items.get(position).getName());
-			holder.details
-					.setText(new DateTime(items.get(position).getMillis())
-							.toStringRfc3339());
+			holder.details.setText(new Date(items.get(position).getMillis())
+					.toLocaleString());
+			holder.checkBox
+					.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+						private int pos = position;
+
+						@Override
+						public void onCheckedChanged(CompoundButton buttonView,
+								boolean isChecked) {
+							if (isChecked) {
+								selectedItems.add(pos);
+							} else {
+								selectedItems.remove(pos);
+							}
+						}
+					});
 
 			convertView.setTag(holder);
-
-			holder.imageDelete.setOnClickListener(new OnClickListener() {
-				private int pos = position;
-
-				@Override
-				public void onClick(View v) {
-					ToolBox.deleteItem(items_full.get(pos), context);
-					int i = 0;
-
-					while (i < items.size()) {
-						if (items.get(i).getId() == items_full.get(pos).getId())
-							break;
-						i++;
-					}
-
-					if (i < items.size()) {
-						items.remove(i);
-					}
-
-					notifyDataSetChanged();
-				}
-			});
 
 			holder.wrapper.setOnClickListener(new OnClickListener() {
 				private int pos = position;
@@ -118,4 +115,13 @@ public class TraceAdapter extends BaseAdapter {
 
 		return convertView;
 	}
+
+	public void deleteItems() {
+		for (Integer i : selectedItems) {
+			ToolBox.deleteItem(items_full.get(i), context);
+			File f = new File(items_full.get(i).getFile());
+			f.delete();			
+		}
+	}
+
 }

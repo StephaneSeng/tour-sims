@@ -8,48 +8,65 @@
         style="@style/textTitle"
         android:text="@string/traces_my" />
 
-    <TextView
-        style="@style/textTitleSection"
-        android:text="@string/traces_my" />
-
-    <View
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="@color/title" />
+        android:layout_height="wrap_content" >
 
-    <ListView
-        android:id="@+id/lvListe"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                style="@style/textTitleSection"
+                android:text="@string/traces_my" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="@color/title" />
+
+            <ListView
+                android:id="@+id/lvListe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:cacheColorHint="@android:color/transparent" />
+
+            <TextView
+                style="@style/textTitleSection"
+                android:text="@string/flag_my" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="@color/title" />
+
+            <ListView
+                android:id="@+id/lvListe2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:cacheColorHint="@android:color/transparent" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:cacheColorHint="@android:color/transparent" />
+        android:layout_height="fill_parent"
+        android:gravity="bottom|left" >
 
-    <TextView
-        style="@style/textTitleSection"
-        android:text="@string/flag_my" />
+        <ImageView
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="share"
+            android:src="@drawable/ic_action_share" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="@color/title" />
-
-    <ListView
-        android:id="@+id/lvListe2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:cacheColorHint="@android:color/transparent" />
-
-    <!--
-         <TextView  
-           android:id="@+id/list_complex_title"  
-       	   android:layout_width="fill_parent"  
-           android:layout_height="wrap_content"  
-           android:textAppearance="?android:attr/textAppearanceLarge"/>
-           
-    	 <TextView  
-          android:id="@+id/list_complex_caption"  
-          android:layout_width="fill_parent"  
-          android:layout_height="wrap_content"  
-          android:textAppearance="?android:attr/textAppearanceSmall"/>
-    -->
+        <ImageView
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="delete"
+            android:src="@drawable/ic_menu_delete" />
+    </LinearLayout>
 
 </LinearLayout>
