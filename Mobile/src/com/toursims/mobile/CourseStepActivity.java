@@ -65,7 +65,6 @@ public class CourseStepActivity extends MapActivity{
     private static final long POINT_RADIUS = 25; // in Meters
     private static final long PROX_ALERT_EXPIRATION = -1;    
 
-	private static LocalizationService serviceLocalization;
 	private static List<Placemark> placemarks;
 	private static List<GeoPoint> bounds;
 	private static Course course;
@@ -83,7 +82,6 @@ public class CourseStepActivity extends MapActivity{
     private LocationManager locationManager;
     private static int currentPlacemark;
     private static BroadcastReceiver receiverLocalization;
-	private LocalizationService s;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -471,25 +469,6 @@ public class CourseStepActivity extends MapActivity{
 		}
 	}
 	
-	private ServiceConnection mConnection = new ServiceConnection() {
-
-		public void onServiceConnected(ComponentName className, IBinder binder) {
-			s = ((LocalizationService.MyBinder) binder).getService();
-			Log.d("Connect","Connected Home Activity");
-		}
-
-		public void onServiceDisconnected(ComponentName className) {
-			s = null;
-		}
-	};
-
-	void doBindService() {
-		Log.d("Connect","do Bind");
-		bindService(new Intent(this, LocalizationService.class), mConnection,
-				Context.BIND_AUTO_CREATE);
-	}
-	
-
 	@Override
 	protected boolean isRouteDisplayed() {
 		// TODO Auto-generated method stub

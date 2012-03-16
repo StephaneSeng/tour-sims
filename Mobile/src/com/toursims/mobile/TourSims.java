@@ -13,10 +13,9 @@ public class TourSims extends Application {
 	 * The current logged in user
 	 */
 	private User user;
-	
+
 	/**
-	 * State variable
-	 * true if the user is logged in, false otherwise
+	 * State variable true if the user is logged in, false otherwise
 	 */
 	private boolean userLoggedIn = false;
 

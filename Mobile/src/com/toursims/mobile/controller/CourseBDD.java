@@ -30,12 +30,16 @@ public class CourseBDD {
 	private SQLiteHelper customBaseSQLite;
 	private SQLiteDatabase packageDB;
 	private SQLiteDatabase customDB;
+	
+	private Context context;
 
 	public CourseBDD(Context context) throws IOException {
 		packageBaseSQLite = new SQLiteHelper(context, BDD_PACKAGE, null,
 				VERSION_BDD);
 		customBaseSQLite = new SQLiteHelper(context, BDD_CUSTOM, null,
 				VERSION_BDD);
+		
+		this.context = context;
 	}
 
 	public void open() {
@@ -358,7 +362,10 @@ public class CourseBDD {
 		myOutput.flush();
 		myOutput.close();
 		myInput.close();
-
+		
+		// Load the courses
+		CourseWrapper courseWrapper = new CourseWrapper(context);
+		courseWrapper.GetCourses();
 	}
 
 }

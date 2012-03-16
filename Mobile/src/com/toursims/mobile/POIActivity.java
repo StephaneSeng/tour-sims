@@ -39,6 +39,9 @@ public class POIActivity extends MapActivity {
 	private Drawable drawable;
 	private CustomItemizedOverlay itemizedOverlay;
 	private MyLocationOverlay myLocationOverlay;
+	private LocationManager locationManager;
+	private Criteria criteria;
+	private String bestProvider;
 
 	/**
 	 * Called when the activity is first created
@@ -48,7 +51,7 @@ public class POIActivity extends MapActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.poi);
 
-		// Initialize the share attributes
+		// Initialize the shared attributes
 		mapView = (MapView) findViewById(R.id.poiMapView);
 		mapController = mapView.getController();
 		mapOverlays = mapView.getOverlays();
@@ -56,6 +59,10 @@ public class POIActivity extends MapActivity {
 		// Set the MapView properties
 		mapView.setBuiltInZoomControls(true);
 		mapController.setZoom(14); // Zoom 1 is world view
+
+		myLocationOverlay = new MyLocationOverlay(this, mapView);
+		myLocationOverlay.enableMyLocation();
+		mapOverlays.add(myLocationOverlay);
 	}
 
 	/**
@@ -65,14 +72,31 @@ public class POIActivity extends MapActivity {
 	protected void onResume() {
 		super.onResume();
 
-		myLocationOverlay = new MyLocationOverlay(this, mapView);
-		myLocationOverlay.enableMyLocation();
-		mapOverlays.add(myLocationOverlay);
+		// Get the current user position
+		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		criteria = new Criteria();
+		criteria.setAccuracy(Criteria.ACCURACY_FINE);
+		bestProvider = locationManager.getBestProvider(criteria, true);
+		Location lastLocation = locationManager.getLastKnownLocation(bestProvider);
+		
 		// Display the map with the user at its center
 		if (myLocationOverlay.getMyLocation() != null) {
-			mapController.animateTo(myLocationOverlay.getMyLocation());
+			mapController.animateTo(new GeoPoint((int) (lastLocation.getLatitude() * 1E6), (int) (lastLocation.getLongitude() * 1E6)));
 		}
-		update(null);
+
+		update(mapView);
+	}
+
+	@Override
+	protected void onDestroy() {
+		myLocationOverlay.disableMyLocation();
+		super.onDestroy();
+	}
+
+	@Override
+	protected void onPause() {
+		myLocationOverlay.disableMyLocation();
+		super.onPause();
 	}
 
 	/**
@@ -84,32 +108,16 @@ public class POIActivity extends MapActivity {
 	}
 
 	public void update(View view) {
-		// Get the current user position
-		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		Location lastLocation = locationManager.getLastKnownLocation(bestProvider);
 
-		// Try to get the best localization provider
-		Criteria criteria = new Criteria();
-		criteria.setAccuracy(Criteria.ACCURACY_FINE);
-		String bestProvider = locationManager.getBestProvider(criteria, false);
-
-		// TODO Emulator fix
-		bestProvider = LocationManager.GPS_PROVIDER;
-
-		Location lastLocation = locationManager
-				.getLastKnownLocation(bestProvider);
 		if (lastLocation != null) {
-			Log.d(TAG, "Test : " + lastLocation);
-			if (myLocationOverlay.getMyLocation() == null) {
-				mapController.animateTo(new GeoPoint((int) (lastLocation
-						.getLatitude() * 1E6), (int) (lastLocation
-						.getLongitude() * 1E6)));
-			}
+			Log.d(TAG, "Updating in progress !");
+
+			mapController.animateTo(new GeoPoint((int)(lastLocation.getLatitude() * 1E6), (int)(lastLocation.getLongitude() * 1E6)));
 
 			// Call the SearchPointOfInterestPlaces method
 			PlaceWrapper placeWrapper = new PlaceWrapper();
-			List<Place> places = placeWrapper.SearchPointOfInterestPlaces(
-					lastLocation.getLatitude(), lastLocation.getLongitude(),
-					100.0);
+			List<Place> places = placeWrapper.SearchPointOfInterestPlaces(lastLocation.getLatitude(), lastLocation.getLongitude(), 100.0);
 
 			// Display the points of interests
 			displayPointOfInterests(places);
@@ -128,15 +136,11 @@ public class POIActivity extends MapActivity {
 
 		while (i.hasNext()) {
 			place = i.next();
-			point = new GeoPoint((int) (place.getLatitude() * 1e6),
-					(int) (place.getLongitude() * 1e6));
-			overlayItem = new OverlayItem(point, place.getName(), "Latitude : "
-					+ place.getLatitude() + ", Longitude : "
-					+ place.getLongitude());
+			point = new GeoPoint((int) (place.getLatitude() * 1e6), (int) (place.getLongitude() * 1e6));
+			overlayItem = new OverlayItem(point, place.getName(), "Latitude : " + place.getLatitude() + ", Longitude : " + place.getLongitude());
 
 			drawable = this.getResources().getDrawable(R.drawable.maps_icon);
-			itemizedOverlay = new CustomItemizedOverlay(drawable,
-					POIActivity.this);
+			itemizedOverlay = new CustomItemizedOverlay(drawable, POIActivity.this);
 			itemizedOverlay.addOverlay(overlayItem);
 			mapOverlays.add(itemizedOverlay);
 		}

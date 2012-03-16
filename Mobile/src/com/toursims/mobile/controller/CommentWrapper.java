@@ -30,18 +30,18 @@ import android.content.Context;
 import android.util.Log;
 
 import com.toursims.mobile.R;
-import com.toursims.mobile.model.Message;
+import com.toursims.mobile.model.Comment;
 import com.toursims.mobile.util.places.EasySSLSocketFactory;
 
 /**
- * Wrapper for the Message related webservices
+ * Wrapper for the Comment related webservices
  */
-public class MessageWrapper {
+public class CommentWrapper {
 	
 	/**
 	 * Android debugging tag
 	 */
-	private static final String TAG = MessageWrapper.class.toString();
+	private static final String TAG = CommentWrapper.class.toString();
 	
 	/**
 	 * Application server root
@@ -56,7 +56,7 @@ public class MessageWrapper {
 	/**
 	 * SQL "null" output
 	 */
-	private static final String SQL_NULL = "null";
+//	private static final String SQL_NULL = "null";
 	
 	/**
 	 * Our HTTP client, used for making requests
@@ -67,7 +67,7 @@ public class MessageWrapper {
 	 * Default constructor
 	 * Initialize the HTTP client, we use a less secure one
 	 */
-	public MessageWrapper(Context context) {
+	public CommentWrapper(Context context) {
 		super();
 		
 		serverRoot = context.getString(R.string.server_root);
@@ -92,20 +92,20 @@ public class MessageWrapper {
 	}
 
 	/**
-	 * Launch a SOAP request to the Mesage webservice
-	 * List all the latest messages linked to the specified user
-	 * @param user_id The id of the specified user
+	 * Launch a SOAP request to the Comment webservice
+	 * List all the latest comments linked to the specified course
+	 * @param course_id The id of the specified course
 	 */
-	public List<Message> GetMessages(int user_id) {
+	public List<Comment> GetCourseComments(int course_id) {
 		// Return variable
-		List<Message> messages = null;
+		List<Comment> comments = null;
 		
 		// Build the SOAP request
-		StringBuffer request = new StringBuffer(serverRoot + "/message.php?");
-		request.append("action=" + "get_messages");
-		request.append("&user_id=" + user_id);
+		StringBuffer request = new StringBuffer(serverRoot + "/comment.php?");
+		request.append("action=" + "get_course_comments");
+		request.append("&course_id=" + course_id);
 
-		Log.d(TAG, "Launching a Message request : " + request);
+		Log.d(TAG, "Launching a Comment request : " + request);
 		HttpGet httpGet = new HttpGet(request.toString());
 		HttpResponse httpResponse;
 		
@@ -125,126 +125,68 @@ public class MessageWrapper {
 		    Log.d(TAG, "JSON recieved : " + json);
 		    
 		    // Read the User informations
-		    messages = jsonResponseParserMessage(json);
+		    comments = jsonResponseParserComment(json);
 		} catch (Exception e) {
 			Log.e(TAG, e.getMessage());
 			Log.e(TAG, e.toString());
 		}
 		
-		return messages;
+		return comments;
 	}
 	
 	/**
-	 * Launch a SOAP request to the Mesage webservice
-	 * Select all the messages from one given thread
-	 * @param root_message_id The id of the root message
-	 */
-	public List<Message> GetReplyMessages(int root_message_id) {
-		// Return variable
-		List<Message> messages = null;
-		
-		// Build the SOAP request
-		StringBuffer request = new StringBuffer(serverRoot + "/message.php?");
-		request.append("action=" + "get_reply_messages");
-		request.append("&root_message_id=" + root_message_id);
-
-		Log.d(TAG, "Launching a Message request : " + request);
-		HttpGet httpGet = new HttpGet(request.toString());
-		HttpResponse httpResponse;
-		
-		try {
-			httpResponse = httpClient.execute(httpGet);
-			
-			// JSON reconstruction
-			InputStream inputStream = httpResponse.getEntity().getContent();
-			byte[] buffer = new byte[1024];
-		    int length;
-		    StringBuilder builder = new StringBuilder();
-		    while ((length = inputStream.read(buffer)) > 0) {
-		            builder.append(new String(buffer, 0, length));
-		    }
-		    String json = builder.toString();
-		    
-		    Log.d(TAG, "JSON recieved : " + json);
-		    
-		    // Read the User informations
-		    messages = jsonResponseParserMessage(json);
-		} catch (Exception e) {
-			Log.e(TAG, e.getMessage());
-			Log.e(TAG, e.toString());
-		}
-		
-		return messages;
-	}
-	
-	/**
-	 * Utility for parsing the JSON response from the Message webservice
+	 * Utility for parsing the JSON response from the Comment webservice
 	 * @param json The response JSON to parse
-	 * @return A list of messages
+	 * @return A list of comments
 	 */
-	private List<Message> jsonResponseParserMessage(String json) throws JSONException, URISyntaxException {
+	private List<Comment> jsonResponseParserComment(String json) throws JSONException, URISyntaxException {
 		// Timestamp formatting
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy -MM -dd HH:mm:ss.S Z");
 		
-		List<Message> messages = new ArrayList<Message>();
+		List<Comment> comments = new ArrayList<Comment>();
 		
 		// Variables used for reading the JSON response
 		JSONArray jsonResults = new JSONArray(json);
 		JSONObject jsonResult;
-		String jsonMessageId;
+		String jsonCommentId;
 		String jsonText;
-		String jsonLatitude;
-		String jsonLongitude;
 		String jsonTimestamp;
-		String jsonReplyMessageId;
-		String jsonWriterId;
-		String jsonWriterName;
-		String jsonWriterAvatar;
-		String jsonReplyMessageCount;
+		String jsonUserId;
+		String jsonUserName;
+		String jsonUserAvatar;
 		
 		for (int j = 0; j < jsonResults.length(); j++) {
 			jsonResult = jsonResults.getJSONObject(j);
 			
 			// Get the attributes from the JSON
-			jsonMessageId = jsonResult.has("message_id") ? jsonResult.getString("message_id") : "0";
+			jsonCommentId = jsonResult.has("comment_id") ? jsonResult.getString("comment_id") : "0";
 			jsonText = jsonResult.has("text") ? jsonResult.getString("text") : "";
-			jsonLatitude = jsonResult.has("latitude") ? jsonResult.getString("latitude") : "";
-			jsonLongitude = jsonResult.has("longitude") ? jsonResult.getString("longitude") : "";
 			jsonTimestamp = jsonResult.has("timestamp") ? jsonResult.getString("timestamp") : "";
-			jsonReplyMessageId = jsonResult.has("reply_message_id") ? jsonResult.getString("reply_message_id") : "";
-			jsonWriterId = jsonResult.has("writer_id") ? jsonResult.getString("writer_id") : "";
-			jsonWriterName = jsonResult.has("writer_name") ? jsonResult.getString("writer_name") : "";
-			jsonWriterAvatar = jsonResult.has("writer_avatar") ? jsonResult.getString("writer_avatar") : "";
-			jsonReplyMessageCount = jsonResult.has("reply_message_count") ? jsonResult.getString("reply_message_count") : "";
+			jsonUserId = jsonResult.has("user_id") ? jsonResult.getString("user_id") : "";
+			jsonUserName = jsonResult.has("user_name") ? jsonResult.getString("user_name") : "";
+			jsonUserAvatar = jsonResult.has("user_avatar") ? jsonResult.getString("user_avatar") : "";
 			
-			Log.d(TAG, "message_id : " + jsonMessageId);
+			Log.d(TAG, "comment_id : " + jsonCommentId);
 			Log.d(TAG, "text : " + jsonText);
-			Log.d(TAG, "latitude : " + jsonLatitude);
-			Log.d(TAG, "longitude : " + jsonLongitude);
 			Log.d(TAG, "timestamp : " + jsonTimestamp);
-			Log.d(TAG, "reply_message_id : " + jsonReplyMessageId);
-			Log.d(TAG, "writer_id : " + jsonWriterId);
-			Log.d(TAG, "writer_name : " + jsonWriterName);
-			Log.d(TAG, "writer_avatar : " + jsonWriterAvatar);
-			Log.d(TAG, "reply_message_count : " + jsonReplyMessageCount);
+			Log.d(TAG, "user_id : " + jsonUserId);
+			Log.d(TAG, "user_name : " + jsonUserName);
+			Log.d(TAG, "user_avatar : " + jsonUserAvatar);
 			
-			// Construct the Message object
+			// Construct the Comment object
 			try {
-				messages.add(new Message(Integer.parseInt(jsonMessageId), jsonText,
-						Double.parseDouble(jsonLatitude), Double.parseDouble(jsonLongitude),
+				comments.add(new Comment(Integer.parseInt(jsonCommentId), jsonText,
 						simpleDateFormat.parse(jsonTimestamp.replace("+", " +").replace("-", " -") + "00"),
-						(jsonReplyMessageId.equals(SQL_NULL)) ? 0 :Integer.parseInt(jsonReplyMessageId),
-						Integer.parseInt(jsonWriterId), jsonWriterName, jsonWriterAvatar,
-						Integer.parseInt(jsonReplyMessageCount)));
+						Integer.parseInt(jsonUserId), jsonUserName, jsonUserAvatar));
 			} catch (Exception e) {
 				Log.e(TAG, e.getMessage());
 				Log.e(TAG, e.toString());
 			}
 		}
 		
-		Log.d(TAG, "Nombre de Messages : " + messages.size());
+		Log.d(TAG, "Nombre de Commentaires : " + comments.size());
 		
-		return messages;
+		return comments;
 	}
 	
 }

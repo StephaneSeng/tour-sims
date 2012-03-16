@@ -29,17 +29,18 @@ import android.util.Log;
 
 import com.toursims.mobile.R;
 import com.toursims.mobile.model.City;
+import com.toursims.mobile.model.Course;
 import com.toursims.mobile.util.places.EasySSLSocketFactory;
 
 /**
- * Wrapper for the City related webservices
+ * Wrapper for the Course related webservices
  */
-public class CityWrapper {
+public class CourseWrapper {
 	
 	/**
 	 * Android debugging tag
 	 */
-	private static final String TAG = CityWrapper.class.toString();
+	private static final String TAG = CourseWrapper.class.toString();
 	
 	/**
 	 * Application server root
@@ -55,7 +56,7 @@ public class CityWrapper {
 	 * Default constructor
 	 * Initialize the HTTP client, we use a less secure one
 	 */
-	public CityWrapper(Context context) {
+	public CourseWrapper(Context context) {
 		super();
 		
 		serverRoot = context.getString(R.string.server_root);
@@ -77,19 +78,19 @@ public class CityWrapper {
 	}
 
 	/**
-	 * Launch a SOAP request to the City webservice
-	 * Find all the cities that have been put on our server
-	 * @return A list of cities
+	 * Launch a SOAP request to the Course webservice
+	 * Find all the courses that have been put on our server
+	 * @return A list of courses
 	 */
-	public List<City> GetCities() {
+	public void GetCourses() {
 		// Return variable
-		List<City> cities = new ArrayList<City>();
+//		List<Course> courses = new ArrayList<Course>();
 		
 		// Build the SOAP request
-		StringBuffer request = new StringBuffer(serverRoot + "/city.php?");
-		request.append("action=" + "get_cities");
+		StringBuffer request = new StringBuffer(serverRoot + "/course.php?");
+		request.append("action=" + "get_courses");
 
-		Log.d(TAG, "Launching a City request : " + request);
+		Log.d(TAG, "Launching a Course request : " + request);
 		HttpGet httpGet = new HttpGet(request.toString());
 		HttpResponse httpResponse;
 		
@@ -109,33 +110,30 @@ public class CityWrapper {
 		    Log.d(TAG, "JSON recieved : " + json);
 		    
 		    // Construct the list of Cities
-		    cities = jsonResponseParser(json);
+		    jsonResponseParser(json);
 		} catch (Exception e) {
 			Log.e(TAG, e.getMessage());
 			Log.e(TAG, e.toString());
 		}
 		
-		return cities;
+//		return courses;
 	}
 	
 	/**
-	 * Launch a SOAP request to the City webservice
-	 * Find cities around a specified location
-	 * @param latitude The latitude of the specified location
-	 * @param longitude The longitude of the specified location
-	 * @return A list of relevant cities
+	 * Launch a SOAP request to the Course webservice
+	 * Find all the courses that have been put on our server from one city
+	 * @return A list of courses from one city
 	 */
-	public List<City> GetCities(double latitude, double longitude) {
+	public void GetCourses(int city_id) {
 		// Return variable
-		List<City> cities = new ArrayList<City>();
+//		List<Course> courses = new ArrayList<Course>();
 		
 		// Build the SOAP request
-		StringBuffer request = new StringBuffer(serverRoot + "/city.php?");
-		request.append("action=" + "_get_cities");
-		request.append("&latitude=" + latitude);
-		request.append("&longitude=" + longitude);
+		StringBuffer request = new StringBuffer(serverRoot + "/course.php?");
+		request.append("action=" + "get_city_courses");
+		request.append("&city_id=" + city_id);
 
-		Log.d(TAG, "Launching a City request : " + request);
+		Log.d(TAG, "Launching a Course request : " + request);
 		HttpGet httpGet = new HttpGet(request.toString());
 		HttpResponse httpResponse;
 		
@@ -155,46 +153,43 @@ public class CityWrapper {
 		    Log.d(TAG, "JSON recieved : " + json);
 		    
 		    // Construct the list of Cities
-		    cities = jsonResponseParser(json);
+		    jsonResponseParser(json);
 		} catch (Exception e) {
 			Log.e(TAG, e.getMessage());
 			Log.e(TAG, e.toString());
 		}
 		
-		return cities;
+//		return courses;
 	}
-
+	
 	/**
-	 * Utility for parsing the JSON response from the City webservice
+	 * Utility for parsing the JSON response from the Course webservice
 	 * @param json The response JSON to parse
-	 * @return A list of cities
+	 * @return A list of courses
 	 */
-	private List<City> jsonResponseParser(String json) throws JSONException, URISyntaxException {
-		List<City> cities = new ArrayList<City>();
+	private void jsonResponseParser(String json) throws JSONException, URISyntaxException {
+//		List<Course> courses = new ArrayList<Course>();
 		
 		// Variables used for reading the JSON response
 		JSONArray jsonResults = new JSONArray(json);
 		JSONObject jsonResult;
-		String jsonName;
-		String jsonImage;
+		String jsonFile;
 		
 		for (int j = 0; j < jsonResults.length(); j++) {
 			jsonResult = jsonResults.getJSONObject(j);
 			
 			// Get the attributes from the JSON
-			jsonName = jsonResult.has("name") ? jsonResult.getString("name") : "";
-			jsonImage = jsonResult.has("image") ? jsonResult.getString("image") : "";
+			jsonFile = jsonResult.has("file") ? jsonResult.getString("file") : "";
 			
-			Log.d(TAG, "name : " + jsonName);
-			Log.d(TAG, "image : " + jsonImage);
+			Log.d(TAG, "file : " + jsonFile);
 			
-			// Construct the City object
-			cities.add(new City(jsonName, jsonImage));
+			// Construct the Course object
+			CourseLoader.getInstance().parse(jsonFile);
 		}
 		
-		Log.d(TAG, "Nombre de Cities : " + cities.size());
+//		Log.d(TAG, "Nombre de Cities : " + courses.size());
 		
-		return cities;
+//		return courses;
 	}
 	
 }

@@ -116,34 +116,14 @@ public class CourseGameActivity extends Activity {
 				public void onItemClick(AdapterView<?> parent, View view,
 						int position, long id) {
 
-					dialog = ProgressDialog.show(CourseGameActivity.this, "",
-							"Loading. Please wait...", true);
-
-					// When clicked, show Course details
+					// Show informations about the selected course
 					Intent courseDetails = new Intent(getApplicationContext(),
-							CourseStepActivity.class);
+							CourseDetailsActivity.class);
 					courseDetails.putExtra(Course.ID_EXTRA,
 							courses.get(position).getId());
 					courseDetails.putExtra(Course.URL_EXTRA,
 							courses.get(position).getUrl());
 					startActivity(courseDetails);
-
-					// Put that a course is started
-					SharedPreferences settings = getSharedPreferences(
-							CustomPreferences.PREF_FILE, 0);
-					CustomPreferences.removeCourseStarted(settings);
-
-					SharedPreferences.Editor editor = settings.edit();
-					editor.putString(CustomPreferences.COURSE_STARTED_URL,
-							courses.get(position).getUrl());
-					editor.putInt(CustomPreferences.COURSE_STARTED_ID, courses
-							.get(position).getId());
-					Calendar c = Calendar.getInstance();
-					int seconds = c.get(Calendar.SECOND);
-					editor.putInt(
-							CustomPreferences.COURSE_STARTED_TIME_STARTED,
-							seconds);
-					editor.commit();
 				}
 			});
 		} else {
