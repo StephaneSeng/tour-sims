@@ -2,61 +2,76 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/background">
-    
+    android:background="@color/background"
+    android:orientation="vertical" >
+
     <LinearLayout
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:orientation="horizontal"
-	    android:gravity="left"
-	    android:paddingLeft="10dip" >
-	     <ImageView
-	        android:id="@+id/previous"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_gravity="center_vertical"
-	        android:src="@drawable/ic_media_previous"
-	        android:onClick="previousPlacemark"
-	        android:clickable="true" />
-		<ImageView
-	        android:id="@+id/pause"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_gravity="center_vertical"
-	        android:src="@drawable/ic_media_pause"
-	        android:onClick="pauseGame"
-	        android:clickable="true" />
-		<ImageView
-	        android:id="@+id/next"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_gravity="center_vertical"
-	        android:src="@drawable/ic_media_next"
-	        android:onClick="nextPlacemark"
-	        android:clickable="true" />	 
-		 <LinearLayout
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		    android:orientation="horizontal"
-		    android:gravity="right" >
-			 <ImageView
-		        android:id="@+id/help"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_gravity="center_vertical"
-		        android:src="@drawable/ic_menu_help"
-		        android:textAppearance="?android:attr/textAppearanceLarge"
-		        android:onClick="showHelp"
-		        android:clickable="true" />
-	    	</LinearLayout>
-   		</LinearLayout>
-    
-             <com.google.android.maps.MapView
-                 android:id="@+id/map"
-                 android:layout_width="fill_parent"
-                 android:layout_height="fill_parent"
-                 android:clickable="true"
-                 android:apiKey="@string/key_map"
-                 />             
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:orientation="horizontal"
+        android:paddingLeft="10dip" >
+
+        <ImageView
+            android:id="@+id/previous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:clickable="true"
+            android:onClick="previousPlacemark"
+            android:src="@drawable/ic_media_previous" />
+
+        <ImageView
+            android:id="@+id/pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:clickable="true"
+            android:onClick="pauseGame"
+            android:src="@drawable/ic_media_pause" />
+
+        <ImageView
+            android:id="@+id/next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:clickable="true"
+            android:onClick="nextPlacemark"
+            android:src="@drawable/ic_media_next" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/help"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:clickable="true"
+                android:onClick="showHelp"
+                android:src="@drawable/ic_menu_help"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <ImageView
+                android:id="@+id/direction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:clickable="true"
+                android:onClick="showDirection"
+                android:src="@drawable/ic_menu_info_details"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.google.android.maps.MapView
+        android:id="@+id/map"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:apiKey="@string/key_map"
+        android:clickable="true" />
+
 </LinearLayout>

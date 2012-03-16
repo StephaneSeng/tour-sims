@@ -1,24 +1,32 @@
 package com.toursims.mobile.ui;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import com.google.api.client.util.DateTime;
 import com.toursims.mobile.R;
 import com.toursims.mobile.TraceMapActivity;
-import com.toursims.mobile.TracesActivity;
 import com.toursims.mobile.model.Trace;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.Toast;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class TraceAdapter extends BaseAdapter {
 
@@ -26,6 +34,7 @@ public class TraceAdapter extends BaseAdapter {
 	List<Trace> items_full;
 	LayoutInflater inflater;
 	Context context;
+	Set<Integer> selectedItems = new HashSet<Integer>();
 
 	public TraceAdapter(Context context, List<Trace> items) {
 		inflater = LayoutInflater.from(context);
@@ -52,8 +61,8 @@ public class TraceAdapter extends BaseAdapter {
 	private class ViewHolder {
 		TextView name;
 		TextView details;
-		ImageView imageDelete;
 		LinearLayout wrapper;
+		CheckBox checkBox;
 	}
 
 	public View getView(final int position, View convertView, ViewGroup parent) {
@@ -65,50 +74,73 @@ public class TraceAdapter extends BaseAdapter {
 
 			holder.details = (TextView) convertView.findViewById(R.id.details);
 			holder.name = (TextView) convertView.findViewById(R.id.name);
-			holder.imageDelete = (ImageView) convertView
-					.findViewById(R.id.imageDelete);
-			holder.wrapper = (LinearLayout) convertView.findViewById(R.id.wrapper);
+			holder.wrapper = (LinearLayout) convertView
+					.findViewById(R.id.wrapper);
+			holder.checkBox = (CheckBox) convertView
+					.findViewById(R.id.checkBox);
 
 			holder.name.setText(items.get(position).getName());
-			holder.details
-					.setText(new DateTime(items.get(position).getMillis())
-							.toStringRfc3339());
+			holder.details.setText(new Date(items.get(position).getMillis())
+					.toLocaleString());
+			holder.checkBox
+					.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+						private int pos = position;
+
+						@Override
+						public void onCheckedChanged(CompoundButton buttonView,
+								boolean isChecked) {
+							if (isChecked) {
+								selectedItems.add(pos);
+							} else {
+								selectedItems.remove(pos);
+							}
+						}
+					});
 
 			convertView.setTag(holder);
-			
-			holder.imageDelete.setOnClickListener(new OnClickListener() {
-				private int pos = position;
 
-				@Override
-				public void onClick(View v) {
-					ToolBox.deleteItem(items_full.get(pos), context);
-					int i = 0;
-
-					for (Trace item : items) {
-						if (item.getId() == items_full.get(pos).getId())
-							items.remove(i);
-						i++;
-					}
-					notifyDataSetChanged();
-				}
-			});
-			
 			holder.wrapper.setOnClickListener(new OnClickListener() {
 				private int pos = position;
 
 				@Override
 				public void onClick(View v) {
-					Intent intent = new Intent(context,TraceMapActivity.class);
+					Intent intent = new Intent(context, TraceMapActivity.class);
 					intent.putExtra("TRACE", items_full.get(pos).getFile());
 					context.startActivity(intent);
 				}
 			});
+
+			Log.d("TAG", items_full.get(position).getFile());
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-
-
 		return convertView;
+	}
+
+	public void deleteItems() {
+		for (Integer i : selectedItems) {
+			ToolBox.deleteItem(items_full.get(i), context);
+			File f = new File(items_full.get(i).getFile());
+			f.delete();
+		}
+	}
+
+	public void share() {
+		if (selectedItems.size() > 0) {
+			ArrayList<Uri> uris = new ArrayList<Uri>();
+			for (Integer i : selectedItems) {
+				uris.add(Uri.fromFile(new File(items.get(i).getFile())));
+			}
+			Intent sendIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+			sendIntent.setType("text/plain");
+			sendIntent.putExtra(Intent.EXTRA_SUBJECT, context.getResources().getString(R.string.traces_my));
+			sendIntent.putExtra(Intent.EXTRA_TEXT, context.getResources().getString(R.string.recorded_with_toursism));
+			sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+			context.startActivity(Intent.createChooser(sendIntent, "Email"));
+		} else {
+			Toast.makeText(context, context.getResources().getString(R.string.none_selected), Toast.LENGTH_LONG)
+					.show();
+		}
 	}
 }

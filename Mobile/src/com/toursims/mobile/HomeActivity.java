@@ -17,6 +17,9 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -74,13 +77,16 @@ public class HomeActivity extends Activity {
 		try {
 			pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
 			String version = pInfo.versionName;
-			// String last_version =
-			// settings.getString(CustomPreferences.LATEST_VERSION, "-1");
-			settings.edit().putString(CustomPreferences.LATEST_VERSION, version);
-			CourseBDD datasource;
-			datasource = new CourseBDD(this);
-			datasource.copyDataBase(this);
+			String last_version = settings.getString(CustomPreferences.LATEST_VERSION, "-1");
+			if (!version.equals(last_version)) {
+				settings.edit().putString(CustomPreferences.LATEST_VERSION,
+						version).commit();
+				CourseBDD datasource;
+				datasource = new CourseBDD(this);
+				datasource.copyDataBase(this);
+			}
 		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -115,7 +121,7 @@ public class HomeActivity extends Activity {
 					}));
 				}
 
-			} catch (IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
@@ -325,25 +331,26 @@ public class HomeActivity extends Activity {
 		startActivity(intent);
 	}
 
-//	@Override
-//	public boolean onCreateOptionsMenu(Menu menu) {
-//		MenuInflater inflater = getMenuInflater();
-//		inflater.inflate(R.menu.home, menu);
-//
-//		return true;
-//	}
-//
-//	@Override
-//	public boolean onOptionsItemSelected(MenuItem item) {
-//		// Handle item selection
-//		switch (item.getItemId()) {
-//		case R.id.prefs:
-//			Intent intent = new Intent(getApplicationContext(), PrefActivity.class);
-//			startActivity(intent);
-//			return true;
-//		default:
-//			return super.onOptionsItemSelected(item);
-//		}
-//	}
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.home, menu);
 
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.prefs:
+			Intent intent = new Intent();
+			// Intent intent = new Intent(getApplicationContext(),
+			// PrefActivity.class);
+			startActivity(intent);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
 }

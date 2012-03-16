@@ -53,6 +53,10 @@
     
     <string name="ok">OK</string>
     
+    <string name="help_dialog_pin_current">Indique le prochain point d\'intérêt.</string>
+    <string name="help_dialog_pin_next">Indique les points d\'intérêt suivants.</string>
+    <string name="help_dialog_pin_previous">Indique les points d\'intérêt déjà visités.</string>
+    
     <string name="later">Plus tard</string>
     
     <string name="menu_pause">Pause</string>
@@ -66,6 +70,8 @@
     <string name="no_name">No name</string>
 
     <string name="traces_my">Mes traces</string>
+    <string name="recorded_with_toursism">Enregistré par TourSIMS</string>
+    <string name="none_selected">Aucun élément selectionné</string>
     <string name="flag_my">Mes lieux</string>
     <string name="traces">Traces</string>
     <string name="server_root">http://toursims.free.fr</string>

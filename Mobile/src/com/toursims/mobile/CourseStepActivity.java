@@ -31,6 +31,7 @@ import android.graphics.drawable.Drawable;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -49,6 +50,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -355,7 +358,7 @@ public class CourseStepActivity extends MapActivity{
 		    	//Present the new objective with its description
 		       	Placemark item = placemarks.get(currentPlacemark);
 		    	
-		       	showHelp(getCurrentFocus());
+		       	showDirection(getCurrentFocus());
 					
 		     	receiverLocalization = new BroadcastReceiver() {			
 					@Override
@@ -511,7 +514,7 @@ public class CourseStepActivity extends MapActivity{
 	public void pauseGame(View view) {
 		Log.d("pause", "pause");
 	}
-	public void showHelp(View view) {
+	public void showDirection(View view) {
 		AlertDialog.Builder dialog = ToolBox.getDialog(this);
 
 		dialog.setTitle(placemarks.get(currentPlacemark).getName());
@@ -519,11 +522,27 @@ public class CourseStepActivity extends MapActivity{
 		dialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 					
 				public void onClick(DialogInterface dialog, int which) {
-									// TODO Auto-generated method stub
 							dialog.dismiss();
 					}
 				});
 		dialog.show();
+	}
+	
+	public void showHelp(View view) {
+		final Dialog dialog = new Dialog(this);
+		dialog.setContentView(R.layout.help_dialog);
+		dialog.setTitle("Aide");
+		dialog.setCancelable(true);
+		
+		Button button = (Button) dialog.findViewById(R.id.ButtonOK);
+        button.setOnClickListener(new OnClickListener() {
+			
+        	@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+			}
+		});
+        dialog.show();
 	}
   
 }

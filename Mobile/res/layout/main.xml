@@ -3,13 +3,6 @@
     style="@style/linearLayout_noPadding"
     android:id="@+id/layout">
     
-    <!-- TEMP -->
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TraceMap"
-        android:onClick="traceMap"
-    /> 
     <!--  
     <LinearLayout
         android:id="@+id/linearLayout1"

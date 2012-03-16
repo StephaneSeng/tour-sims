@@ -2,6 +2,7 @@ package com.toursims.mobile;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Calendar;
 
 import android.app.PendingIntent;
 import android.app.Service;
@@ -195,13 +196,25 @@ public class LocalizationService extends Service {
 	public void recordLocation(Location location) {
 		if (recording) {
 			try {
-				fileString += location.getTime() + "," + location.getLatitude() + "," + location.getLongitude() + "\n";
-				Placemark p = new Placemark(location.getLongitude(), location.getLatitude());
+				fileString += location.getTime() + "," + location.getLatitude()
+						+ "," + location.getLongitude() + "\n";
+				Placemark p = new Placemark(location.getLongitude(),
+						location.getLatitude(), Calendar.getInstance()
+								.getTime().toLocaleString());
 				if (course == null) {
 					course = new Course();
 				}
-				course.addPlacemark(p);
+				
+				if (course.getPlacemarks().size() > 0) {
+					course.getPlacemarks()
+							.get(course.getPlacemarks().size() - 1)
+							.getTimeSpan()
+							.setEnd(Calendar.getInstance().getTime()
+									.toLocaleString());
+				}
 
+				course.addPlacemark(p);
+				
 				if (fileString.length() > 500) {
 					writeFile(fileString, ".log");
 				}
@@ -223,13 +236,6 @@ public class LocalizationService extends Service {
 		Long startedTime = settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1);
 
 		try {
-			String filename = "trace_" + startedTime.toString() + fileNameExt;
-			Log.d("TAG", filename);
-
-			// File f = new File(filename);
-			// if(!f.exists())
-			// f.mkdirs();
-
 			FileOutputStream fos = openFileOutput(filename, Context.MODE_APPEND);
 			fos.write(stringFile.getBytes());
 			fos.close();
@@ -246,13 +252,18 @@ public class LocalizationService extends Service {
 			course = new Course();
 			Trace item = new Trace();
 
-			SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
-			Long startedTime = settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1);
-			filename = "/data/data/com.toursims.mobile/files/trace_" + startedTime.toString() + ".kml";
+			SharedPreferences settings = getSharedPreferences(
+					CustomPreferences.PREF_FILE, 0);
+			Long startedTime = settings.getLong(
+					CustomPreferences.RECORDING_RIGHT_NOW, -1);
+			filename = "/data/data/com.toursims.mobile/files/trace_"
+					+ startedTime.toString() + ".kml";
 
 			item.setFile(filename);
 			item.setMillis(startedTime);
 			item.setName(name);
+
+			filename = "trace_" + startedTime.toString() + ".kml";
 
 			CourseBDD datasource;
 			datasource = new CourseBDD(this);
