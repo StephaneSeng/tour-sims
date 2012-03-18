@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:background="#E8D212"
-        android:layout_width="fill_parent"
-       	android:layout_height="25dip">
-	    <EditText
-	    	android:id="@+id/searchText"			
-	    	style="@style/editTextSearch"
-	        android:drawableRight="@drawable/ic_search_category_default"/>
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content" >
+
+	<EditText
+		android:id="@+id/searchText"
+		style="@style/editTextSearch"
+		android:layout_marginBottom="20dip"
+		android:drawableRight="@drawable/ic_menu_search_xldpi" />
+
 </LinearLayout>

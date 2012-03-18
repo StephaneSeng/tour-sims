@@ -1,9 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/pause"
-          android:icon="@drawable/ic_launcher"
-          android:title="@string/menu_pause"/>
-    <item android:id="@+id/help"
-          android:icon="@drawable/ic_launcher"
-          android:title="@string/menu_help" />
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+	<item
+		android:id="@+id/coursestep_menuItem_previous"
+		android:icon="@drawable/ic_media_previous_white"
+		android:showAsAction="always"
+		android:title="@string/menu_previous"/>
+	<!-- <item -->
+	<!-- android:id="@+id/coursestep_menuItem_pause" -->
+	<!-- android:icon="@drawable/ic_media_pause_white" -->
+	<!-- android:showAsAction="always" -->
+	<!-- android:title="@string/menu_pause"/> -->
+
+	<item
+		android:id="@+id/coursestep_menuItem_next"
+		android:icon="@drawable/ic_media_next_white"
+		android:showAsAction="always"
+		android:title="@string/menu_next"/>
+	<item
+		android:id="@+id/coursestep_menuItem_direction"
+		android:icon="@drawable/ic_menu_info_details_white"
+		android:showAsAction="never"
+		android:title="@string/menu_direction"/>
+	<item
+		android:id="@+id/coursestep_menuItem_help"
+		android:icon="@drawable/ic_menu_help_white"
+		android:showAsAction="never"
+		android:title="@string/menu_help"/>
+
 </menu>

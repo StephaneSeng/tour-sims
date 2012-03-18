@@ -69,6 +69,7 @@ public class UserOverlay extends ItemizedOverlay<UserOverlayItem> {
 			public void onClick(View view) {
 				Intent intent = new Intent(mContext, ProfileActivity.class);
 				intent.putExtra(User.USER_ID_EXTRA, user.getUserId());
+				intent.putExtra(ProfileActivity.IS_USER_PROFILE, true);
 				mContext.startActivity(intent);
 			}
 		});

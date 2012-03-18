@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/LinearLayout">
-    <TextView
-		style="@style/textTitle"
-        android:text="@string/city"
-        android:id="@+id/nameTextView"
-	/>
-    
-    <include layout="@layout/search"/>
-    
-    <ListView
-        android:cacheColorHint="@android:color/transparent" 
-        android:id="@+id/lvListe"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:focusable="false" >
-    </ListView>
+	style="@style/linearLayout" >
+
+	<include layout="@layout/search" />
+
+	<ListView
+		android:id="@+id/lvListe"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:cacheColorHint="@android:color/transparent"
+		android:focusable="false" >
+	</ListView>
+
 </LinearLayout>

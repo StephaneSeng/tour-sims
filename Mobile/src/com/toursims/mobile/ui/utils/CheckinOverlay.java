@@ -68,6 +68,7 @@ public class CheckinOverlay extends ItemizedOverlay<CheckinOverlayItem> {
 			public void onClick(View view) {
 				Intent intent = new Intent(mContext, ProfileActivity.class);
 				intent.putExtra(User.USER_ID_EXTRA, checkin.getUserId());
+				intent.putExtra(ProfileActivity.IS_USER_PROFILE, false);
 				mContext.startActivity(intent);
 			}
 		});

@@ -8,8 +8,40 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockMapActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
@@ -24,48 +56,14 @@ import com.toursims.mobile.ui.ToolBox;
 import com.toursims.mobile.ui.utils.CustomItemizedOverlay;
 import com.toursims.mobile.ui.utils.RoadProvider;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
-import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Handler;
-
-public class CourseStepActivity extends MapActivity{
-    /** Called when the activity is first created. */
+public class CourseStepActivity extends SherlockMapActivity {
+    
 	private static final String TAG = LocalizationService.class.getName();
 	private static final String PROXIMITY_INTENT = LocalizationService.class.getName()+".PROXIMITY_INTENT";
 	private static final String PROXIMITY_RECEIVER = LocalizationService.class.getName()+".PROXIMITY_RECEIVER";
 	private static final long MINIMUM_DISTANCECHANGE_FOR_UPDATE = 1; // in Meters
 	private static final long MINIMUM_TIME_BETWEEN_UPDATE = 3000; // in Milliseconds
-    private static final long POINT_RADIUS = 25; // in Meters
+    private static final long POINT_RADIUS = 1000; // in Meters
     private static final long PROX_ALERT_EXPIRATION = -1;    
 
 	private static List<Placemark> placemarks;
@@ -122,20 +120,26 @@ public class CourseStepActivity extends MapActivity{
         );
         
         updatePlacemark();
+        
+        // ActionBarSherlock setup
+ 		ActionBar actionBar = getSupportActionBar();
+ 		actionBar.setDisplayHomeAsUpEnabled(true);
+ 		actionBar.setIcon(R.drawable.ic_dialog_map_colored);
+ 		actionBar.setTitle(course.getName());
 	}
 	
 
 	
 	@Override
 	protected void onPause() {
-		// TODO Auto-generated method stub
+//		Log.d("TAG","Start Service");
+//		Intent i = new Intent(this, LocalizationService.class);
+//		i.putExtra(Point.LATITUDE, placemarks.get(currentPlacemark).getPoint().getLatitude());
+//		i.putExtra(Point.LONGITUDE, placemarks.get(currentPlacemark).getPoint().getLatitude());
+//		i.putExtra(Placemark.NAME, placemarks.get(currentPlacemark).getName());
+//		startService(i);
+		
 		super.onPause();
-		Log.d("TAG","Start Service");
-		Intent i = new Intent(this, LocalizationService.class);
-		i.putExtra(Point.LATITUDE, placemarks.get(currentPlacemark).getPoint().getLatitude());
-		i.putExtra(Point.LONGITUDE, placemarks.get(currentPlacemark).getPoint().getLatitude());
-		i.putExtra(Placemark.NAME, placemarks.get(currentPlacemark).getName());
-		startService(i);
 	}	
     
 	@Override
@@ -474,29 +478,49 @@ public class CourseStepActivity extends MapActivity{
 	
 	@Override
 	protected boolean isRouteDisplayed() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuInflater inflater = getMenuInflater();
+	    MenuInflater inflater = getSupportMenuInflater();
 	    inflater.inflate(R.menu.coursestep, menu);
 
 	    return true;
 	}
 	
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
-	    switch (item.getItemId()) {
-	        case R.id.pause:
-	        	return true;
-	        case R.id.help:
-	            return true;
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
+	    Intent intent;
+
+		// Handle item selection
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			pauseGame(item.getActionView());
+			intent = new Intent(this, HomeActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(intent);
+			return true;
+		case R.id.coursestep_menuItem_previous:
+			previousPlacemark(item.getActionView());
+			return true;
+//		case R.id.coursestep_menuItem_pause:
+//			pauseGame(item.getActionView());
+//			return true;
+		case R.id.coursestep_menuItem_next:
+			nextPlacemark(item.getActionView());
+			return true;
+		case R.id.coursestep_menuItem_direction:
+			showDirection(item.getActionView());
+			return true;
+        case R.id.coursestep_menuItem_help:
+        	showHelp(item.getActionView());
+            return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 	
 	public void nextPlacemark(View view) {

@@ -26,21 +26,14 @@ public class User {
 	
 	private String avatar;
 	
-	private boolean sharePosition;
-	
-	private boolean isGuide;
-	
 	// Mobile specifics
 	private Bitmap avatarBitmap;
 
-	public User(int userId, String name, String avatar, boolean sharePosition,
-			boolean isGuide) {
+	public User(int userId, String name, String avatar) {
 		super();
 		this.userId = userId;
 		this.name = name;
 		this.avatar = avatar;
-		this.sharePosition = sharePosition;
-		this.isGuide = isGuide;
 		
 		// Download the avatar and store it as a Bitmap object
 		try {
@@ -80,22 +73,6 @@ public class User {
 
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
-	}
-
-	public boolean isSharePosition() {
-		return sharePosition;
-	}
-
-	public void setSharePosition(boolean sharePosition) {
-		this.sharePosition = sharePosition;
-	}
-
-	public boolean isGuide() {
-		return isGuide;
-	}
-
-	public void setGuide(boolean isGuide) {
-		this.isGuide = isGuide;
 	}
 
 	public Bitmap getAvatarBitmap() {

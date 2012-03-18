@@ -103,13 +103,18 @@ public class ToolBox {
 	}
 
 	public static void deleteItem(Trace item, Context context) {
+		CourseBDD datasource = null;
 		try {
-			CourseBDD datasource = new CourseBDD(context);
+			datasource = new CourseBDD(context);
 			datasource.open();
 			datasource.delete(item);
 			datasource.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		
+		if (datasource != null) {
+			datasource.close();
 		}
 	}
 }

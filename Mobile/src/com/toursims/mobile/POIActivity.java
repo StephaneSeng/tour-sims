@@ -4,16 +4,23 @@ import java.util.Iterator;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockMapActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.Window;
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
@@ -23,7 +30,7 @@ import com.toursims.mobile.controller.PlaceWrapper;
 import com.toursims.mobile.model.places.Place;
 import com.toursims.mobile.ui.utils.CustomItemizedOverlay;
 
-public class POIActivity extends MapActivity {
+public class POIActivity extends SherlockMapActivity {
 
 	/**
 	 * Android debugging tag
@@ -48,6 +55,7 @@ public class POIActivity extends MapActivity {
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.poi);
 
@@ -58,11 +66,16 @@ public class POIActivity extends MapActivity {
 
 		// Set the MapView properties
 		mapView.setBuiltInZoomControls(true);
-		mapController.setZoom(14); // Zoom 1 is world view
+		mapController.setZoom(16); // Zoom 1 is world view
 
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		myLocationOverlay.enableMyLocation();
-		mapOverlays.add(myLocationOverlay);
+
+		// ActionBarSherlock setup
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setIcon(R.drawable.ic_menu_marker_colored);
+		actionBar.setTitle(R.string.home_poi);
 	}
 
 	/**
@@ -72,19 +85,46 @@ public class POIActivity extends MapActivity {
 	protected void onResume() {
 		super.onResume();
 
-		// Get the current user position
-		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		criteria = new Criteria();
-		criteria.setAccuracy(Criteria.ACCURACY_FINE);
-		bestProvider = locationManager.getBestProvider(criteria, true);
-		Location lastLocation = locationManager.getLastKnownLocation(bestProvider);
-		
-		// Display the map with the user at its center
-		if (myLocationOverlay.getMyLocation() != null) {
-			mapController.animateTo(new GeoPoint((int) (lastLocation.getLatitude() * 1E6), (int) (lastLocation.getLongitude() * 1E6)));
+		new DownloadTask().execute();
+	}
+
+	private class DownloadTask extends AsyncTask<Void, Void, Void> {
+		@Override
+		protected void onPreExecute() {
+			setSupportProgressBarIndeterminateVisibility(true);
+
+			mapOverlays.clear();
+			mapView.refreshDrawableState();
 		}
 
-		update(mapView);
+		@Override
+		protected Void doInBackground(Void... params) {
+			// Get the current user position
+			locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+			criteria = new Criteria();
+			criteria.setAccuracy(Criteria.ACCURACY_FINE);
+			bestProvider = locationManager.getBestProvider(criteria, true);
+			Location lastLocation = null;
+			if (bestProvider != null) {
+				lastLocation = locationManager.getLastKnownLocation(bestProvider);
+			}
+
+			// Display the map with the user at its center
+			if (myLocationOverlay.getMyLocation() != null) {
+				mapController.animateTo(new GeoPoint((int) (lastLocation.getLatitude() * 1E6), (int) (lastLocation.getLongitude() * 1E6)));
+				mapOverlays.add(myLocationOverlay);
+			}
+
+			update(mapView);
+
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			mapView.invalidate();
+			setSupportProgressBarIndeterminateVisibility(false);
+		}
 	}
 
 	@Override
@@ -108,12 +148,15 @@ public class POIActivity extends MapActivity {
 	}
 
 	public void update(View view) {
-		Location lastLocation = locationManager.getLastKnownLocation(bestProvider);
+		Location lastLocation = null;
+		if (bestProvider != null) {
+			lastLocation = locationManager.getLastKnownLocation(bestProvider);
+		}
 
 		if (lastLocation != null) {
 			Log.d(TAG, "Updating in progress !");
 
-			mapController.animateTo(new GeoPoint((int)(lastLocation.getLatitude() * 1E6), (int)(lastLocation.getLongitude() * 1E6)));
+			mapController.animateTo(new GeoPoint((int) (lastLocation.getLatitude() * 1E6), (int) (lastLocation.getLongitude() * 1E6)));
 
 			// Call the SearchPointOfInterestPlaces method
 			PlaceWrapper placeWrapper = new PlaceWrapper();
@@ -143,6 +186,46 @@ public class POIActivity extends MapActivity {
 			itemizedOverlay = new CustomItemizedOverlay(drawable, POIActivity.this);
 			itemizedOverlay.addOverlay(overlayItem);
 			mapOverlays.add(itemizedOverlay);
+		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.menu.menu_poi, menu);
+
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent;
+
+		// Handle item selection
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			intent = new Intent(this, HomeActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(intent);
+			return true;
+		case R.id.poi_menuItem_refresh:
+			new DownloadTask().execute();
+			return true;
+		case R.id.poi_menuItem_center:
+			LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+			Criteria criteria = new Criteria();
+			criteria.setAccuracy(Criteria.ACCURACY_FINE);
+			String bestProvider = locationManager.getBestProvider(criteria, true);
+			Location lastLocation = null;
+			if (bestProvider != null) {
+				lastLocation = locationManager.getLastKnownLocation(bestProvider);
+			}
+			if (lastLocation != null) {
+				mapController.animateTo(new GeoPoint((int) (lastLocation.getLatitude() * 1e6), (int) (lastLocation.getLongitude() * 1e6)));
+			}
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 

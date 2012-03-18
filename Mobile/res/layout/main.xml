@@ -1,119 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/linearLayout_noPadding"
-    android:id="@+id/layout">
-    
-    <!--  
-    <LinearLayout
-        android:id="@+id/linearLayout1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-        
-    <TextView
-        android:id="@+id/home_user_name"
-        android:layout_width="wrap_content"
-       	android:layout_height="wrap_content"
-         />    
+	android:id="@+id/layout"
+	style="@style/linearLayout_noPadding" >
 
-    <ImageView
-       android:id="@+id/home_avatar"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:layout_gravity="right"/>
-    
-    </LinearLayout>-->
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/linearLayout1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" 
-        android:paddingBottom="20dip"
-        >
+	<ScrollView
+		style="@style/LinearLayout_noPaddingTop"
+		android:layout_width="match_parent"
+		android:layout_height="fill_parent"
+		android:background="@color/background" >
+
 		<LinearLayout
-		    style="@style/LinearLayout" 
-		    android:orientation="horizontal"
-		    android:layout_height="wrap_content" 
-		    >
-		   <ImageView 
-	           android:id="@+id/picTourSims"
-		       android:layout_width="wrap_content"
-		       android:layout_height="wrap_content"
-		       android:src="@drawable/ic_launcher"/>
-		   <TextView
-				style="@style/textTitle"
-		        android:text="@string/hello"
-		        android:id="@+id/nameTextView"
-		        android:paddingLeft="10dip"
-		        android:gravity="center_vertical"/>
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical" >
+
+			<TextView
+				android:id="@+id/home_textView_warnings"
+				style="@style/textTitleSection"
+				android:clickable="true"
+				android:paddingTop="20dip"
+				android:text="@string/home_warnings" />
+
+			<View
+				android:id="@+id/home_view_warnings"
+				android:layout_width="match_parent"
+				android:layout_height="1dip"
+				android:background="@color/title" />
+
+			<TextView
+				android:id="@+id/home_textView_warning_no_provider"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="@drawable/selector_selectable_background"
+				android:clickable="true"
+				android:onClick="onClickWarningNoProvider"
+				android:text="@string/home_warning_no_provider" />
+
+			<TextView
+				android:id="@+id/home_textView_warning_no_connection"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="@drawable/selector_selectable_background"
+				android:clickable="true"
+				android:onClick="onClickWarningNoConnection"
+				android:text="@string/home_warning_no_connection" />
+
+			<TextView
+				style="@style/textTitleSection"
+				android:paddingTop="20dip"
+				android:text="@string/home_toursim" />
+
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="1dip"
+				android:background="@color/title" />
+
+			<ListView
+				android:id="@+id/lvListe"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content" />
+
+			<TextView
+				style="@style/textTitleSection"
+				android:clickable="true"
+				android:paddingTop="20dip"
+				android:text="@string/home_social" />
+
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="1dip"
+				android:background="@color/title" />
+
+			<ListView
+				android:id="@+id/lvListe2"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content" />
+
+			<TextView
+				android:id="@+id/home_textView_warning_social"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="@drawable/selector_selectable_background"
+				android:clickable="true"
+				android:onClick="onClickWarningSocial"
+				android:text="@string/home_warning_social" />
 		</LinearLayout>
-		<LinearLayout
-		   	android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:orientation="horizontal"
-		    android:layout_alignParentTop="true"
-		    android:layout_alignParentRight="true" >
-		   	<ImageView 
-		   		 android:src="@drawable/ic_menu_myplaces"
-		   		 android:layout_width="wrap_content"
-			     android:layout_height="match_parent"
-			     android:layout_gravity="center_vertical"
-			     android:onClick="setFlag"
-		   		    />
-			 <ImageView 
-				android:id="@+id/recImage"
-			    android:src="@drawable/ic_media_play"
-			    android:layout_width="wrap_content"
-			    android:layout_height="match_parent"
-			    android:layout_gravity="center_vertical"
-			    android:onClick="rec"
-			        />
-	    </LinearLayout>
-    </RelativeLayout>
-  <ScrollView
-    style="@style/LinearLayout_noPaddingTop"
-    android:layout_width="match_parent"
-    android:layout_height="fill_parent"
-    android:background="@color/background">
-     <LinearLayout 
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:orientation="vertical">
-         
-    <TextView
-		style="@style/textTitleSection"
-        android:text="@string/home_toursim"
- 	/>
-    <View
-        android:layout_height="1dip"
-        android:layout_width="match_parent"
-        android:background="@color/title" />   
-     <ListView
-            android:cacheColorHint="@android:color/transparent" 
-        	android:id="@+id/lvListe"
-        	android:layout_width="fill_parent"
-        	android:layout_height="wrap_content"
-        	android:focusable="false"
-        	android:focusableInTouchMode="false"
-      />
-             
-    <TextView
-        android:paddingTop="5dip"
-   		style="@style/textTitleSection"
-        android:text="@string/home_social"
-        android:clickable="true"
-	/>
-        
-     <View
-        android:layout_height="1dip"
-        android:layout_width="match_parent"
-        android:background="@color/title" />
-        
-     <ListView
-            android:cacheColorHint="@android:color/transparent" 
-        	android:id="@+id/lvListe2"
-        	android:layout_width="match_parent"
-        	android:layout_height="wrap_content"
-        	android:focusable="false"
-        	android:focusableInTouchMode="false" />
-	</LinearLayout>
-</ScrollView> 
+	</ScrollView>
+
 </LinearLayout>

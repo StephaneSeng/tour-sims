@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+	<item
+		android:id="@+id/traces_menuItem_share"
+		android:icon="@drawable/ic_menu_share_white"
+		android:showAsAction="always"
+		android:title="@string/share"/>
+	<item
+		android:id="@+id/traces_menuItem_delete"
+		android:icon="@drawable/ic_menu_delete_white"
+		android:showAsAction="always"
+		android:title="@string/delete"/>
+
+</menu>

@@ -31,8 +31,8 @@ public class LocalizationService extends Service {
 
 	private static final String TAG = LocalizationService.class.getName();
 	private static final String PROXIMITY_INTENT = TAG + ".PROXIMITY_INTENT";
-	private static final long expiration = 600000;
-	private static final float radius = 100f;
+	private static final long expiration = -1;
+	private static final float radius = 1000f;
 
 	private static String fileString = new String();
 	private static Location knownLocation;
@@ -196,25 +196,18 @@ public class LocalizationService extends Service {
 	public void recordLocation(Location location) {
 		if (recording) {
 			try {
-				fileString += location.getTime() + "," + location.getLatitude()
-						+ "," + location.getLongitude() + "\n";
-				Placemark p = new Placemark(location.getLongitude(),
-						location.getLatitude(), Calendar.getInstance()
-								.getTime().toLocaleString());
+				fileString += location.getTime() + "," + location.getLatitude() + "," + location.getLongitude() + "\n";
+				Placemark p = new Placemark(location.getLongitude(), location.getLatitude(), Calendar.getInstance().getTime().toLocaleString());
 				if (course == null) {
 					course = new Course();
 				}
-				
+
 				if (course.getPlacemarks().size() > 0) {
-					course.getPlacemarks()
-							.get(course.getPlacemarks().size() - 1)
-							.getTimeSpan()
-							.setEnd(Calendar.getInstance().getTime()
-									.toLocaleString());
+					course.getPlacemarks().get(course.getPlacemarks().size() - 1).getTimeSpan().setEnd(Calendar.getInstance().getTime().toLocaleString());
 				}
 
 				course.addPlacemark(p);
-				
+
 				if (fileString.length() > 500) {
 					writeFile(fileString, ".log");
 				}
@@ -246,18 +239,16 @@ public class LocalizationService extends Service {
 	}
 
 	public void startRecording(String name) {
+		CourseBDD datasource = null;
 		try {
 			recording = true;
 			recordLocation(knownLocation);
 			course = new Course();
 			Trace item = new Trace();
 
-			SharedPreferences settings = getSharedPreferences(
-					CustomPreferences.PREF_FILE, 0);
-			Long startedTime = settings.getLong(
-					CustomPreferences.RECORDING_RIGHT_NOW, -1);
-			filename = "/data/data/com.toursims.mobile/files/trace_"
-					+ startedTime.toString() + ".kml";
+			SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+			Long startedTime = settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1);
+			filename = "/data/data/com.toursims.mobile/files/trace_" + startedTime.toString() + ".kml";
 
 			item.setFile(filename);
 			item.setMillis(startedTime);
@@ -265,7 +256,6 @@ public class LocalizationService extends Service {
 
 			filename = "trace_" + startedTime.toString() + ".kml";
 
-			CourseBDD datasource;
 			datasource = new CourseBDD(this);
 			datasource.open();
 			datasource.insertTrace(item);
@@ -273,6 +263,10 @@ public class LocalizationService extends Service {
 		} catch (IOException e) {
 			Log.e(TAG, e.getMessage());
 			Log.e(TAG, e.toString());
+		}
+		
+		if (datasource != null) {
+			datasource.close();
 		}
 	}
 
