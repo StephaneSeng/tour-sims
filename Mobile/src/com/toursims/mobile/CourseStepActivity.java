@@ -132,12 +132,15 @@ public class CourseStepActivity extends SherlockMapActivity {
 	
 	@Override
 	protected void onPause() {
-//		Log.d("TAG","Start Service");
-//		Intent i = new Intent(this, LocalizationService.class);
-//		i.putExtra(Point.LATITUDE, placemarks.get(currentPlacemark).getPoint().getLatitude());
-//		i.putExtra(Point.LONGITUDE, placemarks.get(currentPlacemark).getPoint().getLatitude());
-//		i.putExtra(Placemark.NAME, placemarks.get(currentPlacemark).getName());
-//		startService(i);
+		Log.d("TAG","Stop service");
+		stopService(new Intent(this, LocalizationService.class));
+		
+		Log.d("TAG","Start Service");
+		Intent i = new Intent(this, LocalizationService.class);
+		i.putExtra(Point.LATITUDE, placemarks.get(currentPlacemark).getPoint().getLatitude());
+		i.putExtra(Point.LONGITUDE, placemarks.get(currentPlacemark).getPoint().getLatitude());
+		i.putExtra(Placemark.NAME, placemarks.get(currentPlacemark).getName());
+		startService(i);
 		
 		super.onPause();
 	}	
@@ -146,8 +149,12 @@ public class CourseStepActivity extends SherlockMapActivity {
 	protected void onResume() {
 		super.onResume();
 		
-		//Log.d("TAG","Stop service");
-		//stopService(new Intent(this, LocalizationService.class));
+		Log.d("TAG","Stop service");
+		stopService(new Intent(this, LocalizationService.class));
+		
+		Log.d("TAG","Start Service");
+		Intent i = new Intent(this, LocalizationService.class);
+		startService(i);
 
 		locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 		

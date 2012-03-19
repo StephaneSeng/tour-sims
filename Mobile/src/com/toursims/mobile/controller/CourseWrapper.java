@@ -52,6 +52,8 @@ public class CourseWrapper {
 	 */
 	private HttpClient httpClient;
 	
+	private Context context;
+	
 	/**
 	 * Default constructor
 	 * Initialize the HTTP client, we use a less secure one
@@ -59,6 +61,7 @@ public class CourseWrapper {
 	public CourseWrapper(Context context) {
 		super();
 		
+		this.context = context;
 		serverRoot = context.getString(R.string.server_root);
 		
 		// Create a HTTP server with minor security
@@ -174,17 +177,37 @@ public class CourseWrapper {
 		JSONArray jsonResults = new JSONArray(json);
 		JSONObject jsonResult;
 		String jsonFile;
+		Course course;
+		CourseBDD datasource = null;
 		
-		for (int j = 0; j < jsonResults.length(); j++) {
-			jsonResult = jsonResults.getJSONObject(j);
-			
-			// Get the attributes from the JSON
-			jsonFile = jsonResult.has("file") ? jsonResult.getString("file") : "";
-			
-			Log.d(TAG, "file : " + jsonFile);
-			
-			// Construct the Course object
-			CourseLoader.getInstance().parse(jsonFile);
+		try {
+			datasource = new CourseBDD(context);
+			datasource.open();
+			datasource.truncate();
+		
+			for (int j = 0; j < jsonResults.length(); j++) {
+				jsonResult = jsonResults.getJSONObject(j);
+				
+				// Get the attributes from the JSON
+				jsonFile = jsonResult.has("file") ? jsonResult.getString("file") : "";
+				
+				Log.d(TAG, "file : " + jsonFile);
+				
+				// Construct the Course object
+				course = CourseLoader.getInstance().parse(jsonFile);
+				course.setUrl(jsonFile);
+				datasource.insertCourse(course);
+				course.setId(datasource.getCourseIdWithURL(jsonFile));
+				datasource.insertPlacemarks(course);
+				
+				Log.d(TAG, "file : id = " + datasource.getCourseIdWithURL(jsonFile));
+			}			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if (datasource != null) {
+			datasource.close();
 		}
 		
 //		Log.d(TAG, "Nombre de Cities : " + courses.size());
