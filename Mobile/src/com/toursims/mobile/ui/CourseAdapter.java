@@ -3,6 +3,7 @@ package com.toursims.mobile.ui;
 import java.util.List;
 
 import com.toursims.mobile.R;
+import com.toursims.mobile.controller.RatingWrapper;
 import com.toursims.mobile.model.Course;
 
 import android.content.Context;
@@ -22,11 +23,13 @@ public class CourseAdapter extends BaseAdapter {
 	List<Course> courses;
 	LayoutInflater inflater;
 	String cachePath;
+	Context context;
 	
 	public CourseAdapter(Context context,List<Course> courses,String cachePath) {
 		inflater = LayoutInflater.from(context);
 		this.courses = courses;
 		this.cachePath = cachePath;
+		this.context = context;
 	}
 	
 	public int getCount() {
@@ -67,7 +70,12 @@ public class CourseAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		double rating = courses.get(position).getRating();
+//		double rating = courses.get(position).getRating();
+//		float r = (float) rating;
+		
+		// Plumbing
+		RatingWrapper ratingWrapper = new RatingWrapper(context);
+		double rating = ratingWrapper.GetCourseRating(courses.get(position).getId());
 		float r = (float) rating;
 		
 		holder.name.setText(courses.get(position).getName());

@@ -90,11 +90,14 @@ public class HomeActivity extends SherlockActivity {
 			pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
 			String version = pInfo.versionName;
 			String last_version = settings.getString(CustomPreferences.LATEST_VERSION, "-1");
+			Log.d("TEST", "version : " + version);
+			Log.d("TEST", "last_version : " + last_version);
+			
 			if (!version.equals(last_version)) {
 				settings.edit().putString(CustomPreferences.LATEST_VERSION, version).commit();
-//				CourseBDD datasource;
-//				datasource = new CourseBDD(this);
-//				datasource.copyDataBase(this);
+				CourseBDD datasource;
+				datasource = new CourseBDD(this);
+				datasource.copyDataBase(this);
 				
 				CourseWrapper courseWrapper = new CourseWrapper(getApplicationContext());
 				courseWrapper.GetCourses();
