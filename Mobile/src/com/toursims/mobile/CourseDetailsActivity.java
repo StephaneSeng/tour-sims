@@ -88,11 +88,11 @@ public class CourseDetailsActivity extends SherlockActivity {
 			
 			// Retreive the current course rating
 			RatingWrapper ratingWrapper = new RatingWrapper(getApplicationContext());
-			rating = ratingWrapper.GetCourseRating(1);
+			rating = ratingWrapper.GetCourseRating(courseId);
 			
 			// Retreive the current course comments
 			CommentWrapper commentWrapper = new CommentWrapper(getApplicationContext());
-			comments = commentWrapper.GetCourseComments(1);
+			comments = commentWrapper.GetCourseComments(courseId);
 			commentAdapter = new CommentAdapter(getApplicationContext(), comments);
 			
 			return null;
@@ -114,6 +114,7 @@ public class CourseDetailsActivity extends SherlockActivity {
 			commentsListView.setAdapter(commentAdapter);
 			ToolBox.setListViewHeightBasedOnChildren(commentsListView);
 			
+//			course_id = course.getId();
 			course_id = course.getId();
 			course_url = course.getUrl();
 			
@@ -160,12 +161,6 @@ public class CourseDetailsActivity extends SherlockActivity {
 	public void onClickStart(View view) {
 		dialog = ProgressDialog.show(CourseDetailsActivity.this, "", "Loading. Please wait...", true);
 
-		// When clicked, show Course details
-		Intent courseStep = new Intent(getApplicationContext(), CourseStepActivity.class);
-		courseStep.putExtra(Course.ID_EXTRA, course_id);
-		courseStep.putExtra(Course.URL_EXTRA, course_url);
-		startActivity(courseStep);
-
 		// Put that a course is started
 		SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
 		CustomPreferences.removeCourseStarted(settings);
@@ -177,6 +172,12 @@ public class CourseDetailsActivity extends SherlockActivity {
 		int seconds = c.get(Calendar.SECOND);
 		editor.putInt(CustomPreferences.COURSE_STARTED_TIME_STARTED, seconds);
 		editor.commit();
+		
+		// When clicked, show Course details
+		Intent courseStep = new Intent(getApplicationContext(), CourseStepActivity.class);
+		courseStep.putExtra(Course.ID_EXTRA, course_id);
+		courseStep.putExtra(Course.URL_EXTRA, course_url);
+		startActivity(courseStep);
 	}
 
 }

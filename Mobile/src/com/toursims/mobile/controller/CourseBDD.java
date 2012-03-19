@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.toursims.mobile.model.City;
@@ -265,7 +266,6 @@ public class CourseBDD {
 	}
 
 	public List<Course> getCoursesWithCity(String city) {
-
 		List<Course> courses = new ArrayList<Course>();
 		Cursor cursor = packageDB.query(SQLiteHelper.TABLE_COURSE, allColumnsCourse, SQLiteHelper.COURSE_CITYID_COL + " LIKE \"" + city + "\"", null, null, null, null);
 		cursor.moveToFirst();
@@ -285,7 +285,6 @@ public class CourseBDD {
 	}
 
 	public void copyDataBase(Context c) throws IOException {
-
 		Log.d("CourseBDD", "Copy Database");
 		InputStream myInput = c.getAssets().open(BDD_PACKAGE);
 
@@ -329,10 +328,6 @@ public class CourseBDD {
 		myOutput.flush();
 		myOutput.close();
 		myInput.close();
-
-		// Load the courses
-//		CourseWrapper courseWrapper = new CourseWrapper(context);
-//		courseWrapper.GetCourses();
 	}
 
 }

@@ -31,6 +31,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.toursims.mobile.controller.CourseBDD;
+import com.toursims.mobile.controller.CourseWrapper;
 import com.toursims.mobile.model.Course;
 import com.toursims.mobile.model.User;
 import com.toursims.mobile.model.kml.Point;
@@ -88,13 +89,19 @@ public class HomeActivity extends SherlockActivity {
 		try {
 			pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
 			String version = pInfo.versionName;
-//			String last_version = settings.getString(CustomPreferences.LATEST_VERSION, "-1");
-			// if (!version.equals(last_version)) {
-			settings.edit().putString(CustomPreferences.LATEST_VERSION, version).commit();
-			CourseBDD datasource;
-			datasource = new CourseBDD(this);
-			datasource.copyDataBase(this);
-			// }
+			String last_version = settings.getString(CustomPreferences.LATEST_VERSION, "-1");
+			Log.d("TEST", "version : " + version);
+			Log.d("TEST", "last_version : " + last_version);
+			
+			if (!version.equals(last_version)) {
+				settings.edit().putString(CustomPreferences.LATEST_VERSION, version).commit();
+				CourseBDD datasource;
+				datasource = new CourseBDD(this);
+				datasource.copyDataBase(this);
+				
+				CourseWrapper courseWrapper = new CourseWrapper(getApplicationContext());
+				courseWrapper.GetCourses();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -120,6 +127,9 @@ public class HomeActivity extends SherlockActivity {
 
 		settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
 		if (settings.contains(CustomPreferences.COURSE_STARTED_URL)) {
+			Log.d("TEST", "OK");
+			Log.d("TEST", "OK : " + settings.getInt(CustomPreferences.COURSE_STARTED_ID, 1));
+
 			CourseBDD datasource = null;
 			try {
 				datasource = new CourseBDD(this);
@@ -144,7 +154,7 @@ public class HomeActivity extends SherlockActivity {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 			if (datasource != null) {
 				datasource.close();
 			}
@@ -407,7 +417,7 @@ public class HomeActivity extends SherlockActivity {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
+
 				if (datasource != null) {
 					datasource.close();
 				}
