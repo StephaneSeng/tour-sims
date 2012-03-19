@@ -5,6 +5,8 @@ MobileTest/bin
 MobileTest/gen
 MobileSandbox/bin
 MobileSandbox/gen
+ActionBar/bin
+ActionBar/gen
 ActionBarSherlock/bin
 ActionBarSherlock/gen
 Mobile/res/values/key.xml

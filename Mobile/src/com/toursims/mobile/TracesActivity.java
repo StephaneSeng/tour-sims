@@ -10,6 +10,7 @@ import android.widget.ListView;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockMapActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -20,7 +21,7 @@ import com.toursims.mobile.ui.FlagAdapter;
 import com.toursims.mobile.ui.ToolBox;
 import com.toursims.mobile.ui.TraceAdapter;
 
-public class TracesActivity extends SherlockActivity {
+public class TracesActivity extends SherlockMapActivity {
 
 	private static List<Trace> items = new ArrayList<Trace>();
 	private static List<Point> items2 = new ArrayList<Point>();
@@ -133,6 +134,12 @@ public class TracesActivity extends SherlockActivity {
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	@Override
+	protected boolean isRouteDisplayed() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
