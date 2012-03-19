@@ -11,5 +11,4 @@
 		android:icon="@drawable/ic_menu_compose_white"
 		android:showAsAction="always"
 		android:title="@string/chat_write"/>
-
 </menu>

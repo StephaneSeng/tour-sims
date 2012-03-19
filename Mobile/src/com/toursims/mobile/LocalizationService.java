@@ -32,7 +32,9 @@ public class LocalizationService extends Service {
 	private static final String TAG = LocalizationService.class.getName();
 	private static final String PROXIMITY_INTENT = TAG + ".PROXIMITY_INTENT";
 	private static final long expiration = -1;
-	private static final float radius = 1000f;
+	private static final float radius = 200f;
+	private static final long MINIMUM_DISTANCECHANGE_FOR_UPDATE = 1; // in Meters
+	private static final long MINIMUM_TIME_BETWEEN_UPDATE = 30 * 1000; // in Milliseconds
 
 	private static String fileString = new String();
 	private static Location knownLocation;
@@ -61,8 +63,8 @@ public class LocalizationService extends Service {
 		// Suscribe to the provider events
 		gpsLocationListener = new LocalizationListener();
 		networkLocationListener = new LocalizationListener();
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10 * 1000, 0, gpsLocationListener);
-		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10 * 1000, 0, networkLocationListener);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, gpsLocationListener);
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, networkLocationListener);
 
 		// Retrive the currently best provider
 		criteria = new Criteria();
@@ -138,9 +140,9 @@ public class LocalizationService extends Service {
 			bestProvider = locationManager.getBestProvider(criteria, true);
 			if (bestProvider != null) {
 				if (bestProvider.equals(LocationManager.GPS_PROVIDER)) {
-					locationManager.requestLocationUpdates(bestProvider, 10 * 1000, 0, gpsLocationListener);
+					locationManager.requestLocationUpdates(bestProvider, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, gpsLocationListener);
 				} else if (bestProvider.equals(LocationManager.NETWORK_PROVIDER)) {
-					locationManager.requestLocationUpdates(bestProvider, 10 * 1000, 0, networkLocationListener);
+					locationManager.requestLocationUpdates(bestProvider, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, networkLocationListener);
 				}
 			}
 			Log.d(TAG, "Best current localization provider : " + bestProvider);
@@ -151,9 +153,9 @@ public class LocalizationService extends Service {
 			bestProvider = locationManager.getBestProvider(criteria, true);
 			if (bestProvider != null) {
 				if (bestProvider.equals(LocationManager.GPS_PROVIDER)) {
-					locationManager.requestLocationUpdates(bestProvider, 10 * 1000, 0, gpsLocationListener);
+					locationManager.requestLocationUpdates(bestProvider, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, gpsLocationListener);
 				} else if (bestProvider.equals(LocationManager.NETWORK_PROVIDER)) {
-					locationManager.requestLocationUpdates(bestProvider, 10 * 1000, 0, networkLocationListener);
+					locationManager.requestLocationUpdates(bestProvider, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, networkLocationListener);
 				}
 			}
 			Log.d(TAG, "Best current localization provider : " + bestProvider);
@@ -164,9 +166,9 @@ public class LocalizationService extends Service {
 			bestProvider = locationManager.getBestProvider(criteria, true);
 			if (bestProvider != null) {
 				if (bestProvider.equals(LocationManager.GPS_PROVIDER)) {
-					locationManager.requestLocationUpdates(bestProvider, 10 * 1000, 0, gpsLocationListener);
+					locationManager.requestLocationUpdates(bestProvider, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, gpsLocationListener);
 				} else if (bestProvider.equals(LocationManager.NETWORK_PROVIDER)) {
-					locationManager.requestLocationUpdates(bestProvider, 10 * 1000, 0, networkLocationListener);
+					locationManager.requestLocationUpdates(bestProvider, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, networkLocationListener);
 				}
 			}
 			Log.d(TAG, "Best current localization provider : " + bestProvider);

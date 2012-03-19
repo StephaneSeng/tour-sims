@@ -6,8 +6,11 @@
 	<string name="refresh">Actualiser</string>
 	<string name="share">Partager</string>
 	<string name="delete">Supprimer</string>
+	<string name="send">Envoyer</string>
 	<string name="comments">COMMENTAIRES</string>
 	<string name="city">Villes</string>
+	<string name="chat_dest">ENVOYER À</string>
+	<string name="chat">MESSAGE</string>
 	<string name="home_toursim">TOURISME</string>
 	<string name="home_cities_all">Toutes les villes</string>
 	<string name="home_courses">Parcours</string>
@@ -83,6 +86,7 @@
 	<string name="contact_add">Ajouter un contact</string>
 
 	<!-- Related to the Chat Activity -->
+	<string name="chat_write_title">Nouveau message</string>
 	<string name="chat_write">Écrire un nouveau message</string>
 	<string name="chat_add_user">Ajouter un destinataire</string>
 	<string name="chat_send">Envoyer le message</string>
@@ -93,5 +97,11 @@
 
 	<!-- Related to the Course Details Activity -->
 	<string name="coursedetails_start">Lancer le parcours</string>
+
+	<!-- Related to other -->
+	<string name="overlay_profile">Voir Profil</string>
+	<string name="overlay_write">Envoyer Message</string>
+	<string name="overlay_add_contact">Ajouter Contact</string>
+	<string name="overlay_add_contact_ok">Contact ajouté !</string>
 
 </resources>

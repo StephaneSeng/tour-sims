@@ -1,5 +1,6 @@
 package com.toursims.mobile;
 
+import java.util.Iterator;
 import java.util.List;
 
 import android.content.Intent;
@@ -15,6 +16,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 import com.toursims.mobile.controller.MessageWrapper;
 import com.toursims.mobile.model.Message;
+import com.toursims.mobile.model.User;
 import com.toursims.mobile.ui.MessageAdapter;
 
 public class ChatMessageActivity extends SherlockActivity {
@@ -31,7 +33,7 @@ public class ChatMessageActivity extends SherlockActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.layout_chat);
 
-		new DownloadTask().execute();		
+		new DownloadTask().execute();
 
 		// ActionBarSherlock setup
 		ActionBar actionBar = getSupportActionBar();
@@ -39,7 +41,7 @@ public class ChatMessageActivity extends SherlockActivity {
 		actionBar.setIcon(R.drawable.ic_menu_dialog_solo_colored);
 		actionBar.setTitle(R.string.home_social_chat_message);
 	}
-	
+
 	private class DownloadTask extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected void onPreExecute() {
@@ -69,11 +71,11 @@ public class ChatMessageActivity extends SherlockActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getSupportMenuInflater();
-	    inflater.inflate(R.menu.menu_chat, menu);
+		inflater.inflate(R.menu.menu_chat, menu);
 
-	    return true;
+		return true;
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
@@ -87,6 +89,21 @@ public class ChatMessageActivity extends SherlockActivity {
 			return true;
 		case R.id.chat_menuItem_refresh:
 			new DownloadTask().execute();
+			return true;
+		case R.id.chat_menuItem_write:
+			// We do not know who is the receiver user...
+			// int userId = -1;
+			// int destUserId = -1;
+			// TourSims tourSims = (TourSims) getApplication();
+			// if (tourSims.isUserLoggedIn()) {
+			// User user = tourSims.getUser();
+			// userId = user.getUserId();
+			// }
+
+			intent = new Intent(this, WriteActivity.class);
+			intent.putExtra(WriteActivity.DEST_USER_ID, messages.get(messages.size() - 1).getWriterId());
+			intent.putExtra(WriteActivity.ROOT_MESSAGE_ID, messages.get(0).getReplyMessageId());
+			startActivityForResult(intent, 0);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
