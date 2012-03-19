@@ -120,6 +120,11 @@ public class ProfileActivity extends SherlockActivity {
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(intent);
 			return true;
+		case R.id.profile_menuItem_write:
+			intent = new Intent(this, WriteActivity.class);
+			intent.putExtra(WriteActivity.DEST_USER_ID, user.getUserId());
+			startActivityForResult(intent, 0);
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}

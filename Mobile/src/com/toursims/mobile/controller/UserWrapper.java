@@ -231,6 +231,46 @@ public class UserWrapper {
 
 		return users;
 	}
+	
+	/**
+	 * Launch a SOAP request to the User webservice List all the contacts linked
+	 * to the specified user
+	 * 
+	 * @param user_id
+	 *            The id of the user to work with
+	 * @param contact_id
+	 *            The id of the user to work with 2
+	 */
+	public void AddContact(int user_id, int contact_id) {
+		// Build the SOAP request
+		StringBuffer request = new StringBuffer(serverRoot + "/user.php?");
+		request.append("action=" + "add_contact");
+		request.append("&user_id=" + user_id);
+		request.append("&contact_id=" + contact_id);
+
+		Log.d(TAG, "Launching a User request : " + request);
+		HttpGet httpGet = new HttpGet(request.toString());
+		HttpResponse httpResponse;
+
+		try {
+			httpResponse = httpClient.execute(httpGet);
+
+			// JSON reconstruction
+			InputStream inputStream = httpResponse.getEntity().getContent();
+			byte[] buffer = new byte[1024];
+			int length;
+			StringBuilder builder = new StringBuilder();
+			while ((length = inputStream.read(buffer)) > 0) {
+				builder.append(new String(buffer, 0, length));
+			}
+			String json = builder.toString();
+
+			Log.d(TAG, "JSON recieved : " + json);
+		} catch (Exception e) {
+			Log.e(TAG, e.getMessage());
+			Log.e(TAG, e.toString());
+		}
+	}
 
 	/**
 	 * Launch a SOAP request to the User webservice Create a checkin for the

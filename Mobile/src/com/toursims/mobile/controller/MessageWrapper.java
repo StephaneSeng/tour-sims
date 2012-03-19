@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -27,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import com.toursims.mobile.R;
@@ -47,11 +49,6 @@ public class MessageWrapper {
 	 * Application server root
 	 */
 	private String serverRoot;
-	
-	/**
-	 * JSON "true" boolean output
-	 */
-//	private static final String JSON_TRUE = "t";
 	
 	/**
 	 * SQL "null" output
@@ -92,7 +89,7 @@ public class MessageWrapper {
 	}
 
 	/**
-	 * Launch a SOAP request to the Mesage webservice
+	 * Launch a SOAP request to the Message webservice
 	 * List all the latest messages linked to the specified user
 	 * @param user_id The id of the specified user
 	 */
@@ -135,7 +132,7 @@ public class MessageWrapper {
 	}
 	
 	/**
-	 * Launch a SOAP request to the Mesage webservice
+	 * Launch a SOAP request to the Message webservice
 	 * Select all the messages from one given thread
 	 * @param root_message_id The id of the root message
 	 */
@@ -175,6 +172,58 @@ public class MessageWrapper {
 		}
 		
 		return messages;
+	}
+	
+	/**
+	 * Launch a SOAP request to the Message webservice
+	 * List all the latest messages linked to the specified user
+	 * @param user_id The id of the specified user
+	 */
+	public void CreateMessage(String text, double latitude, double longitude, int replyMessageId, int userId, int destUserId) {
+		// Timestamp formatting
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SZ");
+		
+		// Build the SOAP request
+		StringBuffer request = new StringBuffer(serverRoot + "/message.php?");
+		request.append("action=" + "create_message");
+		request.append("&text=" + Uri.encode(text));
+		request.append("&latitude=" + latitude);
+		request.append("&longitude=" + longitude);
+		request.append("&timestamp=" + Uri.encode(simpleDateFormat.format(Calendar.getInstance().getTime())));
+		request.append("&rdv_latitude=" + latitude);
+		request.append("&rdv_longitude=" + longitude);
+		request.append("&rdv_timestamp=" + Uri.encode(simpleDateFormat.format(Calendar.getInstance().getTime())));
+		if (replyMessageId != -1) {
+			request.append("&reply_message_id=" + replyMessageId);
+		} else {
+			request.append("&reply_message_id=" + SQL_NULL);
+		}
+		
+		request.append("&writer_id=" + userId);
+		request.append("&receiver_id=" + destUserId);
+
+		Log.d(TAG, "Launching a Message request : " + request);
+		HttpGet httpGet = new HttpGet(request.toString());
+		HttpResponse httpResponse;
+		
+		try {
+			httpResponse = httpClient.execute(httpGet);
+			
+			// JSON reconstruction
+			InputStream inputStream = httpResponse.getEntity().getContent();
+			byte[] buffer = new byte[1024];
+		    int length;
+		    StringBuilder builder = new StringBuilder();
+		    while ((length = inputStream.read(buffer)) > 0) {
+		            builder.append(new String(buffer, 0, length));
+		    }
+		    String json = builder.toString();
+		    
+		    Log.d(TAG, "JSON recieved : " + json);
+		} catch (Exception e) {
+			Log.e(TAG, e.getMessage());
+			Log.e(TAG, e.toString());
+		}
 	}
 	
 	/**

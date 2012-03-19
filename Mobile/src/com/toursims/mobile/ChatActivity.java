@@ -77,7 +77,13 @@ public class ChatActivity extends SherlockActivity {
 			messagesListView.setOnItemClickListener(new OnItemClickListener() {
 				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 					Intent intent = new Intent(getApplicationContext(), ChatMessageActivity.class);
-					intent.putExtra(Message.ROOT_MESSAGE_ID_EXTRA, messages.get(position).getReplyMessageId());
+					
+					// null reply message id case
+					int replyMessageId = messages.get(position).getReplyMessageId();
+					if (replyMessageId == 0) {
+						replyMessageId = messages.get(position).getMessageId();
+					}
+					intent.putExtra(Message.ROOT_MESSAGE_ID_EXTRA, replyMessageId);
 					startActivity(intent);
 				}
 			});
@@ -95,6 +101,17 @@ public class ChatActivity extends SherlockActivity {
 	}
 
 	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+
+		// Retreive the menu items
+		MenuItem writeMenuItem = (MenuItem) menu.findItem(R.id.chat_menuItem_write);
+		writeMenuItem.setVisible(false);
+
+		return true;
+	}
+	
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
 
@@ -108,6 +125,10 @@ public class ChatActivity extends SherlockActivity {
 		case R.id.chat_menuItem_refresh:
 			new DownloadTask().execute();
 			return true;
+//		case R.id.chat_menuItem_write:
+//			intent = new Intent(this, WriteActivity.class);
+//			startActivity(intent);
+//			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
