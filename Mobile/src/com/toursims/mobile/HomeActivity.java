@@ -502,6 +502,10 @@ public class HomeActivity extends SherlockActivity {
 		case R.id.home_menuItem_recImage:
 			rec(item.getActionView());
 			return true;
+		case R.id.home_menuItem_update:
+			CourseWrapper courseWrapper = new CourseWrapper(getApplicationContext());
+			courseWrapper.GetCourses();
+			return true;
 		case R.id.home_menuItem_preferences:
 			intent = new Intent(getApplicationContext(), PrefActivity.class);
 			startActivity(intent);

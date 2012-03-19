@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 import com.toursims.mobile.controller.UserWrapper;
@@ -78,6 +80,29 @@ public class ProfileActivity extends SherlockActivity {
 		}
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.menu.menu_profile, menu);
+
+		return true;
+	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+
+		// Retreive the menu items
+		MenuItem writeMenuItem = (MenuItem) menu.findItem(R.id.profile_menuItem_write);
+
+		// State management
+		if (isUserProfile) {
+			writeMenuItem.setVisible(false);
+		}
+
+		return true;
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
