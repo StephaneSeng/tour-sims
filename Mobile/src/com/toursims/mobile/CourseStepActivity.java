@@ -231,8 +231,8 @@ public class CourseStepActivity extends SherlockMapActivity {
         mapOverlays = mapView.getOverlays();
         drawable = this.getResources().getDrawable(R.drawable.maps_icon);
         fdrawable = this.getResources().getDrawable(R.drawable.maps_icon_former);
-        itemizedOverlay = new CustomItemizedOverlay(drawable, this);
-        itemizedOverlay_prev = new CustomItemizedOverlay(fdrawable, this);
+        itemizedOverlay = new CustomItemizedOverlay(drawable, CourseStepActivity.this);
+        itemizedOverlay_prev = new CustomItemizedOverlay(fdrawable, CourseStepActivity.this);
         //itemizedOverlay_currentPoint = new CustomItemizedOverlay(drawable, this);
         
         mapOverlays.clear();
@@ -259,7 +259,7 @@ public class CourseStepActivity extends SherlockMapActivity {
         	
 	        	if(i==currentPlacemark){
 	        		Drawable d = this.getResources().getDrawable(R.drawable.maps_icon_current);
-	                itemizedOverlay_currentPoint = new CustomItemizedOverlay(d, this);
+	                itemizedOverlay_currentPoint = new CustomItemizedOverlay(d, CourseStepActivity.this);
 	                itemizedOverlay_currentPoint.addOverlay(overlayItem);
 	                mapOverlays.add(itemizedOverlay_currentPoint);
 	        	} else if(!placemark.isRoutePlacemark()){
@@ -300,9 +300,12 @@ public class CourseStepActivity extends SherlockMapActivity {
         	formerPoint = lL;
 
         }
-        mapOverlays.add(itemizedOverlay);
-        mapOverlays.add(itemizedOverlay_prev);
-        
+        if(itemizedOverlay.size() >0){
+        	mapOverlays.add(itemizedOverlay);
+        }
+        if(itemizedOverlay_prev.size() >0 ){
+        	mapOverlays.add(itemizedOverlay_prev);
+        }
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		myLocationOverlay.enableMyLocation();
 		mapOverlays.add(myLocationOverlay);
@@ -602,6 +605,7 @@ class MapOverlay extends com.google.android.maps.Overlay {
 //                    mapController.animateTo(moveTo);
 //                    mapController.setZoom(7);
             }
+            
     }
 
     @Override
