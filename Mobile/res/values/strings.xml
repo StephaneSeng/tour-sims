@@ -52,6 +52,7 @@
 	<string name="course_finished_button_ok">Noté !</string>
 	<string name="preferences_current_course_url">PREFERENCES_CURRENT_COURSE</string>
 	<string name="preferences_file">Paramètres</string>
+	<string name="preferences_update">Mettre à jour</string>
 	<string name="preferences_social_title">Social</string>
 	<string name="preferences_social_contact">Être contactable</string>
 	<string name="preferences_pos_title">Localisation</string>
