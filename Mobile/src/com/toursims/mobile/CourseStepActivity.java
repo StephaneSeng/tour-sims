@@ -91,45 +91,22 @@ public class CourseStepActivity extends SherlockMapActivity {
         
         SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
         currentPlacemark = settings.getInt(CustomPreferences.COURSE_CURRENT_PLACEMARK, -1);       
-        
-        Bundle bundle = getIntent().getExtras();       
         setContentView(R.layout.coursestep);
         
         placemarks = getPlaceMarks();
-        
-//        if(bundle.containsKey(Course.NEXT_PLACEMARK)){
-//        	if(currentPlacemark<(placemarks.size()-1))
-//        		incrementCurrentPlacemark();
-//        }
-                
+
         mapView = (MapView) findViewById(R.id.map);
 		mapView.setBuiltInZoomControls(true);
 		//mapView.setStreetView(true);
 		mapController = mapView.getController();
 		//mapController.setZoom(14); // Zoom 1 is world view
 		
-		updateMap();
-		zoomInBounds();
-   
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        locationManager.requestLocationUpdates(
-                        LocationManager.GPS_PROVIDER, 
-                        MINIMUM_TIME_BETWEEN_UPDATE, 
-                        MINIMUM_DISTANCECHANGE_FOR_UPDATE,
-                        new MyLocationListener()
-        );
-        
-//        updatePlacemark();
-        
         // ActionBarSherlock setup
  		ActionBar actionBar = getSupportActionBar();
  		actionBar.setDisplayHomeAsUpEnabled(true);
  		actionBar.setIcon(R.drawable.ic_dialog_map_colored);
  		actionBar.setTitle(course.getName());
 	}
-	
-
 	
 	@Override
 	protected void onPause() {
@@ -167,14 +144,22 @@ public class CourseStepActivity extends SherlockMapActivity {
 		
 		updatePlacemark();
 
-		locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-		
 		Bundle b = getIntent().getExtras();
 		if  ((b.getBoolean(Course.NEXT_PLACEMARK)) && (currentPlacemark < (placemarks.size() - 1))){
 			incrementCurrentPlacemark();
 		}
 		
+		updateMap();
+		zoomInBounds();
+   
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+        locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER, 
+                        MINIMUM_TIME_BETWEEN_UPDATE, 
+                        MINIMUM_DISTANCECHANGE_FOR_UPDATE,
+                        new MyLocationListener()
+        );
 	}
 	
 	Handler mHandler = new Handler() {
