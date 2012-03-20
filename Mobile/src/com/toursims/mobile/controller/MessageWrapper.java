@@ -186,7 +186,7 @@ public class MessageWrapper {
 		// Build the SOAP request
 		StringBuffer request = new StringBuffer(serverRoot + "/message.php?");
 		request.append("action=" + "create_message");
-		request.append("&text=" + Uri.encode(text));
+		request.append("&text=" + Uri.encode(text).replace("'", "%27%27"));
 		request.append("&latitude=" + latitude);
 		request.append("&longitude=" + longitude);
 		request.append("&timestamp=" + Uri.encode(simpleDateFormat.format(Calendar.getInstance().getTime())));
