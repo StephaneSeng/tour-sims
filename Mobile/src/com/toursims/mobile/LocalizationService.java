@@ -47,7 +47,6 @@ public class LocalizationService extends Service {
 	private static Placemark lastPlacemark;
 	private static String name;
 
-
 	private final IBinder mBinder = new MyBinder();
 
 	private LocationManager locationManager;
@@ -103,9 +102,6 @@ public class LocalizationService extends Service {
 						public void onReceive(Context context, Intent intent) {
 							Log.d(PROXIMITY_INTENT,
 									"Proximity Intent received from Service");
-
-							// Debug
-							// new CourseStepActivity().displayNotification();
 						}
 					};
 
