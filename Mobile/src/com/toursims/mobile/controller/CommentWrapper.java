@@ -96,16 +96,16 @@ public class CommentWrapper {
 	/**
 	 * Launch a SOAP request to the Comment webservice
 	 * List all the latest comments linked to the specified course
-	 * @param course_id The id of the specified course
+	 * @param course_name The name of the specified course
 	 */
-	public List<Comment> GetCourseComments(int course_id) {
+	public List<Comment> GetCourseComments(String course_name) {
 		// Return variable
 		List<Comment> comments = null;
 		
 		// Build the SOAP request
 		StringBuffer request = new StringBuffer(serverRoot + "/comment.php?");
 		request.append("action=" + "get_course_comments");
-		request.append("&course_id=" + course_id);
+		request.append("&course_name=" + Uri.encode(course_name));
 
 		Log.d(TAG, "Launching a Comment request : " + request);
 		HttpGet httpGet = new HttpGet(request.toString());
@@ -139,9 +139,9 @@ public class CommentWrapper {
 	/**
 	 * Launch a SOAP request to the Comment webservice
 	 * Create a comment linked to the specified course
-	 * @param course_id The id of the specified course
+	 * @param course_name The name of the specified course
 	 */
-	public void CreateCourseComments(String text, int user_id, int course_id) {
+	public void CreateCourseComments(String text, int user_id, String course_name) {
 		// Timestamp formatting
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SZ");
 		
@@ -151,7 +151,7 @@ public class CommentWrapper {
 		request.append("&text=" + Uri.encode(text));
 		request.append("&timestamp=" + Uri.encode(simpleDateFormat.format(Calendar.getInstance().getTime())));
 		request.append("&user_id=" + user_id);
-		request.append("&course_id=" + course_id);
+		request.append("&course_name=" + Uri.encode(course_name));
 
 		Log.d(TAG, "Launching a Comment request : " + request);
 		HttpGet httpGet = new HttpGet(request.toString());
