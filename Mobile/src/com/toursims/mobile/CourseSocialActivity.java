@@ -57,14 +57,14 @@ public class CourseSocialActivity extends Activity{
         }
         
         // Retreive the current course rating
-        RatingWrapper ratingWrapper = new RatingWrapper(getApplicationContext());
-        double rating = ratingWrapper.GetCourseRating(1);
-        ratingBar.setRating((float)rating);
+        //RatingWrapper ratingWrapper = new RatingWrapper(getApplicationContext());
+        //double rating = ratingWrapper.GetCourseRating(1);
+        //ratingBar.setRating((float)rating);
         
         // Retreive the current course comments
-	    CommentWrapper commentWrapper = new CommentWrapper(getApplicationContext());
-	    comments = commentWrapper.GetCourseComments(1);
-	    CommentAdapter commentAdapter = new CommentAdapter(this, comments);
-	    commentsListView.setAdapter(commentAdapter);
+	    //CommentWrapper commentWrapper = new CommentWrapper(getApplicationContext());
+	    //comments = commentWrapper.GetCourseComments(1);
+	    //CommentAdapter commentAdapter = new CommentAdapter(this, comments);
+	    //commentsListView.setAdapter(commentAdapter);
     }
 }

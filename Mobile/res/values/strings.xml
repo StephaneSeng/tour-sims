@@ -1,107 +1,117 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <resources>
 
-	<string name="hello">TOUR\'SIMS</string>
-	<string name="app_name">TOUR\'SIMS</string>
-	<string name="refresh">Actualiser</string>
-	<string name="share">Partager</string>
-	<string name="delete">Supprimer</string>
-	<string name="send">Envoyer</string>
-	<string name="comments">COMMENTAIRES</string>
-	<string name="city">Villes</string>
-	<string name="chat_dest">ENVOYER À</string>
-	<string name="chat">MESSAGE</string>
-	<string name="home_toursim">TOURISME</string>
-	<string name="home_cities_all">Toutes les villes</string>
-	<string name="home_courses">Parcours</string>
-	<string name="home_courses_all">Tous les parcours</string>
-	<string name="home_poi">Points d\'intérêts</string>
-	<string name="home_social">SOCIAL</string>
-	<string name="home_social_map">Carte sociale</string>
-	<string name="home_social_chat">Messages</string>
-	<string name="home_social_chat_message">Discussion</string>
-	<string name="home_social_profile">Mon profil</string>
-	<string name="home_social_login">Connexion</string>
-	<string name="home_social_logout">Se déconnecter</string>
-	<string name="home_social_contacts">Contacts</string>
-	<string name="home_goon_course">Reprendre le parcours</string>
-	<string name="home_my_records">Mes traces</string>
-	<string name="home_record_course">Enregistrer un parcours</string>
-	<string name="home_record_checkin">Check-in</string>
-	<string name="home_record_title">Titre</string>
-	<string name="home_record_hint">Les quais de la Seine</string>
-	<string name="home_record_cancel">Annuler</string>
-	<string name="home_record_record">Enregister</string>
-	<string name="home_record_stop_recording">Trace arrêtée. Retrouvez-la dans vos parcours !</string>
-	<string name="home_warnings">INFORMATION</string>
-	<string name="home_warning_social">Connectez-vous avec votre compte Google+ pour accéder aux fonctionnalités sociales de TOUR\'SIMS.</string>
-	<string name="home_warning_no_provider">Aucun service de géolocalisation détecté. Vous pouvez en activer un à partir des paramètres système.</string>
-	<string name="home_warning_no_connection">Aucune connexion Internet disponible en ce moment. Vous pouvez configurer une nouvelle connexion à partir des paramètres système.</string>
+    <string name="hello">Tour\'SIMS</string>
+    <string name="app_name">Tour\'SIMS</string>
+    <string name="refresh">Actualiser</string>
+    <string name="share">Partager</string>
+    <string name="delete">Supprimer</string>
+    <string name="send">Envoyer</string>
+    <string name="comments">COMMENTAIRES</string>
+    <string name="city">Villes</string>
+    <string name="chat_dest">ENVOYER À</string>
+    <string name="chat">MESSAGE</string>
+    <string name="home_toursim">TOURISME</string>
+    <string name="home_cities_all">Toutes les villes</string>
+    <string name="home_courses">Parcours</string>
+    <string name="home_courses_all">Tous les parcours</string>
+    <string name="home_poi">Points d\'intérêts</string>
+    <string name="home_social">SOCIAL</string>
+    <string name="home_social_map">Carte sociale</string>
+    <string name="home_social_chat">Messages</string>
+    <string name="home_social_chat_message">Discussion</string>
+    <string name="home_social_profile">Mon profil</string>
+    <string name="home_social_login">Connexion</string>
+    <string name="home_social_logout">Se déconnecter</string>
+    <string name="home_social_contacts">Contacts</string>
+    <string name="home_goon_course">Reprendre le parcours</string>
+    <string name="home_my_records">Mes traces</string>
+    <string name="home_record_course">Enregistrer un parcours</string>
+    <string name="home_record_checkin">Check-in</string>
+    <string name="home_record_title">Titre</string>
+    <string name="home_record_hint">Les quais de la Seine</string>
+    <string name="home_record_cancel">Annuler</string>
+    <string name="home_record_record">Enregister</string>
+    <string name="home_record_stop_recording">Trace arrêtée. Retrouvez-la dans vos parcours !</string>
+    <string name="home_warnings">INFORMATION</string>
+    <string name="home_warning_social">Connectez-vous avec votre compte Google+ pour accéder aux fonctionnalités sociales de TOUR\'SIMS.</string>
+    <string name="home_warning_no_provider">Aucun service de géolocalisation détecté. Vous pouvez en activer un à partir des paramètres système.</string>
+    <string name="home_warning_no_connection">Aucune connexion Internet disponible en ce moment. Vous pouvez configurer une nouvelle connexion à partir des paramètres système.</string>
+    <string name="home_flag_ok">Votre position a été enregistrée. Retrouvez la dans "mes traces"</string>
+    <string name="home_flag_not_ok">Votre position n\'a pas pu être enregistrée. Le service GPS n\'est pas disponible</string>
 
-	<!-- Related to the Game Activity -->
-	<string name="game_next_stage">Passer à l\'étape suivante</string>
-	<string name="game_play">Jouer!</string>
-	<string name="game_ok">OK</string>
-	<string name="game_answer">Répondre</string>
-	<string name="game_your_answer">Votre réponse</string>
-	<string name="game_good_answer">Bien répondu</string>
-	<string name="game_try_again">Mauvaise Réponse</string>
-	<string name="course_already_started_title">Parcours déjà lancé</string>
-	<string name="course_already_started_message">Voulez-vous le reprendre?</string>
-	<string name="course_already_started_go_on">Reprendre</string>
-	<string name="course_already_started_discard">Annuler</string>
-	<string name="course_finished_title">Parcours fini</string>
-	<string name="course_finished_message">Merci de noter ce parcours</string>
-	<string name="course_finished_button_ok">Noté !</string>
-	<string name="preferences_current_course_url">PREFERENCES_CURRENT_COURSE</string>
-	<string name="preferences_file">Paramètres</string>
-	<string name="preferences_update">Mettre à jour</string>
-	<string name="preferences_social_title">Social</string>
-	<string name="preferences_social_contact">Être contactable</string>
-	<string name="preferences_pos_title">Localisation</string>
-	<string name="preferences_pos_localisation">Être localisable</string>
-	<string name="ok">OK</string>
-	<string name="help_dialog_pin_current">Indique le prochain point d\'intérêt</string>
-	<string name="help_dialog_pin_next">Indique les points d\'intérêt suivants</string>
-	<string name="help_dialog_pin_previous">Indique les points d\'intérêt déjà visités</string>
-	<string name="later">Plus tard</string>
-	<string name="menu_pause">Pause</string>
-	<string name="menu_direction">Objectif</string>
-	<string name="menu_help">Aide</string>
-	<string name="menu_previous">Précédent</string>
-	<string name="menu_pause">Pause</string>
-	<string name="menu_next">Suivant</string>
-	<string name="course">Parcours</string>
-	<string name="search">Recherche</string>
-	<string name="unknown_author">Inconnu</string>
-	<string name="no_name">No name</string>
-	<string name="traces_my">TRACES</string>
-	<string name="recorded_with_toursism">Enregistré par TOUR\'SIMS</string>
-	<string name="none_selected">Aucun élément selectionné</string>
-	<string name="flag_my">LIEUX</string>
-	<string name="traces">Traces</string>
-	<string name="server_root">http://toursims.free.fr</string>
+    <!-- Related to the Game Activity -->
+    <string name="game_next_stage">Passer à l\'étape suivante</string>
+    <string name="game_play">Jouer!</string>
+    <string name="game_ok">OK</string>
+    <string name="game_answer">Répondre</string>
+    <string name="game_your_answer">Votre réponse</string>
+    <string name="game_your_answer_num">1990</string>
+    <string name="game_your_answer">Répondre ici...</string>
+    <string name="game_good_answer">Bien répondu</string>
+    <string name="game_try_again">Mauvaise Réponse</string>
+    <string name="game_keep_trying">Encore un effort!</string>
+    <string name="course_already_started_title">Parcours déjà lancé</string>
+    <string name="course_already_started_message">Voulez-vous le reprendre?</string>
+    <string name="course_already_started_go_on">Reprendre</string>
+    <string name="course_already_started_discard">Annuler</string>
+    <string name="course_finished_title">Parcours fini</string>
+    <string name="course_finished_message">Merci de noter ce parcours</string>
+    <string name="course_finished_button_ok">Noter</string>
+    <string name="preferences_current_course_url">PREFERENCES_CURRENT_COURSE</string>
+    <string name="preferences_file">Paramètres</string>
+    <string name="preferences_update">Mettre à jour</string>
+    <string name="preferences_social_title">Social</string>
+    <string name="preferences_social_contact">Être contactable</string>
+    <string name="preferences_pos_title">Localisation</string>
+    <string name="preferences_pos_localisation">Être localisable</string>
+    <string name="ok">OK</string>
+    <string name="help_dialog_pin_current">Indique le prochain point d\'intérêt</string>
+    <string name="help_dialog_pin_next">Indique les points d\'intérêt suivants</string>
+    <string name="help_dialog_pin_previous">Indique les points d\'intérêt déjà visités</string>
+    <string name="later">Plus tard</string>
+    <string name="menu_pause">Pause</string>
+    <string name="menu_direction">Objectif</string>
+    <string name="menu_help">Aide</string>
+    <string name="menu_previous">Précédent</string>
+    <string name="menu_pause">Pause</string>
+    <string name="menu_next">Suivant</string>
+    <string name="course">Parcours</string>
+    <string name="search">Recherche</string>
+    <string name="unknown_author">Inconnu</string>
+    <string name="no_name">No name</string>
+    <string name="traces_my">TRACES</string>
+    <string name="recorded_with_toursism">Enregistré par Tour\'SIMS</string>
+    <string name="none_selected">Aucun élément selectionné</string>
+    <string name="flag_my">LIEUX</string>
+    <string name="traces">Traces</string>
+    <string name="server_root">http://toursims.free.fr</string>
 
-	<!-- Related to the Contact Activity -->
-	<string name="contact_add">Ajouter un contact</string>
+    <!-- Related to the Contact Activity -->
+    <string name="contact_add">Ajouter un contact</string>
 
-	<!-- Related to the Chat Activity -->
-	<string name="chat_write_title">Nouveau message</string>
-	<string name="chat_write">Écrire un nouveau message</string>
-	<string name="chat_add_user">Ajouter un destinataire</string>
-	<string name="chat_send">Envoyer le message</string>
+    <!-- Related to the Chat Activity -->
+    <string name="chat_write_title">Nouveau message</string>
+    <string name="chat_write">Écrire un nouveau message</string>
+    <string name="chat_add_user">Ajouter un destinataire</string>
+    <string name="chat_send">Envoyer le message</string>
 
-	<!-- Related to the Social Map Activity -->
-	<string name="social_center">Centrer sur la position actuelle</string>
-	<string name="social_error">Impossible d\'obtenir votre position actuelle</string>
+    <!-- Related to the Social Map Activity -->
+    <string name="social_center">Centrer sur la position actuelle</string>
+    <string name="social_error">Impossible d\'obtenir votre position actuelle</string>
 
-	<!-- Related to the Course Details Activity -->
-	<string name="coursedetails_start">Lancer le parcours</string>
+    <!-- Related to the Course Details Activity -->
+    <string name="coursedetails_start">Lancer le parcours</string>
 
-	<!-- Related to other -->
-	<string name="overlay_profile">Voir Profil</string>
-	<string name="overlay_write">Envoyer Message</string>
-	<string name="overlay_add_contact">Ajouter Contact</string>
-	<string name="overlay_add_contact_ok">Contact ajouté !</string>
-
+    <!-- Related to other -->
+    <string name="overlay_profile">Voir Profil</string>
+    <string name="overlay_write">Envoyer Message</string>
+    <string name="overlay_add_contact">Ajouter Contact</string>
+    <string name="overlay_add_contact_ok">Contact ajouté !</string>
+    <string name="feedback_rating">NOTATION</string>
+    <string name="feedback_comment">COMMENTAIRE</string>
+    <string name="feedback">Feedback</string>
+    
+    <string name="map_sat">sat</string>
+	<string name="map_map">map</string>
 </resources>

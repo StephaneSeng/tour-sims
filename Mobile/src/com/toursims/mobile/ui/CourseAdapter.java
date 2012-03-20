@@ -75,13 +75,14 @@ public class CourseAdapter extends BaseAdapter {
 		
 		// Plumbing
 		RatingWrapper ratingWrapper = new RatingWrapper(context);
-		double rating = ratingWrapper.GetCourseRating(courses.get(position).getId());
+		double rating = ratingWrapper.GetCourseRating(courses.get(position).getName());
 		float r = (float) rating;
 		
 		holder.name.setText(courses.get(position).getName());
 		
 		if(courses.get(position).getAuthor()!=null){
-			holder.description.setText(courses.get(position).getAuthor());
+//			holder.description.setText(courses.get(position).getAuthor());
+			holder.description.setText(courses.get(position).getDesc());
 		}
 		
 		holder.rating.setRating((float) r);	

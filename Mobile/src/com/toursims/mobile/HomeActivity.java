@@ -89,21 +89,17 @@ public class HomeActivity extends SherlockActivity {
 		try {
 			pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
 			String version = pInfo.versionName;
-			String last_version = settings.getString(
-					CustomPreferences.LATEST_VERSION, "-1");
+			String last_version = settings.getString(CustomPreferences.LATEST_VERSION, "-1");
 			Log.d("TEST", "version : " + version);
 			Log.d("TEST", "last_version : " + last_version);
 
 			if (!version.equals(last_version)) {
-				settings.edit()
-						.putString(CustomPreferences.LATEST_VERSION, version)
-						.commit();
+				settings.edit().putString(CustomPreferences.LATEST_VERSION, version).commit();
 				CourseBDD datasource;
 				datasource = new CourseBDD(this);
 				datasource.copyDataBase(this);
 
-				CourseWrapper courseWrapper = new CourseWrapper(
-						getApplicationContext());
+				CourseWrapper courseWrapper = new CourseWrapper(getApplicationContext());
 				courseWrapper.GetCourses();
 			}
 		} catch (Exception e) {
@@ -114,16 +110,10 @@ public class HomeActivity extends SherlockActivity {
 		tourSims = (TourSims) getApplication();
 
 		// Restore the user session if someone was already logged in
-		SharedPreferences loginSettings = getSharedPreferences(
-				LoginActivity.LOGIN_PREFERENCES, 0);
-		if (loginSettings.getBoolean(LoginActivity.LOGIN_PREFERENCES_LOGGEDIN,
-				false)) {
-			User user = new User(loginSettings.getInt(
-					LoginActivity.LOGIN_PREFERENCES_ID, 0),
-					loginSettings.getString(
-							LoginActivity.LOGIN_PREFERENCES_NAME, ""),
-					loginSettings.getString(
-							LoginActivity.LOGIN_PREFERENCES_IMAGE, ""));
+		SharedPreferences loginSettings = getSharedPreferences(LoginActivity.LOGIN_PREFERENCES, 0);
+		if (loginSettings.getBoolean(LoginActivity.LOGIN_PREFERENCES_LOGGEDIN, false)) {
+			User user = new User(loginSettings.getInt(LoginActivity.LOGIN_PREFERENCES_ID, 0), loginSettings.getString(LoginActivity.LOGIN_PREFERENCES_NAME, ""), loginSettings.getString(
+					LoginActivity.LOGIN_PREFERENCES_IMAGE, ""));
 			tourSims.setUser(user);
 			tourSims.setUserLoggedIn(true);
 		} else {
@@ -132,43 +122,34 @@ public class HomeActivity extends SherlockActivity {
 
 		// HOME LIST
 		List<HomeItem> items = new ArrayList<HomeItem>();
-		items.add(new HomeItem(R.string.home_cities_all,
-				R.drawable.ic_menu_compass_colored, CityActivity.class));
-		items.add(new HomeItem(R.string.home_poi,
-				R.drawable.ic_menu_marker_colored, POIActivity.class));
-		items.add(new HomeItem(R.string.home_my_records,
-				R.drawable.ic_menu_mylocation_colored, TracesActivity.class));
+		items.add(new HomeItem(R.string.home_cities_all, R.drawable.ic_menu_compass_colored, CityActivity.class));
+		items.add(new HomeItem(R.string.home_poi, R.drawable.ic_menu_marker_colored, POIActivity.class));
+		items.add(new HomeItem(R.string.home_my_records, R.drawable.ic_menu_mylocation_colored, TracesActivity.class));
 
 		settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
 		if (settings.contains(CustomPreferences.COURSE_STARTED_URL)) {
 			Log.d("TEST", "OK");
-			Log.d("TEST",
-					"OK : "
-							+ settings.getInt(
-									CustomPreferences.COURSE_STARTED_ID, 1));
+			Log.d("TEST", "OK : " + settings.getInt(CustomPreferences.COURSE_STARTED_ID, 1));
 
 			CourseBDD datasource = null;
 			try {
 				datasource = new CourseBDD(this);
 				datasource.open();
-				Course c = datasource.getCourseWithId(settings.getInt(
-						CustomPreferences.COURSE_STARTED_ID, 1));
+				Course c = datasource.getCourseWithId(settings.getInt(CustomPreferences.COURSE_STARTED_ID, 1));
 				datasource.close();
 
-				if (c.getCoverPictureURL() != null) {
-					items.add(new HomeItem(R.string.home_goon_course, c
-							.getCoverPictureURL(), new OnClickListener() {
+				if ((c != null) && (c.getCoverPictureURL() != null)) {
+					items.add(new HomeItem(R.string.home_goon_course, c.getCoverPictureURL(), new OnClickListener() {
 						public void onClick(View v) {
 							restartCourse();
 						}
 					}));
 				} else {
-					items.add(new HomeItem(R.string.home_goon_course,
-							R.drawable.ic_menu_myplaces, new OnClickListener() {
-								public void onClick(View v) {
-									restartCourse();
-								}
-							}));
+					items.add(new HomeItem(R.string.home_goon_course, R.drawable.ic_menu_myplaces, new OnClickListener() {
+						public void onClick(View v) {
+							restartCourse();
+						}
+					}));
 				}
 
 			} catch (Exception e) {
@@ -185,28 +166,21 @@ public class HomeActivity extends SherlockActivity {
 		ToolBox.setListViewHeightBasedOnChildren(lv);
 
 		// SOCIAL LIST
-		items2.add(new HomeItem(R.string.home_social_map,
-				R.drawable.ic_menu_globe_colored, SocialActivity.class));
-		items2.add(new HomeItem(R.string.home_social_chat,
-				R.drawable.ic_menu_dialog_colored, ChatActivity.class));
-		items2.add(new HomeItem(R.string.home_social_contacts,
-				R.drawable.ic_menu_allfriends_colored, ContactActivity.class));
-		items2.add(new HomeItem(R.string.home_social_profile,
-				R.drawable.ic_menu_user_colored, new OnClickListener() {
-					public void onClick(View v) {
-						Intent intent = new Intent(getApplicationContext(),
-								ProfileActivity.class);
-						intent.putExtra(User.USER_ID_EXTRA, tourSims.getUser()
-								.getUserId());
-						intent.putExtra(ProfileActivity.IS_USER_PROFILE, true);
-						startActivity(intent);
-					}
-				}));
+		items2.add(new HomeItem(R.string.home_social_map, R.drawable.ic_menu_globe_colored, SocialActivity.class));
+		items2.add(new HomeItem(R.string.home_social_chat, R.drawable.ic_menu_dialog_colored, ChatActivity.class));
+		items2.add(new HomeItem(R.string.home_social_contacts, R.drawable.ic_menu_allfriends_colored, ContactActivity.class));
+		items2.add(new HomeItem(R.string.home_social_profile, R.drawable.ic_menu_user_colored, new OnClickListener() {
+			public void onClick(View v) {
+				Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+				intent.putExtra(User.USER_ID_EXTRA, tourSims.getUser().getUserId());
+				intent.putExtra(ProfileActivity.IS_USER_PROFILE, true);
+				startActivity(intent);
+			}
+		}));
 
 		onResume();
 
-		bindService(new Intent(this, LocalizationService.class), mConnection,
-				Context.BIND_AUTO_CREATE);
+		bindService(new Intent(this, LocalizationService.class), mConnection, Context.BIND_AUTO_CREATE);
 		invalidateOptionsMenu();
 
 		// ActionBarSherlock setup
@@ -224,8 +198,7 @@ public class HomeActivity extends SherlockActivity {
 			// Set the user profile avatar
 			// items3.get(items3.size() -
 			// 1).setPictureURL(tourSims.getUser().getAvatar());
-			items3.get(items3.size() - 1).setPictureURL(
-					R.drawable.ic_menu_user_colored);
+			items3.get(items3.size() - 1).setPictureURL(R.drawable.ic_menu_user_colored);
 			lv2.setVisibility(ListView.VISIBLE);
 			warningSocialTextView.setVisibility(TextView.GONE);
 		} else {
@@ -234,8 +207,7 @@ public class HomeActivity extends SherlockActivity {
 			warningSocialTextView.setVisibility(TextView.VISIBLE);
 		}
 
-		adapter2 = new HomeAdapter(this, items3, getCacheDir()
-				.getAbsolutePath());
+		adapter2 = new HomeAdapter(this, items3, getCacheDir().getAbsolutePath());
 		lv2.setAdapter(adapter2);
 		ToolBox.setListViewHeightBasedOnChildren(lv2);
 
@@ -253,9 +225,8 @@ public class HomeActivity extends SherlockActivity {
 			warningNoProviderTextView.setVisibility(TextView.VISIBLE);
 			warningNoConnectionTextView.setVisibility(TextView.GONE);
 		} else if ((bestProvider.equals(LocationManager.NETWORK_PROVIDER))
-				&& ((connectivityManager.getActiveNetworkInfo() == null) || ((connectivityManager
-						.getActiveNetworkInfo() != null) && (!connectivityManager
-						.getActiveNetworkInfo().isConnectedOrConnecting())))) {
+				&& ((connectivityManager.getActiveNetworkInfo() == null) || ((connectivityManager.getActiveNetworkInfo() != null) && (!connectivityManager.getActiveNetworkInfo()
+						.isConnectedOrConnecting())))) {
 			// Display another warning message if no Internet access is
 			// currently available when the network is the current best provider
 			warningsTextView.setVisibility(TextView.VISIBLE);
@@ -276,61 +247,50 @@ public class HomeActivity extends SherlockActivity {
 	private void popUpRestart() {
 		settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
 
-		if (settings.contains(CustomPreferences.COURSE_STARTED_URL)
-				&& !settings.getBoolean(ALREADY_ASKED_TO_RESUME, true)) {
+		if (settings.contains(CustomPreferences.COURSE_STARTED_URL) && !settings.getBoolean(ALREADY_ASKED_TO_RESUME, true)) {
 
 			AlertDialog.Builder dialog = ToolBox.getDialog(this);
 
-			dialog.setTitle(R.string.course_already_started_title)
-					.setMessage(R.string.course_already_started_message)
-					.setPositiveButton(R.string.course_already_started_go_on,
-							new DialogInterface.OnClickListener() {
-
-								public void onClick(DialogInterface dialog,
-										int which) {
-									restartCourse();
-								}
-							});
-
-			dialog.setNegativeButton(R.string.course_already_started_discard,
-					new DialogInterface.OnClickListener() {
+			dialog.setTitle(R.string.course_already_started_title).setMessage(R.string.course_already_started_message)
+					.setPositiveButton(R.string.course_already_started_go_on, new DialogInterface.OnClickListener() {
 
 						public void onClick(DialogInterface dialog, int which) {
-							SharedPreferences.Editor editor = settings.edit();
-
-							for (String item : CustomPreferences.COURSE_ALL) {
-								editor.remove(item).commit();
-							}
-
-							items.remove(items.size() - 1);
-							adapter.setItems(items);
-							lv.setAdapter(adapter);
-							ToolBox.setListViewHeightBasedOnChildren(lv);
-							dialog.dismiss();
+							restartCourse();
 						}
 					});
 
-			dialog.setNeutralButton(R.string.later,
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							SharedPreferences.Editor editor = settings.edit();
-							editor.putBoolean(ALREADY_ASKED_TO_RESUME, true)
-									.commit();
-							dialog.dismiss();
-						}
-					});
+			dialog.setNegativeButton(R.string.course_already_started_discard, new DialogInterface.OnClickListener() {
+
+				public void onClick(DialogInterface dialog, int which) {
+					SharedPreferences.Editor editor = settings.edit();
+
+					for (String item : CustomPreferences.COURSE_ALL) {
+						editor.remove(item).commit();
+					}
+
+					items.remove(items.size() - 1);
+					adapter.setItems(items);
+					lv.setAdapter(adapter);
+					ToolBox.setListViewHeightBasedOnChildren(lv);
+					dialog.dismiss();
+				}
+			});
+
+			dialog.setNeutralButton(R.string.later, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					SharedPreferences.Editor editor = settings.edit();
+					editor.putBoolean(ALREADY_ASKED_TO_RESUME, true).commit();
+					dialog.dismiss();
+				}
+			});
 			dialog.show();
 		}
 	}
 
 	private void restartCourse() {
-		Intent intent = new Intent(getApplicationContext(),
-				CourseStepActivity.class);
+		Intent intent = new Intent(getApplicationContext(), CourseStepActivity.class);
 
-		intent.putExtra(Course.URL_EXTRA,
-				settings.getString(CustomPreferences.COURSE_STARTED_URL, null))
-				.putExtra(Course.ID_EXTRA,
-						settings.getInt(CustomPreferences.COURSE_STARTED_ID, 0));
+		intent.putExtra(Course.URL_EXTRA, settings.getString(CustomPreferences.COURSE_STARTED_URL, null)).putExtra(Course.ID_EXTRA, settings.getInt(CustomPreferences.COURSE_STARTED_ID, 0));
 
 		startActivity(intent);
 	}
@@ -357,8 +317,7 @@ public class HomeActivity extends SherlockActivity {
 		String bestProvider = locationManager.getBestProvider(criteria, true);
 		if (bestProvider == null) {
 			// The problem is still there
-			Intent intent = new Intent(
-					android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+			Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 			startActivityForResult(intent, 0);
 		} else {
 			reloadActivity();
@@ -373,13 +332,10 @@ public class HomeActivity extends SherlockActivity {
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
 		String bestProvider = locationManager.getBestProvider(criteria, true);
 		if ((bestProvider != null)
-				&& ((bestProvider.equals(LocationManager.NETWORK_PROVIDER)) && ((connectivityManager
-						.getActiveNetworkInfo() == null) || ((connectivityManager
-						.getActiveNetworkInfo() != null) && (!connectivityManager
+				&& ((bestProvider.equals(LocationManager.NETWORK_PROVIDER)) && ((connectivityManager.getActiveNetworkInfo() == null) || ((connectivityManager.getActiveNetworkInfo() != null) && (!connectivityManager
 						.getActiveNetworkInfo().isConnectedOrConnecting()))))) {
 			// The problem is still there
-			Intent intent = new Intent(
-					android.provider.Settings.ACTION_WIRELESS_SETTINGS);
+			Intent intent = new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS);
 			startActivityForResult(intent, 0);
 		} else {
 			reloadActivity();
@@ -394,8 +350,9 @@ public class HomeActivity extends SherlockActivity {
 		if (settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1) == -1) {
 			final AlertDialog.Builder dialog = ToolBox.getDialog(this);
 			dialog.setTitle(R.string.home_record_title);
+			doBindService();
 
-			e = new EditText(this);
+			final EditText e = new EditText(this);
 			e.setHint(R.string.home_record_hint);
 
 			dialog.setView(e)
@@ -403,42 +360,42 @@ public class HomeActivity extends SherlockActivity {
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int which) {
-									// if (s == null) {
-									// bindService(new Intent(this,
-									// LocalizationService.class),
-									// mConnection, Context.BIND_AUTO_CREATE);
-									// }
-									Long l = Calendar.getInstance()
-											.getTimeInMillis();
-									settings = getSharedPreferences(
-											CustomPreferences.PREF_FILE, 0);
-									editor = settings.edit();
-									editor.putLong(
-											CustomPreferences.RECORDING_RIGHT_NOW,
-											l);
-									editor.commit();
-									Log.d("TAG", "Start recording" + l);
+									if (s == null) {
+										doBindService();
+									}
 									s.startRecording(e.getText().toString());
-									invalidateOptionsMenu();
 									dialog.dismiss();
+									invalidateOptionsMenu();
 								}
 							})
 					.setNegativeButton(R.string.home_record_cancel,
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface arg0,
 										int arg1) {
+									unbindService(mConnection);
+									Intent intent = new Intent(
+											getApplicationContext(),
+											LocalizationService.class);
+									stopService(intent);
 								}
 							}).show();
 		} else {
 			s.stopRecording();
-			editor.remove(CustomPreferences.RECORDING_RIGHT_NOW);
-			editor.commit();
-			Toast.makeText(this, R.string.home_record_stop_recording,
-					Toast.LENGTH_LONG).show();
-			invalidateOptionsMenu();
-		}
-	}
+			Toast.makeText(this, R.string.home_record_stop_recording, Toast.LENGTH_LONG)
+					.show();
 
+			unbindService(mConnection);
+			Intent intent = new Intent(this, LocalizationService.class);
+			stopService(intent);
+		}
+		invalidateOptionsMenu();
+	}
+	
+	void doBindService() {
+		bindService(new Intent(this, LocalizationService.class), mConnection,
+				Context.BIND_AUTO_CREATE);
+	}
+	
 	private ServiceConnection mConnection = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder binder) {
 			s = ((LocalizationService.MyBinder) binder).getService();
@@ -469,7 +426,7 @@ public class HomeActivity extends SherlockActivity {
 					datasource.open();
 					datasource.insertFlag(item);
 					datasource.close();
-					Toast.makeText(this, "Flag OK", Toast.LENGTH_LONG).show();
+					Toast.makeText(this, R.string.home_flag_ok, Toast.LENGTH_LONG).show();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -477,13 +434,15 @@ public class HomeActivity extends SherlockActivity {
 				if (datasource != null) {
 					datasource.close();
 				}
+			} else {
+				Toast.makeText(this, R.string.home_flag_not_ok, Toast.LENGTH_LONG).show();
+
 			}
 		}
 	}
 
 	public void traceMap(View v) {
-		Intent intent = new Intent(getApplicationContext(),
-				TraceMapActivity.class);
+		Intent intent = new Intent(getApplicationContext(), TraceMapActivity.class);
 		startActivity(intent);
 	}
 
@@ -500,16 +459,11 @@ public class HomeActivity extends SherlockActivity {
 		super.onPrepareOptionsMenu(menu);
 
 		// Retreive the menu items
-		MenuItem loginMenuItem = (MenuItem) menu
-				.findItem(R.id.home_menuItem_login);
-		MenuItem setFlagMenuItem = (MenuItem) menu
-				.findItem(R.id.home_menuItem_setFlag);
-		MenuItem recMenuItem = (MenuItem) menu
-				.findItem(R.id.home_menuItem_recImage);
-		MenuItem preferencesMenuItem = (MenuItem) menu
-				.findItem(R.id.home_menuItem_preferences);
-		MenuItem exitMenuItem = (MenuItem) menu
-				.findItem(R.id.home_menuItem_exit);
+		MenuItem loginMenuItem = (MenuItem) menu.findItem(R.id.home_menuItem_login);
+		MenuItem setFlagMenuItem = (MenuItem) menu.findItem(R.id.home_menuItem_setFlag);
+		MenuItem recMenuItem = (MenuItem) menu.findItem(R.id.home_menuItem_recImage);
+		MenuItem preferencesMenuItem = (MenuItem) menu.findItem(R.id.home_menuItem_preferences);
+		MenuItem exitMenuItem = (MenuItem) menu.findItem(R.id.home_menuItem_exit);
 
 		// State management
 		if (tourSims.isUserLoggedIn()) {
@@ -565,9 +519,17 @@ public class HomeActivity extends SherlockActivity {
 			rec(item.getActionView());
 			return true;
 		case R.id.home_menuItem_update:
-			CourseWrapper courseWrapper = new CourseWrapper(
-					getApplicationContext());
+			// Clear the saved course if existing
+			settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+			if (settings.contains(CustomPreferences.COURSE_STARTED_URL)) {
+				settings.edit().remove(CustomPreferences.COURSE_STARTED_URL).commit();
+			}
+
+			CourseWrapper courseWrapper = new CourseWrapper(getApplicationContext());
 			courseWrapper.GetCourses();
+
+			reloadActivity();
+
 			return true;
 		case R.id.home_menuItem_preferences:
 			intent = new Intent(getApplicationContext(), PrefActivity.class);
@@ -576,8 +538,7 @@ public class HomeActivity extends SherlockActivity {
 		case R.id.home_menuItem_exit:
 			// The user is signing out
 			tourSims.setUserLoggedIn(false);
-			SharedPreferences loginSettings = getSharedPreferences(
-					LoginActivity.LOGIN_PREFERENCES, 0);
+			SharedPreferences loginSettings = getSharedPreferences(LoginActivity.LOGIN_PREFERENCES, 0);
 			SharedPreferences.Editor editor = loginSettings.edit();
 			editor.putBoolean(LoginActivity.LOGIN_PREFERENCES_LOGGEDIN, false);
 			editor.commit();

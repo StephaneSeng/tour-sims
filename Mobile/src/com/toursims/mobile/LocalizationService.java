@@ -32,15 +32,20 @@ public class LocalizationService extends Service {
 	private static final String TAG = LocalizationService.class.getName();
 	private static final String PROXIMITY_INTENT = TAG + ".PROXIMITY_INTENT";
 	private static final long expiration = -1;
-	private static final float radius = 200f;
-	private static final long MINIMUM_DISTANCECHANGE_FOR_UPDATE = 1; // in Meters
-	private static final long MINIMUM_TIME_BETWEEN_UPDATE = 30 * 1000; // in Milliseconds
+	private static final float radius = 250f;
+	private static final long MINIMUM_DISTANCECHANGE_FOR_UPDATE = 1; // in
+																		// Meters
+	private static final long MINIMUM_TIME_BETWEEN_UPDATE = 10 * 1000; // in
+																		// Milliseconds
 
 	private static String fileString = new String();
 	private static Location knownLocation;
 	private static boolean recording = false;
 	private static Course course;
 	private static String filename;
+	private static Placemark currentPlacemark;
+	private static Placemark lastPlacemark;
+	private static String name;
 
 	private final IBinder mBinder = new MyBinder();
 
@@ -60,56 +65,74 @@ public class LocalizationService extends Service {
 		userWrapper = new UserWrapper(getApplicationContext());
 		locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-		// Suscribe to the provider events
-		gpsLocationListener = new LocalizationListener();
-		networkLocationListener = new LocalizationListener();
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, gpsLocationListener);
-		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, networkLocationListener);
-
 		// Retrive the currently best provider
 		criteria = new Criteria();
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
 		bestProvider = locationManager.getBestProvider(criteria, true);
 		Log.d(TAG, "Best current localization provider : " + bestProvider);
 
+		// Suscribe to the provider events
+		gpsLocationListener = new LocalizationListener();
+		networkLocationListener = new LocalizationListener();
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+				MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE,
+				gpsLocationListener);
+		locationManager.requestLocationUpdates(
+				LocationManager.NETWORK_PROVIDER, MINIMUM_TIME_BETWEEN_UPDATE,
+				MINIMUM_DISTANCECHANGE_FOR_UPDATE, networkLocationListener);
+
 		Log.d(TAG, "The LocalizationService has been started");
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Bundle b = intent.getExtras();
+		if (intent != null) {
+			Bundle b = intent.getExtras();
 
-		if (b != null) {
-			if (b.containsKey(Point.LATITUDE) && b.containsKey(Point.LONGITUDE) && b.containsKey(Placemark.NAME)) {
-				setProximityAlert(b.getDouble(Point.LATITUDE), b.getDouble(Point.LONGITUDE), 0, 0, PROXIMITY_INTENT);
+			if (b != null) {
+				if (b.containsKey(Point.LATITUDE)
+						&& b.containsKey(Point.LONGITUDE)
+						&& b.containsKey(Placemark.NAME)) {
+					setProximityAlert(b.getDouble(Point.LATITUDE),
+							b.getDouble(Point.LONGITUDE), 0, 0,
+							PROXIMITY_INTENT);
 
-				BroadcastReceiver r = new BroadcastReceiver() {
-					@Override
-					public void onReceive(Context context, Intent intent) {
-						Log.d(PROXIMITY_INTENT, "Proximity Intent received from Service");
-					}
-				};
+					BroadcastReceiver r = new BroadcastReceiver() {
+						@Override
+						public void onReceive(Context context, Intent intent) {
+							Log.d(PROXIMITY_INTENT,
+									"Proximity Intent received from Service");
+						}
+					};
 
-				IntentFilter intentFilter = new IntentFilter(PROXIMITY_INTENT);
-				registerReceiver(r, intentFilter);
-			} else {
-				Log.d(TAG, "Missing Arguments");
+					IntentFilter intentFilter = new IntentFilter(
+							PROXIMITY_INTENT);
+					registerReceiver(r, intentFilter);
+				} else {
+					Log.d(TAG, "Missing Arguments");
+				}
 			}
 		}
 
 		return super.onStartCommand(intent, flags, startId);
 	}
 
-	public void setProximityAlert(double lat, double lon, final long eventID, int requestCode, String proximityIntentAction) {
+	public void setProximityAlert(double lat, double lon, final long eventID,
+			int requestCode, String proximityIntentAction) {
 		if (pendingIntentForProximityAlert != null) {
-			locationManager.removeProximityAlert(pendingIntentForProximityAlert);
+			locationManager
+					.removeProximityAlert(pendingIntentForProximityAlert);
 		}
 
 		Intent intent = new Intent(proximityIntentAction);
-		pendingIntentForProximityAlert = PendingIntent.getBroadcast(getApplicationContext(), requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-		locationManager.addProximityAlert(lat, lon, radius, expiration, pendingIntentForProximityAlert);
+		pendingIntentForProximityAlert = PendingIntent.getBroadcast(
+				getApplicationContext(), requestCode, intent,
+				PendingIntent.FLAG_CANCEL_CURRENT);
+		locationManager.addProximityAlert(lat, lon, radius, expiration,
+				pendingIntentForProximityAlert);
 
-		Log.d("setProximityAlert", "An alert has been set for :" + lat + "," + lon);
+		Log.d("setProximityAlert", "An alert has been set for :" + lat + ","
+				+ lon);
 	}
 
 	private final class LocalizationListener implements LocationListener {
@@ -128,10 +151,12 @@ public class LocalizationService extends Service {
 				TourSims tourSims = (TourSims) getApplicationContext();
 				if (tourSims.isUserLoggedIn()) {
 					Log.d(TAG, "Create a checkin");
-					userWrapper.CreateCheckin(location.getLatitude(), location.getLongitude(), tourSims.getUser().getUserId());
+					userWrapper.CreateCheckin(location.getLatitude(), location
+							.getLongitude(), tourSims.getUser().getUserId());
 				}
 
-				Log.d(TAG, "New user position : (" + location.getLatitude() + ", " + location.getLongitude() + ")");
+				Log.d(TAG, "New user position : (" + location.getLatitude()
+						+ ", " + location.getLongitude() + ")");
 			}
 		}
 
@@ -140,9 +165,16 @@ public class LocalizationService extends Service {
 			bestProvider = locationManager.getBestProvider(criteria, true);
 			if (bestProvider != null) {
 				if (bestProvider.equals(LocationManager.GPS_PROVIDER)) {
-					locationManager.requestLocationUpdates(bestProvider, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, gpsLocationListener);
-				} else if (bestProvider.equals(LocationManager.NETWORK_PROVIDER)) {
-					locationManager.requestLocationUpdates(bestProvider, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, networkLocationListener);
+					locationManager.requestLocationUpdates(bestProvider,
+							MINIMUM_TIME_BETWEEN_UPDATE,
+							MINIMUM_DISTANCECHANGE_FOR_UPDATE,
+							gpsLocationListener);
+				} else if (bestProvider
+						.equals(LocationManager.NETWORK_PROVIDER)) {
+					locationManager.requestLocationUpdates(bestProvider,
+							MINIMUM_TIME_BETWEEN_UPDATE,
+							MINIMUM_DISTANCECHANGE_FOR_UPDATE,
+							networkLocationListener);
 				}
 			}
 			Log.d(TAG, "Best current localization provider : " + bestProvider);
@@ -153,9 +185,16 @@ public class LocalizationService extends Service {
 			bestProvider = locationManager.getBestProvider(criteria, true);
 			if (bestProvider != null) {
 				if (bestProvider.equals(LocationManager.GPS_PROVIDER)) {
-					locationManager.requestLocationUpdates(bestProvider, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, gpsLocationListener);
-				} else if (bestProvider.equals(LocationManager.NETWORK_PROVIDER)) {
-					locationManager.requestLocationUpdates(bestProvider, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, networkLocationListener);
+					locationManager.requestLocationUpdates(bestProvider,
+							MINIMUM_TIME_BETWEEN_UPDATE,
+							MINIMUM_DISTANCECHANGE_FOR_UPDATE,
+							gpsLocationListener);
+				} else if (bestProvider
+						.equals(LocationManager.NETWORK_PROVIDER)) {
+					locationManager.requestLocationUpdates(bestProvider,
+							MINIMUM_TIME_BETWEEN_UPDATE,
+							MINIMUM_DISTANCECHANGE_FOR_UPDATE,
+							networkLocationListener);
 				}
 			}
 			Log.d(TAG, "Best current localization provider : " + bestProvider);
@@ -166,9 +205,16 @@ public class LocalizationService extends Service {
 			bestProvider = locationManager.getBestProvider(criteria, true);
 			if (bestProvider != null) {
 				if (bestProvider.equals(LocationManager.GPS_PROVIDER)) {
-					locationManager.requestLocationUpdates(bestProvider, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, gpsLocationListener);
-				} else if (bestProvider.equals(LocationManager.NETWORK_PROVIDER)) {
-					locationManager.requestLocationUpdates(bestProvider, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, networkLocationListener);
+					locationManager.requestLocationUpdates(bestProvider,
+							MINIMUM_TIME_BETWEEN_UPDATE,
+							MINIMUM_DISTANCECHANGE_FOR_UPDATE,
+							gpsLocationListener);
+				} else if (bestProvider
+						.equals(LocationManager.NETWORK_PROVIDER)) {
+					locationManager.requestLocationUpdates(bestProvider,
+							MINIMUM_TIME_BETWEEN_UPDATE,
+							MINIMUM_DISTANCECHANGE_FOR_UPDATE,
+							networkLocationListener);
 				}
 			}
 			Log.d(TAG, "Best current localization provider : " + bestProvider);
@@ -189,29 +235,34 @@ public class LocalizationService extends Service {
 
 	@Override
 	public void onDestroy() {
-		super.onDestroy();
 		locationManager.removeUpdates(gpsLocationListener);
 		locationManager.removeUpdates(networkLocationListener);
 		Log.d(TAG, "The LocalizationService has be destroyed");
+
+		SharedPreferences settings = getSharedPreferences(
+				CustomPreferences.PREF_FILE, 0);
+		SharedPreferences.Editor editor = settings.edit();
+
+		if (settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1) != -1) {
+			stopRecording();
+		}
+
+		this.stopSelf();
+		super.onDestroy();
 	}
 
 	public void recordLocation(Location location) {
 		if (recording) {
 			try {
-				fileString += location.getTime() + "," + location.getLatitude() + "," + location.getLongitude() + "\n";
-				Placemark p = new Placemark(location.getLongitude(), location.getLatitude(), Calendar.getInstance().getTime().toLocaleString());
-				if (course == null) {
-					course = new Course();
-				}
+				lastPlacemark = currentPlacemark;
+				currentPlacemark = new Placemark(location.getLongitude(),
+						location.getLatitude(), Calendar.getInstance()
+								.getTime().toLocaleString());
 
-				if (course.getPlacemarks().size() > 0) {
-					course.getPlacemarks().get(course.getPlacemarks().size() - 1).getTimeSpan().setEnd(Calendar.getInstance().getTime().toLocaleString());
-				}
-
-				course.addPlacemark(p);
-
-				if (fileString.length() > 500) {
-					writeFile(fileString, ".log");
+				if (lastPlacemark != null) {
+					lastPlacemark.getTimeSpan().setEnd(
+							Calendar.getInstance().getTime().toLocaleString());
+					writeFile(lastPlacemark.toKml());
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -221,59 +272,77 @@ public class LocalizationService extends Service {
 
 	public void stopRecording() {
 		recording = false;
-		if (course != null) {
-			writeFile(course.toKml(), "kml");
+		SharedPreferences settings = getSharedPreferences(
+				CustomPreferences.PREF_FILE, 0);
+
+		if (lastPlacemark != null) {
+			currentPlacemark.getTimeSpan().setEnd(
+					Calendar.getInstance().getTime().toLocaleString());
+
+			writeFile(currentPlacemark.toKml());
+			writeFile(course.toKmlEnd());
+
+			Trace item = new Trace();
+
+			Long startedTime = settings.getLong(
+					CustomPreferences.RECORDING_RIGHT_NOW, -1);
+
+			String filenameURL = "/data/data/com.toursims.mobile/files/trace_"
+					+ startedTime.toString() + ".kml";
+
+			item.setFile(filenameURL);
+			item.setMillis(startedTime);
+			item.setName(name);
+			try {
+				CourseBDD datasource;
+				datasource = new CourseBDD(this);
+				datasource.open();
+				datasource.insertTrace(item);
+				datasource.close();
+			} catch (Exception e) {
+
+			}
 		}
+		settings.edit().remove(CustomPreferences.RECORDING_RIGHT_NOW).commit();
 	}
 
-	public void writeFile(String stringFile, String fileNameExt) {
-		SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
-		Long startedTime = settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1);
-
+	public void writeFile(String stringFile) {
 		try {
 			FileOutputStream fos = openFileOutput(filename, Context.MODE_APPEND);
 			fos.write(stringFile.getBytes());
 			fos.close();
 		} catch (Exception e) {
-			Log.e(TAG, e.getMessage());
-			Log.e(TAG, e.toString());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
 	public void startRecording(String name) {
-		CourseBDD datasource = null;
-		try {
-			recording = true;
-			recordLocation(knownLocation);
-			course = new Course();
-			Trace item = new Trace();
+		this.name = name;
+		recording = true;
+		recordLocation(knownLocation);
+		course = new Course();
 
-			SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
-			Long startedTime = settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1);
-			filename = "/data/data/com.toursims.mobile/files/trace_" + startedTime.toString() + ".kml";
+		SharedPreferences settings = getSharedPreferences(
+				CustomPreferences.PREF_FILE, 0);
+		SharedPreferences.Editor editor = settings.edit();
 
-			item.setFile(filename);
-			item.setMillis(startedTime);
-			item.setName(name);
+		Long l = Calendar.getInstance().getTimeInMillis();
+		settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+		editor = settings.edit();
+		editor.putLong(CustomPreferences.RECORDING_RIGHT_NOW, l);
+		editor.commit();
+		Log.d("TAG", "Start recording" + l);
 
-			filename = "trace_" + startedTime.toString() + ".kml";
+		Long startedTime = settings.getLong(
+				CustomPreferences.RECORDING_RIGHT_NOW, -1);
 
-			datasource = new CourseBDD(this);
-			datasource.open();
-			datasource.insertTrace(item);
-			datasource.close();
-		} catch (IOException e) {
-			Log.e(TAG, e.getMessage());
-			Log.e(TAG, e.toString());
-		}
-		
-		if (datasource != null) {
-			datasource.close();
-		}
+		filename = "trace_" + startedTime.toString() + ".kml";
+
+		writeFile(course.toKmlBegin());
 	}
 
 	public Location getKnownLocation() {
 		return knownLocation;
 	}
-
 }

@@ -1,6 +1,9 @@
 package com.toursims.mobile.model.kml;
 import org.simpleframework.xml.Element;
 
+import android.content.Intent;
+import android.os.Bundle;
+
 import com.toursims.mobile.model.BasicObject;
 
 public class Point extends BasicObject {
@@ -66,5 +69,17 @@ public class Point extends BasicObject {
 		s += getCoordinates();
 		s += "</coordinates></Point>";
 		return s;
+	}
+	
+	public Intent toIntent(Intent intent){
+		intent.putExtra("POINT_LATITUTDE", getLatitude());
+		intent.putExtra("POINT_LONGITUDE", getLongitude());
+		return intent;
+	}
+	
+	public Point(Intent intent){
+		Bundle b  = intent.getExtras();
+		latitude = (double) b.getDouble("POINT_LATITUTDE", 0);
+		longitude = (double) b.getDouble("POINT_LONGITUDE", 0);
 	}
 }

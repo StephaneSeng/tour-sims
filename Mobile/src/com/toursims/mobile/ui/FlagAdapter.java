@@ -2,17 +2,15 @@ package com.toursims.mobile.ui;
 
 import java.util.List;
 
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapView;
+import com.toursims.mobile.FlagMapActivity;
 import com.toursims.mobile.R;
 import com.toursims.mobile.model.kml.Point;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnLongClickListener;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
@@ -62,26 +60,13 @@ public class FlagAdapter extends BaseAdapter {
 
 			final int pos = position;
 
-			holder.wrapper.setOnLongClickListener(new OnLongClickListener() {
+			holder.wrapper.setOnClickListener(new OnClickListener() {
 
 				@Override
-				public boolean onLongClick(View v) {
-					// TODO Auto-generated method stub
-					//Dialog d = new Dialog(context);
-					//d.setTitle("Sélectionnez");
-					//d.setContentView(R.layout.flag_edit);
-
-					//TextView textDialog = (TextView) d.findViewById(R.id.name);
-					//textDialog.setText(items.get(pos).getName());
-
-					//MapView mapView = (MapView) d.findViewById(R.id.map);
-					
-			//		AlertDialog.Builder d = new AlertDialog.Builder(mapView.getContext());
-			//		d.show();
-					
-
-
-					return false;
+				public void onClick(View v) {
+					Intent intent = new Intent(context, FlagMapActivity.class);
+					intent = items.get(pos).toIntent(intent);
+					context.startActivity(intent);
 				}
 			});
 

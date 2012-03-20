@@ -27,7 +27,6 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 import com.toursims.mobile.controller.CourseBDD;
-import com.toursims.mobile.controller.CourseLoader;
 import com.toursims.mobile.model.Course;
 import com.toursims.mobile.ui.CourseAdapter;
 
@@ -78,13 +77,6 @@ public class CourseGameActivity extends SherlockActivity {
 				datasource = new CourseBDD(getApplicationContext());
 				datasource.open();
 				courses = datasource.getCoursesWithCity(city);
-
-				// Course c1 =
-				// CourseLoader.getInstance().parse("http://www.x00b.com/tour3.kml");
-				// datasource.insertCourse(c1);
-				// c1.setId(datasource.getCourseIdWithURL("http://www.x00b.com/tour3.kml"));
-				// datasource.insertPlacemarks(c1);
-
 				datasource.close();
 			} catch (IOException e) {
 				e.printStackTrace();

@@ -88,11 +88,11 @@ public class CourseDetailsActivity extends SherlockActivity {
 			
 			// Retreive the current course rating
 			RatingWrapper ratingWrapper = new RatingWrapper(getApplicationContext());
-			rating = ratingWrapper.GetCourseRating(courseId);
+			rating = ratingWrapper.GetCourseRating(course.getName());
 			
 			// Retreive the current course comments
 			CommentWrapper commentWrapper = new CommentWrapper(getApplicationContext());
-			comments = commentWrapper.GetCourseComments(courseId);
+			comments = commentWrapper.GetCourseComments(course.getName());
 			commentAdapter = new CommentAdapter(getApplicationContext(), comments);
 			
 			return null;

@@ -9,7 +9,8 @@ INSERT INTO city (name, description, latitude, longitude) VALUES ('Sydney', '', 
 -- Table: course
 
 INSERT INTO course (name, description, difficulty, file, "timestamp", user_id, city_id) VALUES ('La DOUA - IF', 'Parcours de la DOUA qui prend environ 3h', 10, 'http://www.x00b.com/tour.kml', now(), 1, 1);
-INSERT INTO course (name, description, difficulty, file, "timestamp", user_id, city_id) VALUES ('Only Lyon', 'Un vrai tour de Lyon!', 10, 'http://www.x00b.com/tour2.kml', now(), 1, 1);
+-- INSERT INTO course (name, description, difficulty, file, "timestamp", user_id, city_id) VALUES ('Only Lyon', 'Un tour de Lyon', 10, 'http://www.x00b.com/tour2.kml', now(), 1, 1);
+INSERT INTO course (name, description, difficulty, file, "timestamp", user_id, city_id) VALUES ('Only Lyon', 'Un vrai tour de Lyon!', 10, 'http://www.x00b.com/tour3.kml', now(), 1, 1);
 
 -- Table: poi
 

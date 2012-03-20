@@ -1,6 +1,5 @@
 package com.toursims.mobile;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,21 +12,18 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
-import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.google.android.maps.Projection;
 import com.toursims.mobile.controller.CourseLoader;
 import com.toursims.mobile.model.Course;
 import com.toursims.mobile.model.kml.Placemark;
-import com.toursims.mobile.model.places.Road;
+import com.toursims.mobile.ui.CustomMapActivity;
 import com.toursims.mobile.ui.utils.CustomItemizedOverlay;
-import com.toursims.mobile.ui.utils.RoadProvider;
 
-public class TraceMapActivity extends MapActivity {
+public class TraceMapActivity extends CustomMapActivity {
 
 	private MapView mapView;
 	private MapController mapController;

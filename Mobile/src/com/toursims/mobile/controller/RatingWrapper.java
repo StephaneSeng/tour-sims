@@ -24,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import com.toursims.mobile.R;
@@ -38,6 +39,11 @@ public class RatingWrapper {
 	 * Android debugging tag
 	 */
 	private static final String TAG = RatingWrapper.class.toString();
+	
+	/**
+	 * SQL "null" output
+	 */
+	private static final String SQL_NULL = "null";
 	
 	/**
 	 * Application server root
@@ -90,16 +96,16 @@ public class RatingWrapper {
 	/**
 	 * Launch a SOAP request to the Rating webservice
 	 * Retreive the ratings linked to the specified course
-	 * @param course_id The id of the specified course
+	 * @param course_name The name of the specified course
 	 */
-	public double GetCourseRating(int course_id) {
+	public double GetCourseRating(String course_name) {
 		// Return variable
 		double rating = 0;
 		
 		// Build the SOAP request
 		StringBuffer request = new StringBuffer(serverRoot + "/rating.php?");
 		request.append("action=" + "get_course_rating");
-		request.append("&course_id=" + course_id);
+		request.append("&course_name=" + Uri.encode(course_name));
 
 		Log.d(TAG, "Launching a Rating request : " + request);
 		HttpGet httpGet = new HttpGet(request.toString());
@@ -131,6 +137,43 @@ public class RatingWrapper {
 	}
 	
 	/**
+	 * Launch a SOAP request to the Rating webservice
+	 * Create a rating linked to the specified course
+	 * @param course_name The name of the specified course
+	 */
+	public void CreateCourseRating(double rating, int user_id, String course_name) {
+		// Build the SOAP request
+		StringBuffer request = new StringBuffer(serverRoot + "/rating.php?");
+		request.append("action=" + "create_course_rating");
+		request.append("&rating=" + rating);
+		request.append("&user_id=" + user_id);
+		request.append("&course_name=" + Uri.encode(course_name));
+
+		Log.d(TAG, "Launching a Rating request : " + request);
+		HttpGet httpGet = new HttpGet(request.toString());
+		HttpResponse httpResponse;
+		
+		try {
+			httpResponse = httpClient.execute(httpGet);
+			
+			// JSON reconstruction
+			InputStream inputStream = httpResponse.getEntity().getContent();
+			byte[] buffer = new byte[1024];
+		    int length;
+		    StringBuilder builder = new StringBuilder();
+		    while ((length = inputStream.read(buffer)) > 0) {
+		            builder.append(new String(buffer, 0, length));
+		    }
+		    String json = builder.toString();
+		    
+		    Log.d(TAG, "JSON recieved : " + json);
+		} catch (Exception e) {
+			Log.e(TAG, e.getMessage());
+			Log.e(TAG, e.toString());
+		}
+	}
+	
+	/**
 	 * Utility for parsing the JSON response from the Rating webservice
 	 * @param json The response JSON to parse
 	 * @return A list of comments
@@ -150,7 +193,11 @@ public class RatingWrapper {
 		
 		// Construct the Rating object
 		try {
-			rating = Double.parseDouble(jsonRating);
+			if (jsonRating.contains(SQL_NULL)) {
+				rating = 0;
+			} else {
+				rating = Double.parseDouble(jsonRating);
+			}
 		} catch (Exception e) {
 			Log.e(TAG, e.getMessage());
 			Log.e(TAG, e.toString());
