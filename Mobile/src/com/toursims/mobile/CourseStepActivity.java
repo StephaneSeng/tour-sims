@@ -158,7 +158,11 @@ public class CourseStepActivity extends SherlockMapActivity {
 			incrementCurrentPlacemark();
 		}
 
-		updatePlacemark();
+		if (!b.containsKey("NOTIFICATION")) {
+			updatePlacemark();
+		} else {
+			displayNotification();
+		}
 
 		updateMap();
 		zoomInBounds();
@@ -500,7 +504,7 @@ public class CourseStepActivity extends SherlockMapActivity {
 		String className = am.getRunningTasks(1).get(0).topActivity
 				.getClassName();
 
-		if (!className.equals(CourseStepActivity.class.getName())) {
+		if ((!className.equals(CourseStepActivity.class.getName())) && (!getIntent().getExtras().containsKey("NOTIFICATION"))) {
 			// send notification if not in foreground
 			NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 			Notification notification = new Notification(
@@ -516,6 +520,7 @@ public class CourseStepActivity extends SherlockMapActivity {
 			i.putExtra(Course.URL_EXTRA, course.getUrl());
 			i.putExtra(CustomPreferences.COURSE_CURRENT_PLACEMARK,
 					currentPlacemark);
+			i.putExtra("NOTIFICATION", true);
 
 			PendingIntent activity = PendingIntent.getActivity(
 					getBaseContext(), 0, i, 0);
