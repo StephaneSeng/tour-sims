@@ -142,12 +142,12 @@ public class CourseStepActivity extends SherlockMapActivity {
 		Intent i = new Intent(this, LocalizationService.class);
 		startService(i);
 		
-		updatePlacemark();
-
 		Bundle b = getIntent().getExtras();
 		if  ((b.getBoolean(Course.NEXT_PLACEMARK)) && (currentPlacemark < (placemarks.size() - 1))){
 			incrementCurrentPlacemark();
 		}
+		
+		updatePlacemark();
 		
 		updateMap();
 		zoomInBounds();

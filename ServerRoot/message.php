@@ -108,7 +108,7 @@ switch ($_REQUEST['action']) {
 	
 		// Create the message object
 		$query = "
-		INSERT INTO message (text, latitude, longitude, \"timestamp\", rdv_latitude, rdv_longitude, rdv_timestamp, reply_message_id) VALUES ('".$_REQUEST['text']."', ".$_REQUEST['latitude'].", ".$_REQUEST['longitude'].", '".$_REQUEST['timestamp']."', ".$_REQUEST['rdv_latitude'].", ".$_REQUEST['rdv_longitude'].", '".$_REQUEST['rdv_timestamp']."', ".$_REQUEST['reply_message_id'].") RETURNING message_id;
+		INSERT INTO message (text, latitude, longitude, \"timestamp\", rdv_latitude, rdv_longitude, rdv_timestamp, reply_message_id) VALUES ('".stripslashes($_REQUEST['text'])."', ".$_REQUEST['latitude'].", ".$_REQUEST['longitude'].", '".$_REQUEST['timestamp']."', ".$_REQUEST['rdv_latitude'].", ".$_REQUEST['rdv_longitude'].", '".$_REQUEST['rdv_timestamp']."', ".$_REQUEST['reply_message_id'].") RETURNING message_id;
 		";
 		$result = pg_query($query) or die('Query failed: '.pg_last_error());
 		

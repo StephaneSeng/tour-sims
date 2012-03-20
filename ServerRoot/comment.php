@@ -1,7 +1,7 @@
 <?php
 
 // Establish the connection to the database
-$connection = pg_connect("host=localhost port=5432 dbname=toursims user=toursims password=smisruot") or die('Could not connect: '.pg_last_error());
+$connection = pg_connect("host=localhost port=5432 dbname=toursims user=toursims password=") or die('Could not connect: '.pg_last_error());
 
 // Define and perform the SQL query
 switch ($_REQUEST['action']) {
@@ -36,7 +36,7 @@ switch ($_REQUEST['action']) {
 		$query = "
 		INSERT INTO comment (text, \"timestamp\", user_id, course_id)
 		SELECT 
-			'".$_REQUEST['text']."' AS text,
+			'".stripslashes($_REQUEST['text'])."' AS text,
 			now() AS \"timestamp\",
 			".$_REQUEST['user_id']." AS user_id,
 			c.course_id

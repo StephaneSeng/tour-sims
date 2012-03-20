@@ -147,8 +147,8 @@ public class CommentWrapper {
 		
 		// Build the SOAP request
 		StringBuffer request = new StringBuffer(serverRoot + "/comment.php?");
-		request.append("action=" + "create_course_comments");
-		request.append("&text=" + Uri.encode(text));
+		request.append("action=" + "create_course_comment");
+		request.append("&text=" + Uri.encode(text).replace("'", "%27%27"));
 		request.append("&timestamp=" + Uri.encode(simpleDateFormat.format(Calendar.getInstance().getTime())));
 		request.append("&user_id=" + user_id);
 		request.append("&course_name=" + Uri.encode(course_name));
