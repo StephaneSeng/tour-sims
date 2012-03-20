@@ -8,6 +8,7 @@ import com.toursims.mobile.model.Course;
 import com.toursims.mobile.model.kml.Answer;
 import com.toursims.mobile.model.kml.Placemark;
 import com.toursims.mobile.model.kml.Question;
+import com.toursims.mobile.ui.ToolBox;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -40,6 +41,7 @@ public class GameActivity extends Activity {
 	private static Question q;
 	private static LinearLayout answers;
 	private static EditText e;
+	private static int currentClue;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -88,7 +90,7 @@ public class GameActivity extends Activity {
 				nextQuestion();
 			} else if (currentQuestion >= 0) {
 
-				AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+				AlertDialog.Builder dialog = ToolBox.getDialog(this);
 
 				if (checkAnswer()) {
 					currentQuestion++;
@@ -107,7 +109,6 @@ public class GameActivity extends Activity {
 								});
 
 					} else {
-
 						dialog.setPositiveButton(R.string.game_ok,
 								new DialogInterface.OnClickListener() {
 
@@ -121,6 +122,13 @@ public class GameActivity extends Activity {
 					}
 				} else {
 					dialog.setTitle(R.string.game_try_again);
+					try {
+						dialog.setMessage(q.getClues().get(currentClue++)
+								.getValue());
+					} catch (Exception e) {
+						dialog.setMessage(R.string.game_keep_trying);
+					}
+
 					dialog.setPositiveButton(R.string.game_ok,
 							new DialogInterface.OnClickListener() {
 
@@ -140,8 +148,8 @@ public class GameActivity extends Activity {
 	}
 
 	public void nextQuestion() {
+		currentClue = 0;
 		q = p.getQuestions().get(currentQuestion);
-
 		description.setText(q.getTitle());
 		setContentView(R.layout.game_question);
 

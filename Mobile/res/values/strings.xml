@@ -50,6 +50,7 @@
     <string name="game_your_answer">Répondre ici...</string>
     <string name="game_good_answer">Bien répondu</string>
     <string name="game_try_again">Mauvaise Réponse</string>
+    <string name="game_keep_trying">Encore un effort!</string>
     <string name="course_already_started_title">Parcours déjà lancé</string>
     <string name="course_already_started_message">Voulez-vous le reprendre?</string>
     <string name="course_already_started_go_on">Reprendre</string>
