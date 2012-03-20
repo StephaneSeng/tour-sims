@@ -146,6 +146,9 @@ public class WriteActivity extends SherlockActivity {
 					messageWrapper.CreateMessage(messageEditText.getText().toString(), 0, 0, rootMessageId, user.getUserId(), destUserId);
 				}
 			}
+			
+			finishActivity(0);
+			finish();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

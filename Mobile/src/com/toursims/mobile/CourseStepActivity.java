@@ -62,9 +62,9 @@ public class CourseStepActivity extends SherlockMapActivity {
 	private static final String PROXIMITY_INTENT = LocalizationService.class.getName()+".PROXIMITY_INTENT";
 	private static final String PROXIMITY_RECEIVER = LocalizationService.class.getName()+".PROXIMITY_RECEIVER";
 	private static final long MINIMUM_DISTANCECHANGE_FOR_UPDATE = 1; // in Meters
-	private static final long MINIMUM_TIME_BETWEEN_UPDATE = 3000; // in Milliseconds
-    private static final long POINT_RADIUS = 1000; // in Meters
-    private static final long PROX_ALERT_EXPIRATION = -1;    
+	private static final long MINIMUM_TIME_BETWEEN_UPDATE = 10 * 1000; // in Milliseconds
+    private static final long POINT_RADIUS = 250; // in Meters
+    private static final long PROX_ALERT_EXPIRATION = -1;
 
 	private static List<Placemark> placemarks;
 	private static List<GeoPoint> bounds;
@@ -83,6 +83,7 @@ public class CourseStepActivity extends SherlockMapActivity {
     private LocationManager locationManager;
     private static int currentPlacemark;
     private static BroadcastReceiver receiverLocalization;
+    private int courseId;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,37 +91,16 @@ public class CourseStepActivity extends SherlockMapActivity {
         
         SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
         currentPlacemark = settings.getInt(CustomPreferences.COURSE_CURRENT_PLACEMARK, -1);       
-        
-        Bundle bundle = getIntent().getExtras();       
         setContentView(R.layout.coursestep);
         
         placemarks = getPlaceMarks();
-        
-        if(bundle.containsKey(Course.NEXT_PLACEMARK)){
-        	if(currentPlacemark<placemarks.size()-1)
-        		incrementCurrentPlacemark();
-        }
-                
+
         mapView = (MapView) findViewById(R.id.map);
 		mapView.setBuiltInZoomControls(true);
 		//mapView.setStreetView(true);
 		mapController = mapView.getController();
 		//mapController.setZoom(14); // Zoom 1 is world view
 		
-		updateMap();
-		zoomInBounds();
-   
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        locationManager.requestLocationUpdates(
-                        LocationManager.GPS_PROVIDER, 
-                        MINIMUM_TIME_BETWEEN_UPDATE, 
-                        MINIMUM_DISTANCECHANGE_FOR_UPDATE,
-                        new MyLocationListener()
-        );
-        
-        updatePlacemark();
-        
         // ActionBarSherlock setup
  		ActionBar actionBar = getSupportActionBar();
  		actionBar.setDisplayHomeAsUpEnabled(true);
@@ -128,18 +108,24 @@ public class CourseStepActivity extends SherlockMapActivity {
  		actionBar.setTitle(course.getName());
 	}
 	
-
-	
 	@Override
 	protected void onPause() {
 		Log.d("TAG","Stop service");
 		stopService(new Intent(this, LocalizationService.class));
 		
+		try {
+			unregisterReceiver(receiverLocalization);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		Log.d("TAG","Start Service");
 		Intent i = new Intent(this, LocalizationService.class);
-		i.putExtra(Point.LATITUDE, placemarks.get(currentPlacemark).getPoint().getLatitude());
-		i.putExtra(Point.LONGITUDE, placemarks.get(currentPlacemark).getPoint().getLatitude());
-		i.putExtra(Placemark.NAME, placemarks.get(currentPlacemark).getName());
+		if (currentPlacemark < placemarks.size()) {
+			i.putExtra(Point.LATITUDE, placemarks.get(currentPlacemark).getPoint().getLatitude());
+			i.putExtra(Point.LONGITUDE, placemarks.get(currentPlacemark).getPoint().getLongitude());
+			i.putExtra(Placemark.NAME, placemarks.get(currentPlacemark).getName());
+		}
 		startService(i);
 		
 		super.onPause();
@@ -155,16 +141,25 @@ public class CourseStepActivity extends SherlockMapActivity {
 		Log.d("TAG","Start Service");
 		Intent i = new Intent(this, LocalizationService.class);
 		startService(i);
+		
+		updatePlacemark();
 
-		locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-		
 		Bundle b = getIntent().getExtras();
-		
-		if(b.getBoolean(Course.NEXT_PLACEMARK)){
+		if  ((b.getBoolean(Course.NEXT_PLACEMARK)) && (currentPlacemark < (placemarks.size() - 1))){
 			incrementCurrentPlacemark();
 		}
 		
+		updateMap();
+		zoomInBounds();
+   
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+        locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER, 
+                        MINIMUM_TIME_BETWEEN_UPDATE, 
+                        MINIMUM_DISTANCECHANGE_FOR_UPDATE,
+                        new MyLocationListener()
+        );
 	}
 	
 	Handler mHandler = new Handler() {
@@ -376,8 +371,13 @@ public class CourseStepActivity extends SherlockMapActivity {
 					
 		     	receiverLocalization = new BroadcastReceiver() {			
 					@Override
-					public void onReceive(Context context, Intent intent) {			    	
-					   	unregisterReceiver(receiverLocalization);    					
+					public void onReceive(Context context, Intent intent) {
+						stopService(new Intent(getApplicationContext(), LocalizationService.class));
+					   	try {
+					   		unregisterReceiver(receiverLocalization);
+					   	} catch (Exception e) {
+					   		e.printStackTrace();
+					   	}
 					    Log.d(PROXIMITY_RECEIVER,"Proximity Alert");
 						displayNotification();
 					}
@@ -406,6 +406,8 @@ public class CourseStepActivity extends SherlockMapActivity {
 		    } else {
 		    	//End of the course 
 		    	SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
+		    	courseId = settings.getInt(CustomPreferences.COURSE_STARTED_ID, -1);
+		    	Log.d(TAG, "courseId = " + courseId);
 		    	CustomPreferences.removeCourseStarted(settings);
 				
 		    	AlertDialog.Builder dialog = ToolBox.getDialog(this);
@@ -415,8 +417,14 @@ public class CourseStepActivity extends SherlockMapActivity {
 				dialog.setPositiveButton(R.string.course_finished_button_ok, new DialogInterface.OnClickListener() {
 							
 					public void onClick(DialogInterface dialog, int which) {
-									// TODO Auto-generated method stub
 							dialog.dismiss();
+							
+							// Launch the Feedback activity and close this one
+							Intent intent = new Intent(getApplicationContext(), FeedbackActivity.class);
+							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+							intent.putExtra(FeedbackActivity.FEEDBACK_COURSE_ID, courseId);
+							startActivity(intent);
+							finish();
 					}
 				});
 				dialog.show();
@@ -425,7 +433,7 @@ public class CourseStepActivity extends SherlockMapActivity {
     }
 
 
-	private void displayNotification() {
+	public void displayNotification() {
 		
 		//check for class in foreground
 		Context context = getBaseContext();
@@ -449,8 +457,6 @@ public class CourseStepActivity extends SherlockMapActivity {
 				PendingIntent activity = PendingIntent.getActivity(getBaseContext(), 0, i,0);
 				notification.setLatestEventInfo(getBaseContext(), placemarks.get(currentPlacemark).getName(),placemarks.get(currentPlacemark).getName(), activity);
 				notificationManager.notify(0, notification);
-				
-		    	SharedPreferences settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
 		 } else {		
 				AlertDialog.Builder dialog = ToolBox.getDialog(this);
 				

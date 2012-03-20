@@ -12,8 +12,6 @@ import android.widget.ListView;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 import com.toursims.mobile.controller.UserWrapper;
@@ -87,13 +85,13 @@ public class ContactActivity extends SherlockActivity {
 		}
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuInflater inflater = getSupportMenuInflater();
-	    inflater.inflate(R.menu.menu_contact, menu);
-
-	    return true;
-	}
+//	@Override
+//	public boolean onCreateOptionsMenu(Menu menu) {
+//	    MenuInflater inflater = getSupportMenuInflater();
+//	    inflater.inflate(R.menu.menu_contact, menu);
+//
+//	    return true;
+//	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {

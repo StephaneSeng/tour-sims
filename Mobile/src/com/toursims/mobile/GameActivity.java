@@ -227,7 +227,7 @@ public void dialogEnd() {
 }
 
 public void quitView() {
-       Intent courseDetails = new Intent(getApplicationContext(),CourseDetailsActivity.class);
+       Intent courseDetails = new Intent(getApplicationContext(),CourseStepActivity.class);
        courseDetails.putExtra(Course.ID_EXTRA, course.getId());
        courseDetails.putExtra(Course.URL_EXTRA, course.getUrl());
        courseDetails.putExtra(Course.NEXT_PLACEMARK, true);

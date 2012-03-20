@@ -32,9 +32,9 @@ public class LocalizationService extends Service {
 	private static final String TAG = LocalizationService.class.getName();
 	private static final String PROXIMITY_INTENT = TAG + ".PROXIMITY_INTENT";
 	private static final long expiration = -1;
-	private static final float radius = 200f;
+	private static final float radius = 250f;
 	private static final long MINIMUM_DISTANCECHANGE_FOR_UPDATE = 1; // in Meters
-	private static final long MINIMUM_TIME_BETWEEN_UPDATE = 30 * 1000; // in Milliseconds
+	private static final long MINIMUM_TIME_BETWEEN_UPDATE = 10 * 1000; // in Milliseconds
 
 	private static String fileString = new String();
 	private static Location knownLocation;
@@ -60,43 +60,48 @@ public class LocalizationService extends Service {
 		userWrapper = new UserWrapper(getApplicationContext());
 		locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-		// Suscribe to the provider events
-		gpsLocationListener = new LocalizationListener();
-		networkLocationListener = new LocalizationListener();
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, gpsLocationListener);
-		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, networkLocationListener);
-
 		// Retrive the currently best provider
 		criteria = new Criteria();
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
 		bestProvider = locationManager.getBestProvider(criteria, true);
 		Log.d(TAG, "Best current localization provider : " + bestProvider);
-
+		
+		// Suscribe to the provider events
+		gpsLocationListener = new LocalizationListener();
+		networkLocationListener = new LocalizationListener();
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, gpsLocationListener);
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, networkLocationListener);
+		
 		Log.d(TAG, "The LocalizationService has been started");
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Bundle b = intent.getExtras();
-
-		if (b != null) {
-			if (b.containsKey(Point.LATITUDE) && b.containsKey(Point.LONGITUDE) && b.containsKey(Placemark.NAME)) {
-				setProximityAlert(b.getDouble(Point.LATITUDE), b.getDouble(Point.LONGITUDE), 0, 0, PROXIMITY_INTENT);
-
-				BroadcastReceiver r = new BroadcastReceiver() {
-					@Override
-					public void onReceive(Context context, Intent intent) {
-						Log.d(PROXIMITY_INTENT, "Proximity Intent received from Service");
-					}
-				};
-
-				IntentFilter intentFilter = new IntentFilter(PROXIMITY_INTENT);
-				registerReceiver(r, intentFilter);
-			} else {
-				Log.d(TAG, "Missing Arguments");
+		if (intent != null) {
+			Bundle b = intent.getExtras();
+	
+			if (b != null) {
+				if (b.containsKey(Point.LATITUDE) && b.containsKey(Point.LONGITUDE) && b.containsKey(Placemark.NAME)) {
+					setProximityAlert(b.getDouble(Point.LATITUDE), b.getDouble(Point.LONGITUDE), 0, 0, PROXIMITY_INTENT);
+	
+					BroadcastReceiver r = new BroadcastReceiver() {
+						@Override
+						public void onReceive(Context context, Intent intent) {
+							Log.d(PROXIMITY_INTENT, "Proximity Intent received from Service");
+							
+							// Debug
+							// new CourseStepActivity().displayNotification();
+						}
+					};
+	
+					IntentFilter intentFilter = new IntentFilter(PROXIMITY_INTENT);
+					registerReceiver(r, intentFilter);
+				} else {
+					Log.d(TAG, "Missing Arguments");
+				}
 			}
 		}
-
+	
 		return super.onStartCommand(intent, flags, startId);
 	}
 
@@ -189,10 +194,12 @@ public class LocalizationService extends Service {
 
 	@Override
 	public void onDestroy() {
-		super.onDestroy();
 		locationManager.removeUpdates(gpsLocationListener);
 		locationManager.removeUpdates(networkLocationListener);
 		Log.d(TAG, "The LocalizationService has be destroyed");
+		
+		this.stopSelf();
+		super.onDestroy();
 	}
 
 	public void recordLocation(Location location) {
