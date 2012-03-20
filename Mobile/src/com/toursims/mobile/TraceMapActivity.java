@@ -163,5 +163,4 @@ class MySimplePathOverlay extends Overlay {
 
 		canvas.drawPath(path, mPaint);
 	}
-
 }
