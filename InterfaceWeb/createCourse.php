@@ -392,10 +392,10 @@
 	
 	<body onload="initialize()">
 	<div id="header">
-		<a href="index.html" id="logo"><img src="images/logo.png" alt="LOGO" /></a>
+		<a href="index.php" id="logo"><img src="images/logo.png" alt="LOGO" /></a>
 		<div id="navigation">
 			<ul>
-				<li class="first"><a href="index.html">Home</a></li>
+				<li class="first"><a href="index.php">Home</a></li>
 				<li class="selected"><a href="createCourse.php">Your course</a></li>
 				<li><a href="contact.html">Contact</a></li>
 			</ul>
@@ -443,7 +443,7 @@
 						if ($dName == 'type') {
 							$value = $data->getElementsByTagName('value')->item(0)->nodeValue;
 							if ($value == 'game'){
-								$htmlReturn = $htmlReturn. '<li>More : It\'s a game </li>';
+								$htmlReturn = $htmlReturn. '<li>More : Riddle for you </li>';
 							}
 						}
 					}

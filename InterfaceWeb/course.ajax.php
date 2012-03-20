@@ -187,6 +187,7 @@
 		}
 		
 		$fileName = str_replace(" ","_",$data[0]);
+		$description = $data[2];
 		$kmlOutput = $dom->save("kml/".$fileName.".kml");
 		$listPOIhtml = " <h3>Your course</h3>"
 						. "<ul>";
@@ -241,7 +242,7 @@
 		echo $listPOIhtml;
 		$connection = pg_connect("host=localhost port=5432 dbname=toursims user=toursims password=smisruot") or die('Could not connect: '.pg_last_error());
 		$query = "
-		INSERT INTO course (name,description,difficulty,file,\"timestamp\",user_id,city_id) VALUES ('name','desc',1,'http://toursims.free.fr/kml/".$fileName.".kml',now(),1,1);";
+		INSERT INTO course (name,description,difficulty,file,\"timestamp\",user_id,city_id) VALUES ('".$data[0]."','".$description."',1,'http://toursims.free.fr/kml/".$fileName.".kml',now(),1,1);";
 		$result = pg_query($query) or die('Query failed: '.pg_last_error());
 	}
 
