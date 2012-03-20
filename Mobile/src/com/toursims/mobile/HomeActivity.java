@@ -350,40 +350,52 @@ public class HomeActivity extends SherlockActivity {
 		if (settings.getLong(CustomPreferences.RECORDING_RIGHT_NOW, -1) == -1) {
 			final AlertDialog.Builder dialog = ToolBox.getDialog(this);
 			dialog.setTitle(R.string.home_record_title);
+			doBindService();
 
-			e = new EditText(this);
+			final EditText e = new EditText(this);
 			e.setHint(R.string.home_record_hint);
 
-			dialog.setView(e).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					// if (s == null) {
-					// bindService(new Intent(this,
-					// LocalizationService.class),
-					// mConnection, Context.BIND_AUTO_CREATE);
-					// }
-					Long l = Calendar.getInstance().getTimeInMillis();
-					settings = getSharedPreferences(CustomPreferences.PREF_FILE, 0);
-					editor = settings.edit();
-					editor.putLong(CustomPreferences.RECORDING_RIGHT_NOW, l);
-					editor.commit();
-					Log.d("TAG", "Start recording" + l);
-					s.startRecording(e.getText().toString());
-					invalidateOptionsMenu();
-					dialog.dismiss();
-				}
-			}).setNegativeButton(R.string.home_record_cancel, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface arg0, int arg1) {
-				}
-			}).show();
+			dialog.setView(e)
+					.setPositiveButton(R.string.ok,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int which) {
+									if (s == null) {
+										doBindService();
+									}
+									s.startRecording(e.getText().toString());
+									dialog.dismiss();
+									invalidateOptionsMenu();
+								}
+							})
+					.setNegativeButton(R.string.home_record_cancel,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface arg0,
+										int arg1) {
+									unbindService(mConnection);
+									Intent intent = new Intent(
+											getApplicationContext(),
+											LocalizationService.class);
+									stopService(intent);
+								}
+							}).show();
 		} else {
 			s.stopRecording();
-			editor.remove(CustomPreferences.RECORDING_RIGHT_NOW);
-			editor.commit();
-			Toast.makeText(this, R.string.home_record_stop_recording, Toast.LENGTH_LONG).show();
-			invalidateOptionsMenu();
-		}
-	}
+			Toast.makeText(this, R.string.home_record_stop_recording, Toast.LENGTH_LONG)
+					.show();
 
+			unbindService(mConnection);
+			Intent intent = new Intent(this, LocalizationService.class);
+			stopService(intent);
+		}
+		invalidateOptionsMenu();
+	}
+	
+	void doBindService() {
+		bindService(new Intent(this, LocalizationService.class), mConnection,
+				Context.BIND_AUTO_CREATE);
+	}
+	
 	private ServiceConnection mConnection = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder binder) {
 			s = ((LocalizationService.MyBinder) binder).getService();
@@ -414,7 +426,7 @@ public class HomeActivity extends SherlockActivity {
 					datasource.open();
 					datasource.insertFlag(item);
 					datasource.close();
-					Toast.makeText(this, "Flag OK", Toast.LENGTH_LONG).show();
+					Toast.makeText(this, R.string.home_flag_ok, Toast.LENGTH_LONG).show();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -422,6 +434,9 @@ public class HomeActivity extends SherlockActivity {
 				if (datasource != null) {
 					datasource.close();
 				}
+			} else {
+				Toast.makeText(this, R.string.home_flag_not_ok, Toast.LENGTH_LONG).show();
+
 			}
 		}
 	}
