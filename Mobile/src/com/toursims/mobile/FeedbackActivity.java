@@ -16,7 +16,9 @@ import com.toursims.mobile.controller.RatingWrapper;
 public class FeedbackActivity extends SherlockActivity {
 
 	public static final String FEEDBACK_COURSE_ID = "FEEDBACK_COURSE_ID";
-	private int courseId; 
+	public static final String FEEDBACK_COURSE_NAME = "FEEDBACK_COURSE_NAME";
+	private int courseId;
+	private String courseName;
 	private int userId;
 	
 	/**
@@ -39,6 +41,12 @@ public class FeedbackActivity extends SherlockActivity {
 	    	courseId = getIntent().getExtras().getInt(FEEDBACK_COURSE_ID);
 	    } else {
 	    	courseId = -1;
+	    }
+	    
+	    if (getIntent().getExtras().containsKey(FEEDBACK_COURSE_NAME)) {
+	    	courseName = getIntent().getExtras().getString(FEEDBACK_COURSE_NAME);
+	    } else {
+	    	courseName = "";
 	    }
 	    
 	    // ActionBarSherlock initialization
@@ -73,9 +81,9 @@ public class FeedbackActivity extends SherlockActivity {
 			
 			// Send a feedback
 			RatingWrapper ratingWrapper = new RatingWrapper(getApplicationContext());
-			ratingWrapper.CreateCourseRating((double)ratingBar.getRating(), userId, courseId);
+			ratingWrapper.CreateCourseRating((double)ratingBar.getRating(), userId, courseName);
 			CommentWrapper commentWrapper = new CommentWrapper(getApplicationContext());
-			commentWrapper.CreateCourseComments(messageEditText.getText().toString(), userId, courseId);
+			commentWrapper.CreateCourseComments(messageEditText.getText().toString(), userId, courseName);
 			
 			intent = new Intent(this, HomeActivity.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -423,6 +423,7 @@ public class CourseStepActivity extends SherlockMapActivity {
 							Intent intent = new Intent(getApplicationContext(), FeedbackActivity.class);
 							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							intent.putExtra(FeedbackActivity.FEEDBACK_COURSE_ID, courseId);
+							intent.putExtra(FeedbackActivity.FEEDBACK_COURSE_NAME, course.getName());
 							startActivity(intent);
 							finish();
 					}

@@ -24,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import com.toursims.mobile.R;
@@ -95,16 +96,16 @@ public class RatingWrapper {
 	/**
 	 * Launch a SOAP request to the Rating webservice
 	 * Retreive the ratings linked to the specified course
-	 * @param course_id The id of the specified course
+	 * @param course_name The name of the specified course
 	 */
-	public double GetCourseRating(int course_id) {
+	public double GetCourseRating(String course_name) {
 		// Return variable
 		double rating = 0;
 		
 		// Build the SOAP request
 		StringBuffer request = new StringBuffer(serverRoot + "/rating.php?");
 		request.append("action=" + "get_course_rating");
-		request.append("&course_id=" + course_id);
+		request.append("&course_name=" + Uri.encode(course_name));
 
 		Log.d(TAG, "Launching a Rating request : " + request);
 		HttpGet httpGet = new HttpGet(request.toString());
@@ -138,15 +139,15 @@ public class RatingWrapper {
 	/**
 	 * Launch a SOAP request to the Rating webservice
 	 * Create a rating linked to the specified course
-	 * @param course_id The id of the specified course
+	 * @param course_name The name of the specified course
 	 */
-	public void CreateCourseRating(double rating, int user_id, int course_id) {
+	public void CreateCourseRating(double rating, int user_id, String course_name) {
 		// Build the SOAP request
 		StringBuffer request = new StringBuffer(serverRoot + "/rating.php?");
 		request.append("action=" + "create_course_rating");
 		request.append("&rating=" + rating);
 		request.append("&user_id=" + user_id);
-		request.append("&course_id=" + course_id);
+		request.append("&course_name=" + Uri.encode(course_name));
 
 		Log.d(TAG, "Launching a Rating request : " + request);
 		HttpGet httpGet = new HttpGet(request.toString());

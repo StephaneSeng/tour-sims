@@ -1,13 +1,13 @@
 <?php
 
 // Establish the connection to the database
-$connection = pg_connect("host=localhost port=5432 dbname=toursims user=toursims password=") or die('Could not connect: '.pg_last_error());
+$connection = pg_connect("host=localhost port=5432 dbname=toursims user=toursims password=smisruot") or die('Could not connect: '.pg_last_error());
 
 // Define and perform the SQL query
 switch ($_REQUEST['action']) {
 	case "get_course_rating":
 		// Retreive the ratings linked to the specified course
-		// Test: http://toursims.free.fr/rating.php?action=get_course_rating&course_id=1
+		// Test: http://toursims.free.fr/rating.php?action=get_course_rating&course_name=La%20DOUA%20-%20IF
 		$query = "
 		SELECT
 			AVG(r.rating) AS rating
@@ -16,16 +16,18 @@ switch ($_REQUEST['action']) {
 				LEFT OUTER JOIN
 					rating AS r
 				ON
-					c.course_id = r.course_id
+					c.course_id = r.course_id,
+			course AS cc
 		WHERE
-			r.course_id = ".$_REQUEST['course_id'].";
+			cc.name = '".$_REQUEST['course_name']."'
+			AND r.course_id = cc.course_id;
 		";
 		$result = pg_query($query) or die('Query failed: '.pg_last_error());
 		
 		break;
 	case 'create_course_rating':
 		// Create a new rating for the specified course
-		// Test: http://toursims.free.fr/rating.php?action=create_course_rating&rating=5&user_id=1&course_id=1
+		// Test: http://toursims.free.fr/rating.php?action=create_course_rating&rating=5&user_id=1&course_name=La%20DOUA%20-%20IF
 		// Check if the user has already given a rating about this course
 		$query = "
 		SELECT
@@ -40,7 +42,15 @@ switch ($_REQUEST['action']) {
 		// Create the rating object if it does not yet exist, else update it
 		if (pg_num_rows($result) == 0) {
 			$query = "
-			INSERT INTO rating (rating, user_id, course_id) VALUES (".$_REQUEST['rating'].", ".$_REQUEST['user_id'].", ".$_REQUEST['course_id'].");
+			INSERT INTO rating (rating, user_id, course_id)
+			SELECT 
+				".$_REQUEST['rating']." AS rating,
+				".$_REQUEST['user_id']." AS user_id,
+				c.course_id
+			FROM
+				course AS c
+			WHERE
+				c.name = '".$_REQUEST['course_name']."';
 			";
 			$result = pg_query($query) or die('Query failed: '.pg_last_error());
 		} else {
@@ -50,8 +60,15 @@ switch ($_REQUEST['action']) {
 			SET
 				rating = ".$_REQUEST['rating']."
 			WHERE
-				course_id = ".$_REQUEST['course_id']."
-				AND user_id = ".$_REQUEST['user_id'].";
+				user_id = ".$_REQUEST['user_id']."
+				AND course_id = (
+					SELECT
+						c.course_id
+					FROM
+						course AS c
+					WHERE
+						c.name = '".$_REQUEST['course_name']."'
+				);
 			";
 			$result = pg_query($query) or die('Query failed: '.pg_last_error());
 		}
