@@ -9,10 +9,8 @@ import java.net.URLConnection;
 
 import org.apache.http.util.ByteArrayBuffer;
 
-import com.toursims.mobile.CustomPreferences;
 import com.toursims.mobile.R;
 import com.toursims.mobile.controller.CourseBDD;
-import com.toursims.mobile.model.Course;
 import com.toursims.mobile.model.Trace;
 
 import android.app.AlertDialog;

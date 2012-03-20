@@ -2,21 +2,15 @@ package com.toursims.mobile.ui;
 
 import java.util.List;
 
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapView;
 import com.toursims.mobile.FlagMapActivity;
 import com.toursims.mobile.R;
 import com.toursims.mobile.model.kml.Point;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.sax.StartElementListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
@@ -70,7 +64,7 @@ public class FlagAdapter extends BaseAdapter {
 
 				@Override
 				public void onClick(View v) {
-					Intent intent = new Intent(context,FlagMapActivity.class);
+					Intent intent = new Intent(context, FlagMapActivity.class);
 					intent = items.get(pos).toIntent(intent);
 					context.startActivity(intent);
 				}

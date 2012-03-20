@@ -291,7 +291,7 @@ public class LocalizationService extends Service {
 			Long startedTime = settings.getLong(
 					CustomPreferences.RECORDING_RIGHT_NOW, -1);
 
-			String filenameURL = "/data/data/com.biboo.myTrace/files/trace_"
+			String filenameURL = "/data/data/com.toursims.mobile/files/trace_"
 					+ startedTime.toString() + ".kml";
 
 			item.setFile(filenameURL);

@@ -17,11 +17,12 @@ import com.actionbarsherlock.view.MenuItem;
 import com.toursims.mobile.controller.CourseBDD;
 import com.toursims.mobile.model.Trace;
 import com.toursims.mobile.model.kml.Point;
+import com.toursims.mobile.ui.CustomMapActivity;
 import com.toursims.mobile.ui.FlagAdapter;
 import com.toursims.mobile.ui.ToolBox;
 import com.toursims.mobile.ui.TraceAdapter;
 
-public class TracesActivity extends SherlockMapActivity {
+public class TracesActivity extends CustomMapActivity {
 
 	private static List<Trace> items = new ArrayList<Trace>();
 	private static List<Point> items2 = new ArrayList<Point>();
