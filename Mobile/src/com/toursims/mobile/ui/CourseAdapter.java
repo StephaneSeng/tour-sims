@@ -81,7 +81,8 @@ public class CourseAdapter extends BaseAdapter {
 		holder.name.setText(courses.get(position).getName());
 		
 		if(courses.get(position).getAuthor()!=null){
-			holder.description.setText(courses.get(position).getAuthor());
+//			holder.description.setText(courses.get(position).getAuthor());
+			holder.description.setText(courses.get(position).getDesc());
 		}
 		
 		holder.rating.setRating((float) r);	

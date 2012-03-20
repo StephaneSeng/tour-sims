@@ -1,6 +1,5 @@
 package com.toursims.mobile;
 
-import java.util.Iterator;
 import java.util.List;
 
 import android.content.Intent;
@@ -16,7 +15,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 import com.toursims.mobile.controller.MessageWrapper;
 import com.toursims.mobile.model.Message;
-import com.toursims.mobile.model.User;
 import com.toursims.mobile.ui.MessageAdapter;
 
 public class ChatMessageActivity extends SherlockActivity {
@@ -102,7 +100,12 @@ public class ChatMessageActivity extends SherlockActivity {
 
 			intent = new Intent(this, WriteActivity.class);
 			intent.putExtra(WriteActivity.DEST_USER_ID, messages.get(messages.size() - 1).getWriterId());
-			intent.putExtra(WriteActivity.ROOT_MESSAGE_ID, messages.get(0).getReplyMessageId());
+			// null reply message id case
+			int replyMessageId = messages.get(0).getReplyMessageId();
+			if (replyMessageId == 0) {
+				replyMessageId = messages.get(0).getMessageId();
+			}
+			intent.putExtra(WriteActivity.ROOT_MESSAGE_ID, replyMessageId);
 			startActivityForResult(intent, 0);
 			return true;
 		default:

@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -27,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import com.toursims.mobile.R;
@@ -132,6 +134,47 @@ public class CommentWrapper {
 		}
 		
 		return comments;
+	}
+	
+	/**
+	 * Launch a SOAP request to the Comment webservice
+	 * Create a comment linked to the specified course
+	 * @param course_id The id of the specified course
+	 */
+	public void CreateCourseComments(String text, int user_id, int course_id) {
+		// Timestamp formatting
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SZ");
+		
+		// Build the SOAP request
+		StringBuffer request = new StringBuffer(serverRoot + "/comment.php?");
+		request.append("action=" + "create_course_comments");
+		request.append("&text=" + Uri.encode(text));
+		request.append("&timestamp=" + Uri.encode(simpleDateFormat.format(Calendar.getInstance().getTime())));
+		request.append("&user_id=" + user_id);
+		request.append("&course_id=" + course_id);
+
+		Log.d(TAG, "Launching a Comment request : " + request);
+		HttpGet httpGet = new HttpGet(request.toString());
+		HttpResponse httpResponse;
+		
+		try {
+			httpResponse = httpClient.execute(httpGet);
+			
+			// JSON reconstruction
+			InputStream inputStream = httpResponse.getEntity().getContent();
+			byte[] buffer = new byte[1024];
+		    int length;
+		    StringBuilder builder = new StringBuilder();
+		    while ((length = inputStream.read(buffer)) > 0) {
+		            builder.append(new String(buffer, 0, length));
+		    }
+		    String json = builder.toString();
+		    
+		    Log.d(TAG, "JSON recieved : " + json);
+		} catch (Exception e) {
+			Log.e(TAG, e.getMessage());
+			Log.e(TAG, e.toString());
+		}
 	}
 	
 	/**

@@ -93,6 +93,9 @@
 			android:name="WriteActivity"
 			android:theme="@style/Theme.Sherlock.Light.Custom" >
 		</activity>
+		<activity
+			android:name="FeedbackActivity"
+			android:theme="@style/Theme.Sherlock.Light.Custom" />
 
 		<service android:name=".LocalizationService" >
 		</service>
