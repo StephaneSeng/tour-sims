@@ -1,7 +1,7 @@
 <?php
 
 // Establish the connection to the database
-$connection = pg_connect("host=localhost port=5432 dbname=toursims user=toursims password=") or die('Could not connect: '.pg_last_error());
+$connection = pg_connect("host=localhost port=5432 dbname=toursims user=toursims password=smisruot") or die('Could not connect: '.pg_last_error());
 
 // Define and perform the SQL queries
 switch ($_REQUEST['action']) {
@@ -155,12 +155,27 @@ switch ($_REQUEST['action']) {
 		
 		break;
 	case "add_contact":
-		// Add a contact to the specified user
-		// Test: http://toursims.free.fr/user.php?action=add_contact&user_id=1&contact_id=2
+		// Check if this key already exists
 		$query = "
-		INSERT INTO user_user (user_a_id, user_b_id) VALUES (".$_REQUEST['user_id'].", ".$_REQUEST['contact_id'].");
+		SELECT
+			uu.user_a_id
+		FROM
+			user_user AS uu
+		WHERE
+			uu.user_a_id = ".$_REQUEST['user_id']."
+			AND uu.user_b_id = ".$_REQUEST['contact_id'].";
 		";
 		$result = pg_query($query) or die('Query failed: '.pg_last_error());
+	
+		if (pg_num_rows($result) == 0) {
+			// Add a contact to the specified user
+			// Test: http://toursims.free.fr/user.php?action=add_contact&user_id=1&contact_id=2
+			$query = "
+			INSERT INTO user_user (user_a_id, user_b_id) VALUES (".$_REQUEST['user_id'].", ".$_REQUEST['contact_id'].");
+			";
+			$result = pg_query($query) or die('Query failed: '.pg_last_error());
+		} else {
+		}
 		
 		break;
 	case "get_profile":
