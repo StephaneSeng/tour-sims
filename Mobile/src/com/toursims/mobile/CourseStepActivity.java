@@ -566,7 +566,9 @@ public class CourseStepActivity extends SherlockMapActivity {
 
 							public void onClick(DialogInterface dialog,
 									int which) {
-								currentPlacemark++;
+								if (!getIntent().getExtras().containsKey(Course.NEXT_PLACEMARK)) {
+									currentPlacemark++;
+								}
 								updatePlacemark();
 								dialog.dismiss();
 							}
