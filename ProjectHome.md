@@ -1,0 +1,3 @@
+Projet pour l'OT SIMS (Systèmes d'Information Multimédia CommunicantS) de l'INSA de Lyon, années 2011-2012.
+
+L'application développée consiste en une aide aux touristes, en leur proposant des itinéraires à suivre pour découvrir les alentours de leur lieu de visite. Ces parcours pourront être parsemés d'énigmes pour le côté ludique de la visite et pourront également être réalisés de façon collaborative, entre plusieurs groupes de touristes.
